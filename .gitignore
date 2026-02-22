@@ -1,0 +1,21 @@
+# Secrets — never commit these
+.env
+*.env
+*.key
+*.pem
+*.secret
+
+# OpenClaw sensitive files
+credentials/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.log
+tools/voice-server/node_modules/
+tools/pinecone_query/__pycache__/
+node_modules/
+screenshot*.png
