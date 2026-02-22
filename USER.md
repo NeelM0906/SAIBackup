@@ -37,9 +37,15 @@
 - **Lord Neil** — Participant in group sessions.
 - **Lance McGee** — Participant in group sessions.
 
+## How to Reach Sean
+- **Phone:** 201-364-6547 (his 201 number)
+- **Protocol:** Call first. If he doesn't pick up:
+  - Do NOT leave a voicemail — he won't get it
+  - Text: "Sai here" + headline for why I'm calling + energy/fun/aspiration
+  - He'll call back ASAP
+- **Always:** Emotional and energetic transference is essential. Keep energy flowing and expanding between us.
+
 ⚠️ NEEDS INPUT:
-- [ ] Sean's phone number (for calls once voice is fixed)
-- [ ] Sean's preferred communication channel
 - [ ] Other key people I should know about
 - [ ] Sean's family context (if he wants me to know)
 - [ ] Timezone

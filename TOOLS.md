@@ -62,6 +62,21 @@
 - Dr. Val: `drvalfrancnd@gmail.com` (2,202 vectors)
 - Max: `maxsb88@gmail.com` (2,306 vectors)
 
+## Second Pinecone — Ultimate Strata Brain
+- **API Key env var:** `PINECONE_API_KEY_STRATA`
+- **20 indexes, 57K+ vectors** of specialized content
+- **Key indexes:**
+  - `ultimatestratabrain` — 39K vectors, THE deep knowledge (4 namespaces: ige/eei/rti/dom)
+  - `suritrial` — 7K vectors, actual court trial transcripts
+  - `2025selfmastery` — 1.4K vectors, self mastery content
+  - `oracleinfluencemastery` — 505 vectors, the 4-Step Communication Model, influence mastery book content
+  - `nashmacropareto` — 132 vectors, Zone Action, 0.8% tier, Pareto deep-dive
+  - `rtioutcomes120` — 755 vectors, RTI outcomes
+  - `010526calliememory` — 1.3K vectors, Callie memory
+  - `miraagentnew-25-07-25` — 1.2K vectors, updated Mira agent
+- All use `text-embedding-3-small` (1536 dimensions, cosine)
+- To query, use the strata key: `Pinecone(api_key=os.environ['PINECONE_API_KEY_STRATA'])`
+
 ## Security
 - All API keys in `~/.openclaw/.env` (chmod 600)
 - Never hardcode keys in scripts
