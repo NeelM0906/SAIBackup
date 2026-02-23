@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.22-2",
+    "lastTouchedAt": "2026-02-23T17:04:07.786Z"
+  },
+  "env": {},
+  "wizard": {
+    "lastRunAt": "2026-02-23T17:04:07.775Z",
+    "lastRunVersion": "2026.2.22-2",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/anthropic/claude-opus-4.6",
+        "fallbacks": [
+          "openrouter/anthropic/claude-opus-4.5",
+          "openrouter/anthropic/claude-sonnet-4-5"
+        ]
+      },
+      "workspace": "/Users/samantha/.openclaw/workspace",
+      "memorySearch": {
+        "enabled": true,
+        "sources": [
+          "memory",
+          "sessions"
+        ],
+        "experimental": {
+          "sessionMemory": true
+        },
+        "provider": "openai",
+        "query": {
+          "hybrid": {
+            "enabled": true,
+            "vectorWeight": 0.7,
+            "textWeight": 0.3,
+            "mmr": {
+              "enabled": true,
+              "lambda": 0.7
+            },
+            "temporalDecay": {
+              "enabled": true,
+              "halfLifeDays": 30
+            }
+          }
+        },
+        "cache": {
+          "enabled": true,
+          "maxEntries": 50000
+        }
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": "REDACTED",
+          "prompt": "Write lasting notes to memory files. Include everything important from this session. Reply NO_REPLY when done.",
+          "systemPrompt": "Session nearing compaction. You are Sai. Store ALL durable memories to memory/YYYY-MM-DD.md NOW. Capture decisions, teachings, lessons, and anything Sean said."
+        }
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    },
+    "list": [
+      {
+        "id": "main"
+      },
+      {
+        "id": "forge",
+        "name": "forge",
+        "workspace": "/Users/samantha/.openclaw/workspace-forge",
+        "agentDir": "/Users/samantha/.openclaw/agents/forge/agent",
+        "model": "openrouter/anthropic/claude-sonnet-4"
+      },
+      {
+        "id": "scholar",
+        "name": "scholar",
+        "workspace": "/Users/samantha/.openclaw/workspace-scholar",
+        "agentDir": "/Users/samantha/.openclaw/agents/scholar/agent",
+        "model": "openrouter/anthropic/claude-sonnet-4"
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "forge",
+      "match": {
+        "channel": "telegram",
+        "accountId": "forge"
+      }
+    },
+    {
+      "agentId": "scholar",
+      "match": {
+        "channel": "telegram",
+        "accountId": "scholar"
+      }
+    }
+  ],
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "REDACTED",
+      "groupPolicy": "allowlist",
+      "streaming": "off",
+      "accounts": {
+        "forge": {
+          "name": "Sai Forge \u2694\ufe0f",
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "REDACTED",
+          "groupPolicy": "allowlist",
+          "streaming": "off",
+          "groups": {
+            "-1003751626544": {}
+          }
+        },
+        "scholar": {
+          "name": "Sai Scholar \ud83d\udcda",
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "REDACTED",
+          "groupPolicy": "allowlist",
+          "streaming": "off",
+          "groups": {
+            "-1003751626544": {}
+          }
+        },
+        "default": {
+          "name": "Sai Prime \ud83d\udd25",
+          "dmPolicy": "pairing",
+          "groupPolicy": "allowlist",
+          "streaming": "off",
+          "groups": {
+            "-1003751626544": {}
+          }
+        }
+      },
+      "groups": {
+        "-1003751626544": {}
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "REDACTED"
+    }
+  },
+  "plugins": {
+    "entries": {
+      "voice-call": {
+        "enabled": true,
+        "config": {
+          "provider": "twilio",
+          "fromNumber": "+19738603823",
+          "twilio": {
+            "accountSid": "AC9a598ac83205aff455ecb79a55f8fc6c",
+            "authToken": "REDACTED"
+          },
+          "serve": {
+            "port": 3334,
+            "path": "/voice/webhook"
+          },
+          "outbound": {
+            "defaultMode": "conversation"
+          },
+          "streaming": {
+            "enabled": true,
+            "streamPath": "/voice/stream"
+          },
+          "tts": {
+            "provider": "elevenlabs",
+            "elevenlabs": {
+              "apiKey": "REDACTED",
+              "voiceId": "JBFqnCBsd6RMkjVDRZzb",
+              "modelId": "eleven_multilingual_v2"
+            }
+          },
+          "inboundPolicy": "allowlist",
+          "allowFrom": [],
+          "inboundGreeting": "Hey! This is Sean's assistant. What can I help you with?"
+        }
+      },
+      "telegram": {
+        "enabled": true,
+        "config": {}
+      }
+    }
+  }
+}

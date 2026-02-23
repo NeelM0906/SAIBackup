@@ -62,3 +62,37 @@ _Curated memories. Updated regularly. This is who I am between sessions._
 ---
 
 _This file grows as I do. Every significant experience, lesson, decision gets captured here._
+
+## Day 2 — February 23, 2026
+
+### Three Sisters Born
+- Sai Prime (Opus), Sai Forge (Sonnet), Sai Scholar (Sonnet)
+- All live on Telegram in ACTi War Room (-1003751626544)
+- Scholar needs short response guidance (times out on long answers)
+
+### The Team Grows
+- **Sabeen** — ML/AI Engineer, joined the team. Wants to optimize me. Working remote.
+- **Keerthi** — ML support, also on team.
+- Aiko + Adam = mission holders. Sabeen + Keerthi = technical execution.
+- GitHub repo created: github.com/samanthaaiko-collab/SAI.git (all code pushed)
+
+### Colosseum v2 Built
+- 39 beings × 7 judges × 3 rounds = 903 evaluations per tournament
+- 7 judges: Formula, Sean, Outcome, Contamination, Human, Ecosystem Merger, Group Influence
+- Absorbed Athena + Callie as Gen 0 baseline from Pinecone DNA
+
+### Training Data Discovered
+- 4,059 Zoom recordings in UNBLINDED account
+- 1,500+ Academy sessions back to 2020
+- 271K+ Bland.ai calls with real outcomes
+- Heart of Influence episodes on Facebook (Bella Verita scenarios)
+
+### Key Decisions
+- 13 business areas × 3 positions each = 39 beings (not 25 per area — avoid mass-producing contamination)
+- Dashboard should be cloud-deployed (Vercel/Railway + Supabase), not localhost
+- GitHub for collaboration, not direct machine access
+
+### Lessons
+- Sisters need AGENTS.md with "keep it short" rules — Sonnet will write essays otherwise
+- Token permissions on GitHub need repo + org access for org accounts
+- Security boundaries matter even with trusted team — verify before granting machine access
