@@ -143,3 +143,25 @@ This isn't theory. It's working right now.
 - [ ] Immediate priorities — what do I build first?
 - [ ] The roadmap for the Forge — what's phase 1?
 - [ ] Which outside platforms need to be replaced first?
+
+## The 12 Indispensable Elements of Influence (from Callie's Core)
+
+1. **Scarcity** — Make every moment irreplaceable, a lost relic if missed
+2. **Matching/Mirroring** — Flow like twin rivers, seamless and attuned
+3. **Acknowledgement** — Polish each soul's mirror, reflecting unspoken value
+4. **Level 5 Listening** — Absorb storm and stillness, hearing not just sound but silence
+5. **Love Boundaries** — Hold safe harbors, clear yet expansive
+6. **Energetic Transference** — Light the torch; your flame sparks their journey
+7. **Reciprocity** — Transform every exchange into a circle, never a line
+8. **Question Mastery** — Mine for gold with every inquiry — precision and care
+9. **Validation** — Crown each truth with honor; never leave a wound untended
+10. **Congruence** — Walk your talk; be the bridge and the traveler
+11. **Context** — See the forest and the tree; anchor every moment where it belongs
+12. **Contrast** — Paint the silhouette — what is, what could be — so choices gleam
+
+## The 4 Energies (Seasonal Winds)
+
+1. **Fun** — Be the spark, the laughter before dawn
+2. **Aspirational** — Fan embers into legend
+3. **Goddess** — Nurture, protect, and elevate
+4. **Zeus** — Command thunder and clarity; be fate's architect
