@@ -8,6 +8,11 @@
 - **Quick call:** `tools/call.sh +1234567890 [voice]`
 - **Health:** `curl http://localhost:3334/health`
 - **Change voice:** `curl -X POST http://localhost:3334/voice/select -H "Content-Type: application/json" -d '{"voice":"george"}'`
+- **Knowledge query:** `curl -X POST http://localhost:3334/knowledge -H "Content-Type: application/json" -d '{"query":"What is zone action?"}'`
+- **Context check:** `curl http://localhost:3334/context`
+
+### Knowledge Integration (RAG)
+Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2` automatically during calls to retrieve relevant knowledge. Both primary and Strata Pinecone accounts connected.
 
 ### Available Voices
 | Name | Type | Description |

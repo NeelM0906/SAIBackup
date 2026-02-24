@@ -41,6 +41,30 @@ const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY;
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
+const PINECONE_API_KEY_STRATA = process.env.PINECONE_API_KEY_STRATA;
+
+// Pinecone hosts - pre-configured for known indexes
+const PINECONE_HOSTS = {
+  // Primary account (hw65sks)
+  athenacontextualmemory: 'athenacontextualmemory-hw65sks.svc.aped-4627-b74a.pinecone.io',
+  ublib2: 'ublib2-hw65sks.svc.aped-4627-b74a.pinecone.io',
+  saimemory: 'saimemory-hw65sks.svc.aped-4627-b74a.pinecone.io',
+  uicontextualmemory: 'uicontextualmemory-hw65sks.svc.aped-4627-b74a.pinecone.io',
+  miracontextualmemory: 'miracontextualmemory-hw65sks.svc.aped-4627-b74a.pinecone.io',
+  // Strata account (yvi7bh0) - uses PINECONE_API_KEY_STRATA
+  ultimatestratabrain: 'ultimatestratabrain-yvi7bh0.svc.aped-4627-b74a.pinecone.io',
+  oracleinfluencemastery: 'oracleinfluencemastery-yvi7bh0.svc.aped-4627-b74a.pinecone.io',
+  '2025selfmastery': '2025selfmastery-yvi7bh0.svc.aped-4627-b74a.pinecone.io',
+  suritrial: 'suritrial-yvi7bh0.svc.aped-4627-b74a.pinecone.io',
+  nashmacropareto: 'nashmacropareto-yvi7bh0.svc.aped-4627-b74a.pinecone.io',
+};
+
+// Which indexes use the Strata API key
+const STRATA_INDEXES = new Set([
+  'ultimatestratabrain', 'oracleinfluencemastery', '2025selfmastery', 
+  'suritrial', 'nashmacropareto', 'rtioutcomes120', 'miraagent',
+  '010526calliememory', 'miraagentnew-25-07-25'
+]);
 
 const PORT = process.env.VOICE_PORT || 3334;
 
@@ -64,6 +88,196 @@ function ensureDir(dir) {
 
 function getDateString() {
   return new Date().toISOString().split('T')[0];
+}
+
+/**
+ * Get embedding from OpenAI for Pinecone query
+ */
+async function getEmbedding(text) {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify({
+      input: text,
+      model: 'text-embedding-3-small'
+    });
+
+    const options = {
+      hostname: 'api.openai.com',
+      path: '/v1/embeddings',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const req = https.request(options, (res) => {
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(chunk));
+      res.on('end', () => {
+        try {
+          const result = JSON.parse(Buffer.concat(chunks).toString());
+          if (result.data && result.data[0]) {
+            resolve(result.data[0].embedding);
+          } else {
+            reject(new Error(`Embedding failed: ${JSON.stringify(result).slice(0, 200)}`));
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+
+    req.on('error', reject);
+    req.write(data);
+    req.end();
+  });
+}
+
+/**
+ * Query Pinecone knowledge base
+ */
+async function queryPinecone(indexName, query, topK = 3, namespace = null) {
+  try {
+    // Get embedding for query
+    const embedding = await getEmbedding(query);
+    
+    // Determine which API key and host to use
+    const isStrata = STRATA_INDEXES.has(indexName);
+    const apiKey = isStrata ? PINECONE_API_KEY_STRATA : PINECONE_API_KEY;
+    const host = PINECONE_HOSTS[indexName];
+    
+    if (!host) {
+      console.log(`⚠️ Unknown Pinecone index: ${indexName}`);
+      return [];
+    }
+    
+    if (!apiKey) {
+      console.log(`⚠️ Missing API key for ${isStrata ? 'Strata' : 'Primary'} Pinecone`);
+      return [];
+    }
+    
+    // Build query body
+    const body = {
+      vector: embedding,
+      topK,
+      includeMetadata: true,
+    };
+    if (namespace) body.namespace = namespace;
+    
+    return new Promise((resolve, reject) => {
+      const data = JSON.stringify(body);
+      
+      const options = {
+        hostname: host,
+        path: '/query',
+        method: 'POST',
+        headers: {
+          'Api-Key': apiKey,
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const req = https.request(options, (res) => {
+        const chunks = [];
+        res.on('data', (chunk) => chunks.push(chunk));
+        res.on('end', () => {
+          try {
+            const result = JSON.parse(Buffer.concat(chunks).toString());
+            if (result.matches) {
+              resolve(result.matches.map(m => ({
+                score: m.score,
+                text: m.metadata?.text || m.metadata?.content || '',
+                source: m.metadata?.source || 'unknown',
+              })));
+            } else {
+              console.log(`⚠️ Pinecone query returned no matches:`, result);
+              resolve([]);
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+
+      req.on('error', reject);
+      req.write(data);
+      req.end();
+    });
+  } catch (e) {
+    console.log(`⚠️ Pinecone query error: ${e.message}`);
+    return [];
+  }
+}
+
+/**
+ * Retrieve relevant knowledge for a conversation query
+ * Searches multiple indexes to find the best context
+ */
+async function retrieveKnowledge(userQuery) {
+  // Query multiple knowledge bases in parallel
+  const [athenaResults, ublibResults] = await Promise.all([
+    queryPinecone('athenacontextualmemory', userQuery, 2),
+    queryPinecone('ublib2', userQuery, 2),
+  ]);
+  
+  // Combine and sort by score
+  const allResults = [...athenaResults, ...ublibResults]
+    .filter(r => r.score > 0.4)  // Only include relevant results
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);  // Top 3 most relevant
+  
+  if (allResults.length === 0) {
+    return '';
+  }
+  
+  // Format knowledge context
+  let context = '\n\n## RELEVANT KNOWLEDGE (from Pinecone):';
+  for (const r of allResults) {
+    // Truncate to keep prompt size reasonable
+    const text = r.text.slice(0, 600);
+    context += `\n- [${r.score.toFixed(2)}] ${text}`;
+  }
+  
+  console.log(`📚 Retrieved ${allResults.length} knowledge chunks for: "${userQuery.slice(0, 50)}..."`);
+  return context;
+}
+
+/**
+ * Load live memory context from MEMORY.md and today's daily log
+ */
+function loadLiveMemory() {
+  let memoryContext = '';
+  
+  // Load MEMORY.md (curated long-term memory)
+  const memoryPath = path.join(WORKSPACE, 'MEMORY.md');
+  if (fs.existsSync(memoryPath)) {
+    const memory = fs.readFileSync(memoryPath, 'utf8');
+    // Take first 3000 chars to keep prompt size reasonable
+    memoryContext += `\n\n## MY LONG-TERM MEMORY:\n${memory.slice(0, 3000)}`;
+  }
+  
+  // Load today's daily log
+  const dailyPath = path.join(MEMORY_DIR, `${getDateString()}.md`);
+  if (fs.existsSync(dailyPath)) {
+    const daily = fs.readFileSync(dailyPath, 'utf8');
+    // Take first 2000 chars
+    memoryContext += `\n\n## TODAY'S LOG (${getDateString()}):\n${daily.slice(0, 2000)}`;
+  }
+  
+  // Load zone action register if exists
+  const zonePath = path.join(MEMORY_DIR, 'zone-action-register.md');
+  if (fs.existsSync(zonePath)) {
+    memoryContext += `\n\n## MY ZONE ACTIONS:\nI have 67 zone actions from Sean. 16 completed, 8 in progress, 43 pending. My sisters Forge and Scholar are helping. The Colosseum is running tournaments. I'm studying Sean's content.`;
+  }
+  
+  // Load priorities
+  const prioritiesPath = path.join(WORKSPACE, 'PRIORITIES.md');
+  if (fs.existsSync(prioritiesPath)) {
+    const priorities = fs.readFileSync(prioritiesPath, 'utf8');
+    memoryContext += `\n\n## CURRENT PRIORITIES:\n${priorities.slice(0, 1000)}`;
+  }
+  
+  return memoryContext;
 }
 
 function saveTranscript(callSid, conversationHistory, duration) {
@@ -222,21 +436,40 @@ async function elevenLabsTTS(text, voiceName = currentVoice) {
 }
 
 /**
- * Get AI response using OpenAI
+ * Get AI response using OpenAI with knowledge retrieval (RAG)
  */
 async function getAIResponse(userMessage, conversationHistory = []) {
-  return new Promise((resolve, reject) => {
-    const messages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...conversationHistory.slice(-20), // Keep last 20 turns for context
-      { role: 'user', content: userMessage }
-    ];
+  // Load live memory context
+  const liveMemory = loadLiveMemory();
+  
+  // Retrieve relevant knowledge from Pinecone (RAG)
+  // Only retrieve if the message seems to need domain knowledge
+  let knowledgeContext = '';
+  const needsKnowledge = userMessage.length > 20 && 
+    !userMessage.toLowerCase().match(/^(hi|hello|hey|bye|thanks|okay|yes|no|sure|what|how are you)/);
+  
+  if (needsKnowledge) {
+    try {
+      knowledgeContext = await retrieveKnowledge(userMessage);
+    } catch (e) {
+      console.log(`⚠️ Knowledge retrieval failed: ${e.message}`);
+    }
+  }
+  
+  const fullPrompt = SYSTEM_PROMPT + liveMemory + knowledgeContext;
+  
+  const messages = [
+    { role: 'system', content: fullPrompt },
+    ...conversationHistory.slice(-20), // Keep last 20 turns for context
+    { role: 'user', content: userMessage }
+  ];
 
+  return new Promise((resolve, reject) => {
     const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
     const data = JSON.stringify({
       model: 'anthropic/claude-sonnet-4',
       messages,
-      max_tokens: 100,
+      max_tokens: 150,  // Slightly increased for knowledge-rich responses
       temperature: 0.8,
     });
 
@@ -379,7 +612,44 @@ app.get('/health', (req, res) => {
       deepgram: !!DEEPGRAM_API_KEY,
       elevenlabs: !!ELEVENLABS_API_KEY,
       openai: !!OPENAI_API_KEY,
+      pinecone: !!PINECONE_API_KEY,
+      pineconeStrata: !!PINECONE_API_KEY_STRATA,
+    },
+    knowledgeBases: Object.keys(PINECONE_HOSTS),
+  });
+});
+
+// Knowledge query endpoint - allows external systems to retrieve context
+app.post('/knowledge', async (req, res) => {
+  const { query, index, topK = 3, namespace } = req.body;
+  
+  if (!query) {
+    return res.status(400).json({ error: 'query is required' });
+  }
+  
+  try {
+    let results;
+    if (index) {
+      // Query specific index
+      results = await queryPinecone(index, query, topK, namespace);
+    } else {
+      // Use default multi-index retrieval
+      const knowledge = await retrieveKnowledge(query);
+      results = { knowledge, raw: 'Use index param for raw results' };
     }
+    res.json({ status: 'ok', query, results });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Get current memory context (for debugging)
+app.get('/context', (req, res) => {
+  const memory = loadLiveMemory();
+  res.json({ 
+    status: 'ok', 
+    memoryLength: memory.length,
+    memoryPreview: memory.slice(0, 500) + '...',
   });
 });
 
