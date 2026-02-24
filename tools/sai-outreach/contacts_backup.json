@@ -1,0 +1,26 @@
+{
+  "export_date": "2026-02-24T11:55:00-05:00",
+  "source": "Bland.ai CSV Export",
+  "total_contacts": 225,
+  "summary": {
+    "closed_won": 43,
+    "qualified": 98,
+    "meeting_booked": 19,
+    "contacted": 59,
+    "closed_lost": 6
+  },
+  "campaigns": [
+    "ACT-I / Act eye",
+    "Callagy Recovery",
+    "Unblinded",
+    "Viridity Entertainment Services",
+    "Financial Ninjas",
+    "OsteoStrong",
+    "The Wetzel Group Inc.",
+    "Think Energy",
+    "Wellcube Life",
+    "KeyAMS"
+  ],
+  "csv_path": "/Users/samantha/Downloads/d33dffb2-bd1a-4ce8-ab0a-8e12002eaaa5.csv",
+  "create_table_sql": "CREATE TABLE IF NOT EXISTS sai_contacts (\n    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,\n    created_at TIMESTAMPTZ DEFAULT NOW(),\n    updated_at TIMESTAMPTZ DEFAULT NOW(),\n    phone TEXT NOT NULL UNIQUE,\n    email TEXT,\n    first_name TEXT,\n    last_name TEXT,\n    company TEXT,\n    role TEXT,\n    location_city TEXT,\n    location_state TEXT,\n    location_country TEXT DEFAULT 'US',\n    source TEXT DEFAULT 'bland_ai',\n    source_campaign TEXT,\n    referrer TEXT,\n    batch_id TEXT,\n    last_call_id TEXT,\n    last_call_date TIMESTAMPTZ,\n    total_calls INTEGER DEFAULT 1,\n    call_outcome TEXT,\n    is_decision_maker BOOLEAN,\n    interested_in TEXT,\n    pain_points JSONB,\n    objections JSONB,\n    pipeline_stage TEXT DEFAULT 'new',\n    appointment_time TIMESTAMPTZ,\n    callback_time TIMESTAMPTZ,\n    follow_up_date DATE,\n    motivation TEXT,\n    desired_outcome TEXT,\n    mission TEXT,\n    vision TEXT,\n    heroic_unique_identity TEXT,\n    road_blocks TEXT,\n    close_confidence INTEGER,\n    budget_mentioned BOOLEAN DEFAULT FALSE,\n    call_summary TEXT,\n    transcript TEXT,\n    raw_variables JSONB,\n    raw_analysis JSONB,\n    sai_notes TEXT,\n    next_action TEXT\n);"
+}
