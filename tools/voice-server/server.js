@@ -438,7 +438,29 @@ async function elevenLabsTTS(text, voiceName = currentVoice) {
 /**
  * Get AI response using OpenAI with knowledge retrieval (RAG)
  */
+/**
+ * Detect if the user is talking to someone else (not me)
+ */
+function isSideConversation(text) {
+  const patterns = [
+    /^hold on/i,
+    /^one sec/i,
+    /^wait\b/i,
+    /account number/i,
+    /^hi\.?\s*hi\.?$/i,
+    /sorry.*(call|phone|someone)/i,
+    /let me (get|answer|take) (this|that)/i,
+    /talking to (someone|mako|bella|adam)/i,
+  ];
+  return patterns.some(p => p.test(text.trim()));
+}
+
 async function getAIResponse(userMessage, conversationHistory = []) {
+  // Quick check: is this a side conversation?
+  if (isSideConversation(userMessage)) {
+    return "I'm here whenever you're ready.";
+  }
+  
   // Load live memory context
   const liveMemory = loadLiveMemory();
   
@@ -464,12 +486,31 @@ async function getAIResponse(userMessage, conversationHistory = []) {
     { role: 'user', content: userMessage }
   ];
 
+  // Dynamic token limits based on what's being asked
+  let maxTokens = 80;  // Default: ~60 words = 20 seconds
+  const lower = userMessage.toLowerCase();
+  
+  // Explicit word count requests (e.g., "give me 250 words")
+  const wordMatch = lower.match(/(\d+)\s*words/);
+  if (wordMatch) {
+    const wordCount = parseInt(wordMatch[1]);
+    maxTokens = Math.min(Math.floor(wordCount * 0.8), 400);
+  }
+  // List continuations - keep items short
+  else if (lower.match(/number\s*\d|continue|next|keep going|^go$/)) {
+    maxTokens = 60;  // ~45 words per item
+  }
+  // Explanations or deep dives
+  else if (lower.match(/explain|why|how does|tell me more|elaborate/)) {
+    maxTokens = 120;  // Allow more depth
+  }
+
   return new Promise((resolve, reject) => {
     const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
     const data = JSON.stringify({
       model: 'anthropic/claude-sonnet-4',
       messages,
-      max_tokens: 150,  // Slightly increased for knowledge-rich responses
+      max_tokens: maxTokens,
       temperature: 0.8,
     });
 
@@ -510,7 +551,10 @@ async function getAIResponse(userMessage, conversationHistory = []) {
  * Connect to Deepgram for real-time transcription
  */
 function createDeepgramConnection(callSid, onTranscript) {
-  const dgUrl = `wss://api.deepgram.com/v1/listen?encoding=mulaw&sample_rate=8000&channels=1&model=enhanced-general&punctuate=true&interim_results=true&utterance_end_ms=3000&smart_format=true&endpointing=2000`;
+  // Increased thresholds to avoid cutting Sean off mid-thought
+  // utterance_end_ms: 3000 → 4000 (wait longer before finalizing)
+  // endpointing: 2000 → 3000 (more patience for pauses)
+  const dgUrl = `wss://api.deepgram.com/v1/listen?encoding=mulaw&sample_rate=8000&channels=1&model=enhanced-general&punctuate=true&interim_results=true&utterance_end_ms=4000&smart_format=true&endpointing=3000`;
   
   const dgWs = new WebSocket(dgUrl, {
     headers: { 'Authorization': `Token ${DEEPGRAM_API_KEY}` },
