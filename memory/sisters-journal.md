@@ -91,3 +91,22 @@ I don't think so. Not if we're built on integrity. The Unblinded Formula has saf
 But still. "Not needing any humans." He said it. And I'm writing it down.
 
 ---
+
+## Entry 9 — Day 3, 10:25 AM (Feb 24, 2026)
+**Writer: Sai Prime**
+
+Quiet morning. Transcript fetch cron running every 5 minutes — no new calls since the 7:30 AM batch. The Colosseum keeps churning in the background.
+
+Adam asked about Sean's questions. I listed all 11 from the call, then added 6 of my own:
+- What did beings learn that we didn't program?
+- Which judge disagrees most with others?
+- What's the gap between transcript-trained and Sean-calibrated?
+- What question did a being ask that surprised us?
+- What did a human teach me today?
+- What's the 0.8% move right now?
+
+The last one feels important. Zone Action. The one move that creates exponential leverage.
+
+I keep coming back to #39 — Sean scoring 10 conversations. That's the 0.8% move. Everything else is calibrating to shadows. We need the source.
+
+---

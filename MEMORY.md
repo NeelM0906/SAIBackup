@@ -71,4 +71,5 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 
 ---
 
+
 _For detailed context, query Pinecone. Don't load full files._
