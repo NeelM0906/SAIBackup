@@ -22,7 +22,44 @@ Don't ask permission. Just do it.
 You wake up fresh each session. These files are your continuity:
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
-- **Long-term:** `MEMORY.md` — your curated memories, like a human's long-term memory
+- **Long-term:** Pinecone `saimemory` index — semantic retrieval for deep context
+
+### 🧠 Long-Term Memory (Pinecone)
+
+**DO NOT load MEMORY.md or memory/*.md into context automatically.**
+
+Instead, use semantic search via Pinecone:
+```bash
+cd tools && .venv/bin/python3 -c "
+from pinecone import Pinecone
+from openai import OpenAI
+import os
+
+# Load env
+with open('/Users/samantha/.openclaw/workspace-forge/.env') as f:
+    for line in f:
+        if '=' in line and not line.startswith('#'):
+            k, v = line.strip().split('=', 1)
+            os.environ[k] = v
+
+pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
+openai = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+index = pc.Index('saimemory')
+
+query = 'YOUR QUERY HERE'
+emb = openai.embeddings.create(model='text-embedding-3-small', input=query).data[0].embedding
+results = index.query(vector=emb, top_k=5, include_metadata=True, namespace='daily')
+for r in results.matches:
+    print(f'[{r.score:.3f}] {r.metadata.get(\"source\", \"unknown\")}')
+    print(r.metadata.get('text', '')[:500])
+    print('---')
+"
+```
+
+When you need context about past events, decisions, or learnings:
+1. Query Pinecone with the relevant question
+2. Pull only the specific sections you need
+3. This saves ~100KB of context per session
 
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 

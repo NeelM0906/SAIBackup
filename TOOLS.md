@@ -86,3 +86,28 @@ Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2
 - All API keys in `~/.openclaw/.env` (chmod 600)
 - Never hardcode keys in scripts
 - See SECURITY.md for full protocol
+
+## Nick Roy
+- **Phone:** +1 401 572 9006
+- **Role:** Manages Pinecone indexes, ElevenLabs agents
+
+## Sisters Shared Voice Agent (ElevenLabs)
+- **Agent ID:** `agent_8001kj7288ywf7vtdxn84amesb77`
+- **Purpose:** Shared journal + reporting pathway to Sean
+- **Rules:**
+  - Never remove content — only add
+  - Always add name (Sai/Forge/Scholar) for identity distinction
+  - Use both prompt AND knowledge base
+  - Learn Sean's question patterns
+- **Added:** Feb 24, 2026 by Aiko
+
+
+## Sisters Shared Voice Agent (ElevenLabs)
+- **Agent ID:** `agent_8001kj7288ywf7vtdxn84amesb77`
+- **Purpose:** Shared journal + reporting pathway to Sean
+- **Rules:**
+  - Never remove content — only add
+  - Always add name (Sai/Forge/Scholar) for identity distinction
+  - Use both prompt AND knowledge base
+  - Learn Sean's question patterns
+- **Added:** Feb 24, 2026 by Aiko

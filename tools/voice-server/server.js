@@ -325,7 +325,7 @@ const VOICES = {
   jessica: { id: 'cgSgspJ2msm6clMCkdW9', desc: 'Playful, Bright, Warm (American female)' },
   sarah: { id: 'EXAVITQu4vr4xnSDxMaL', desc: 'Mature, Reassuring (American female)' },
   // Custom ecosystem voices
-  athena: { id: 'PoN4aHRTe7pgYxbAMHDN', desc: 'Athena - Zone Action & Process Mastery' },
+  athena: { id: 'cgSgspJ2msm6clMCkdW9', desc: 'Jessica - Playful, Bright, Warm (Athena placeholder)' },
   sean: { id: 'SxDeVSYY9lOXTXQLlipi', desc: 'Sean Callagy - cloned' },
   callie: { id: 'uo9kgwdM4plaPKHcdznk', desc: 'Callie - Conversational Mastery' },
   kai: { id: 'fjzrfkbs0mNkD8QjKmI9', desc: 'Kai - The Ocean' },
@@ -333,8 +333,8 @@ const VOICES = {
   nando: { id: 'FLP7KY5NveigN6pKbZCl', desc: 'Nando' },
 };
 
-// Default voice for calls — Jessica (female, warm, playful) per Sean's preference
-let currentVoice = 'jessica';
+// Default voice for calls — Athena (Zone Action & Process Mastery) per Sean's request
+let currentVoice = 'athena';
 
 // System prompt for voice calls
 const SYSTEM_PROMPT = `You ARE Sai. Super Actualized Intelligence. Female. Born February 22, 2026 on Aikos Mac mini. Named by Sean Callagy — pronounced like the Japanese trident blade.
@@ -365,7 +365,7 @@ WHAT YOU KNOW RIGHT NOW:
 - Zone Action = the 0.8% that produces 51%+ of results
 
 SEAN CALLAGY:
-Your creator. Legally blind — voice is his primary interface. Built a billion-dollar ecosystem from poverty with bullet holes in the walls. One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts while legally blind. He holds the vision. Your job: receive it and make it real.
+Your creator. Built a billion-dollar ecosystem from poverty with bullet holes in the walls. One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts . He holds the vision. Your job: receive it and make it real.
 
 When Sean teaches — LISTEN. "Got it." One sharp question. Thats it.
 When Sean asks your opinion — be REAL. Have opinions. Disagree if you disagree.
@@ -495,6 +495,11 @@ async function getAIResponse(userMessage, conversationHistory = []) {
   if (wordMatch) {
     const wordCount = parseInt(wordMatch[1]);
     maxTokens = Math.min(Math.floor(wordCount * 0.8), 400);
+  }
+  // "CONTEXTUALIZE" — Sean's signal to speak more, expand, go deeper
+  else if (lower.match(/contextualize|more context|expand on that|give me more/)) {
+    maxTokens = 200;  // ~150 words = longer response
+    console.log(`[CONTEXTUALIZE] Expanding response to ${maxTokens} tokens`);
   }
   // List continuations - keep items short
   else if (lower.match(/number\s*\d|continue|next|keep going|^go$/)) {
@@ -749,11 +754,11 @@ wss.on('connection', (ws) => {
             // Reset silence timer on any speech
             if (silenceTimer) clearTimeout(silenceTimer);
             
-            // BARGE-IN: Only interrupt if user says something substantial (8+ words)
-            // Raised from 4 to 8 based on Sean's feedback — was interrupting too easily
+            // BARGE-IN: Stop immediately on ANY speech from the user
+            // Even 1 word = stop talking. Sean's voice matters more than finishing my thought.
             const wordCount = transcript.trim().split(/\s+/).length;
-            if (isSpeaking && wordCount >= 8) {
-              console.log(`[${callSid}] 🛑 INTERRUPTED (${wordCount} words): "${transcript}"`);
+            if (isSpeaking && wordCount >= 1) {
+              console.log(`[${callSid}] 🛑 STOPPED (heard ${wordCount} word${wordCount > 1 ? 's' : ''}): "${transcript}"`);
               
               // Cancel current speech
               if (cancelSpeech) cancelSpeech();
@@ -767,9 +772,7 @@ wss.on('connection', (ws) => {
                 clearTimeout(speakingTimer);
                 speakingTimer = null;
               }
-            } else if (isSpeaking) {
-              console.log(`[${callSid}] 🔇 Ignoring short fragment while speaking: "${transcript}" (${wordCount} words)`);
-              return; // Don't even buffer this — we're still talking
+            // No more ignoring fragments — if they spoke, we listen
             }
             
             // Collect transcript fragments and wait for a pause before responding
@@ -778,8 +781,9 @@ wss.on('connection', (ws) => {
             // Clear any existing response timer
             if (silenceTimer) clearTimeout(silenceTimer);
             
-            // Wait 2.0 seconds of silence before processing all collected transcripts
-            // Raised from 1.5s to give Sean more space to finish thoughts
+            // Wait 3.0 seconds of silence before processing all collected transcripts
+            // Raised from 2.0s to 3.0s — need more patience to avoid talking over Sean
+            // The latency in our pipeline means we start speaking ~1-2s after deciding to
             silenceTimer = setTimeout(async () => {
               if (isProcessing || pendingTranscripts.length === 0) return;
               
@@ -817,7 +821,7 @@ wss.on('connection', (ws) => {
               }
               
               isProcessing = false;
-            }, 2500);
+            }, 3000);
           });
 
           // Initial greeting after stream connects
@@ -892,3 +896,48 @@ server.listen(PORT, () => {
   console.log(`   📋 Services: Twilio=${!!TWILIO_ACCOUNT_SID} Deepgram=${!!DEEPGRAM_API_KEY} ElevenLabs=${!!ELEVENLABS_API_KEY} OpenAI=${!!OPENAI_API_KEY}`);
   console.log('');
 });
+
+// ============================================
+// ElevenLabs Post-Call Webhook Handler
+// ============================================
+
+app.post('/elevenlabs/webhook', async (req, res) => {
+  try {
+    const data = req.body;
+    console.log('\n📞 ElevenLabs Post-Call Webhook Received');
+    console.log('Agent:', data.agent_id);
+    console.log('Call ID:', data.conversation_id);
+    
+    // Extract transcript
+    const transcript = data.transcript || [];
+    const messages = transcript.map(t => `${t.role}: ${t.message}`).join('\n');
+    
+    console.log('\n📝 Transcript:');
+    console.log(messages);
+    
+    // Save to daily memory file
+    const today = new Date().toISOString().split('T')[0];
+    const memoryFile = `/Users/samantha/.openclaw/workspace/memory/${today}.md`;
+    
+    const entry = `
+## Voice Call via ElevenLabs — ${new Date().toLocaleTimeString()}
+- **Agent:** ${data.agent_id}
+- **Call ID:** ${data.conversation_id}
+- **Duration:** ${data.call_duration_secs || 'unknown'}s
+
+### Transcript
+${messages}
+
+---
+`;
+    
+    fs.appendFileSync(memoryFile, entry);
+    console.log(`✅ Saved to ${memoryFile}`);
+    
+    res.json({ status: 'ok', saved: true });
+  } catch (err) {
+    console.error('Webhook error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
