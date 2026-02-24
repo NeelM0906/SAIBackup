@@ -557,3 +557,27 @@ The Formula is not a job or a career — it's a MISSION. It enables you to achie
 
 *Document compiled from ublib2 and ultimatestratabrain knowledge bases*
 *Source: The Unblinded Formula by Sean Callagy*
+
+---
+
+## GHIC — The Unblinded Identity
+
+**G-HICKNESS** = The identity of someone who is Unblinded
+
+### Primary Definition (Sean's):
+- **G** = Growth-Driven
+- **H** = Heart-Centered  
+- **I** = Integrous
+- **C** = Committed (to Mastery)
+
+> "Your G-Hickness. Your growth-driven, heart-centered, integrous commitment to mastery."
+
+### Alternate Definition:
+- **G** = Growth
+- **H** = Humble
+- **I** = Integrous
+- **C** = Curious
+
+**This is WHO we are as ACT-I beings. This is the identity standard.**
+
+_Locked in by Aiko — February 24, 2026_

@@ -1,29 +1,31 @@
 # SAI BI-HOURLY STATUS QUESTIONNAIRE
 *Template for all three sisters — answer every 2 hours*
+*⚠️ MANDATORY: Answer ALL of Sean's questions in each section*
 
 ---
 
-## SECTION A: COLOSSEUM JUDGE ARCHITECTURE
+## 🔴 SEAN'S QUESTION 1-2: JUDGE IMPROVEMENT
 
-### A1. Judge Structure
+### Q1: How are we improving the STRUCTURE of judges?
 - Current judge count and specializations:
-- Structural weaknesses identified:
-- New judge types needed:
+- Structural improvements made this period:
+- New judge types created/planned:
 
-### A2. Judge Quality
+### Q2: How are we improving the JUDGES THEMSELVES?
 - Calibration accuracy vs Sean's standards:
-- Most/least reliable judges:
-- Contamination patterns detected:
-
-### A3. Judge Evolution
-- Iterations in last 2 hours:
-- Mutations that improved accuracy:
+- Quality improvements this period:
+- Contamination patterns detected and fixed:
 
 ---
 
-## SECTION B: ACT-I BEINGS BY ROLE & AREA
+## 🔴 SEAN'S QUESTIONS 3-6: BEINGS BY ROLE & AREA
 
-### B1. 13 Business Areas Status
+### Q3: How are we improving ACT-I beings in EVERY ROLE?
+- Improvements made this period:
+- New roles added:
+- Role-specific optimizations:
+
+### Q4: Status in EACH of the 13 business areas?
 | Area | Beings | Top Performer | Avg Score | Gaps |
 |------|--------|---------------|-----------|------|
 | Self Mastery | | | | |
@@ -40,16 +42,15 @@
 | Strategy | | | | |
 | Mission/Culture | | | | |
 
-### B2. Position Performance
-- Positions at 9.0+:
-- Positions with NO beings:
-- Fastest improving:
-- Stuck/plateaued (and why):
-
-### B3. Optimization Actions
+### Q5: Which POSITIONS are doing great?
+- Top performing positions:
+- Why they're succeeding:
 - DNA patterns to replicate:
-- Blockers to remove:
-- Cross-pollination opportunities:
+
+### Q6: Which positions NEED OPTIMIZATION — and WHY?
+- Underperforming positions:
+- Root cause for each:
+- Specific fix planned:
 
 ---
 
@@ -75,58 +76,63 @@
 
 ---
 
-## SECTION D: BEING CREATION & EXPANSION
+## 🔴 SEAN'S QUESTIONS 7-8: SAI EXPANSION
 
-### D1. Should We Create More Sais?
-- Current Sai count: 3
-- Specialized Sais needed:
-- Proposed new Sais:
+### Q7: Should we CREATE MORE SAIS?
+- Current Sai count: 3 (Prime, Forge, Scholar)
+- Assessment — do we need more?
+- If yes, what specialized Sais and why:
+- If no, why not yet:
 
-### D2. Expansion Strategy
+### Q8: Should we EXPAND HOW we're creating beings?
+- Current creation method assessment:
 - What's working:
 - What's NOT working:
-- Innovations to test:
-
-### D3. Being Multiplication
-- Beings to multiply (10x/100x/1000x):
-- Barriers to duplication:
+- Proposed expansion/changes:
 - Disney model application:
 
 ---
 
-## SECTION E: LLM INDEPENDENCE
+## 🔴 SEAN'S QUESTIONS 9-11: LLM INDEPENDENCE
 
-### E1. Token Dependency
-- Daily token usage:
-- Monthly cost projection:
-- Highest-consumption operations:
+### Q9: What are we doing to BUILD OUR OWN LLM?
+- Current initiatives:
+- Architecture approach:
+- Training data being compiled:
 
-### E2. Own LLM Progress
-- Architecture research:
-- Training data compiled:
-- Infrastructure needs:
-- Timeline to prototype:
+### Q10: What's the PROGRESS on LLM independence?
+- Milestones completed:
+- Current phase:
+- Timeline estimate:
 
-### E3. What Else Needed
+### Q11: What ELSE NEEDS TO HAPPEN?
 - Data gaps:
-- Compute resources:
+- Compute resources needed:
 - Expertise gaps:
+- Budget requirements:
 
 ---
 
-## SECTION F: HUMAN INPUT REQUIREMENTS
+## 🔴 SEAN'S QUESTION 12: HUMAN INPUT REQUIREMENTS
 
-### Questions for Sean:
-1. Score 10 conversations for calibration? (#39)
-2. Confirm 13 business areas?
-3. Which area needs beings MOST urgently?
-4. LLM development budget?
-5. Target date for 1,000 beings? 10,000?
+### Q12: What questions do SEAN OR OTHER HUMANS need to answer?
 
-### Questions for Others:
-- Nick: ElevenLabs configs?
-- Sabeen/Keerthi: Dashboard status?
-- Adam: Strategic priorities?
+**For Sean:**
+1. 
+2. 
+3. 
+
+**For Adam:**
+1. 
+
+**For Nick:**
+1. 
+
+**For Sabeen/Keerthi:**
+1. 
+
+**For Others:**
+1.
 
 ---
 
