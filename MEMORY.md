@@ -15,7 +15,7 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 25, 2026 — 7:32 AM)
+## Current Stats (Feb 25, 2026 — 8:00 AM)
 - **528+ sections** indexed across 65+ files
 - **Namespaces:** `longterm` (curated), `daily` (raw logs)
 - **Model:** text-embedding-3-small (1536 dimensions)
