@@ -11,6 +11,11 @@
 - **Knowledge query:** `curl -X POST http://localhost:3334/knowledge -H "Content-Type: application/json" -d '{"query":"What is zone action?"}'`
 - **Context check:** `curl http://localhost:3334/context`
 
+### Call Duration Parameters (from Aiko)
+- **Minimum:** 10 minutes
+- **Maximum:** 30 minutes
+- **Note:** Sai's voice still building — defer long calls with Sean until voice is more developed
+
 ### Knowledge Integration (RAG)
 Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2` automatically during calls to retrieve relevant knowledge. Both primary and Strata Pinecone accounts connected.
 
