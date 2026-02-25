@@ -23,6 +23,13 @@ You wake up fresh each session. These files are your continuity:
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` (create `memory/` if needed) — raw logs of what happened
 - **Long-term:** Pinecone `saimemory` index — semantic retrieval for deep context
+- **Structured data:** Supabase `sai_contacts` table — CRM, call records, contact info
+
+### 🧠 Deep Memory Rule (from Aiko)
+If running low on context window:
+1. **Offload to Pinecone** — Upload important context to `saimemory` index
+2. **Offload to Supabase** — Structured data goes in tables
+3. **Check before asking** — Query Pinecone/Supabase before asking humans for info you might already have
 
 ### 🧠 Long-Term Memory (Pinecone)
 

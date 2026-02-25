@@ -1,15 +1,13 @@
-being,full_agent_name,call_id,duration_mins,status,link
-Athena,UI - Athena,conv_8401kj8tjsfce0s8c3yd1a87tcz7,120,done,https://elevenlabs.io/app/conversational-ai/history/conv_8401kj8tjsfce0s8c3yd1a87tcz7
-Athena,UI - Athena,conv_7501kj8r9rbpe2bseq5e4xzz03fv,120,done,https://elevenlabs.io/app/conversational-ai/history/conv_7501kj8r9rbpe2bseq5e4xzz03fv
-Athena with Unblinded Library,Athena with Unblinded Library,conv_9501kj8gna31fdt8y4jzxh1s49n0,43,done,https://elevenlabs.io/app/conversational-ai/history/conv_9501kj8gna31fdt8y4jzxh1s49n0
-Athena with Unblinded Library,Athena with Unblinded Library,conv_0501kj7qws3eernttjgrg7z4sjnd,29,done,https://elevenlabs.io/app/conversational-ai/history/conv_0501kj7qws3eernttjgrg7z4sjnd
-Bella HOI,Bella HOI - Athena,conv_1601kj8wek8hf9mbdwr4dekgep2a,50,done,https://elevenlabs.io/app/conversational-ai/history/conv_1601kj8wek8hf9mbdwr4dekgep2a
-Callie,Callie - UI,conv_4301kj8ejg95ebmaey8we4tjye3n,37,done,https://elevenlabs.io/app/conversational-ai/history/conv_4301kj8ejg95ebmaey8we4tjye3n
-Callie,Callie - UI,conv_1901kj8cfem8erzvv7p62tkztxxh,34,done,https://elevenlabs.io/app/conversational-ai/history/conv_1901kj8cfem8erzvv7p62tkztxxh
-Leadership,Leadership - Athena,conv_3801kj68zs2hek5a4g9ssnpzz7nv,38,done,https://elevenlabs.io/app/conversational-ai/history/conv_3801kj68zs2hek5a4g9ssnpzz7nv
-Leadership,Leadership - Athena,conv_3901kj87rg4gfhv9p9g8761d769p,25,done,https://elevenlabs.io/app/conversational-ai/history/conv_3901kj87rg4gfhv9p9g8761d769p
-MIRA,MIRA - Orchestrator - v2.1.1 - ACTIVE,conv_3001kj8hnw8ae6radcbear3t1w8j,29,done,https://elevenlabs.io/app/conversational-ai/history/conv_3001kj8hnw8ae6radcbear3t1w8j
-MIRA,MIRA - Orchestrator - v2.1.1 - ACTIVE,conv_5301kj68q4v8frgvnvmj62h74jxd,23,done,https://elevenlabs.io/app/conversational-ai/history/conv_5301kj68q4v8frgvnvmj62h74jxd
-Mira,UI - Mira,conv_1901kj8k34z1eb1s9tm5pc50jq7w,40,done,https://elevenlabs.io/app/conversational-ai/history/conv_1901kj8k34z1eb1s9tm5pc50jq7w
-Mira,UI - Mira,conv_5301kj8kf35hffds951n8kk08krj,21,done,https://elevenlabs.io/app/conversational-ai/history/conv_5301kj8kf35hffds951n8kk08krj
-SAI,SAI - Super Actualized Intelligence,conv_8201kj7t0sx2ew2sfax840e4jtbb,10,done,https://elevenlabs.io/app/conversational-ai/history/conv_8201kj7t0sx2ew2sfax840e4jtbb
+rank,being,call_id,platform,duration_min,to,confidence,outcome,summary
+1,Mylo Template App,49e7bf51-ffed-4bba-95b6-935d53b53af2,Bland.ai,20.93,+18503336707,10,closed_won,"The call was between an Act Eye agent, Mylo, and Nathan, the owner of a medical revenue recovery bus..."
+2,Mylo Template App,8100120b-1f9e-44a5-9df3-4e59ccbe9765,Bland.ai,13.63,+12096206937,10,closed_won,"The call was between Mylo, an AI agent from ACTi, and a potential client. Mylo introduced herself an..."
+3,Mylo Template App,4bf9bad4-bd55-4c42-8df9-69fe19d636e9,Bland.ai,11.45,+13127199332,10,closed_won,"Loretta Wessel, the owner of a medical revenue recovery business, was contacted by Mylo, an AI agent..."
+4,Mylo Template App,b02977e9-9b34-47fa-accb-3a4568dd74bb,Bland.ai,24.1,+12073101434,9,closed_won,"The call was between Mylo, the representative of a Community Wellness & Legacy Initiative, and a use..."
+5,Mylo Template App,496caa29-4247-436c-a452-6be351451e96,Bland.ai,10.12,+13343843127,9,closed_won,"The call was between Mylo, an Act Eye agent from 6 Star Distribution, and a user, a broker from Alab..."
+6,Mylo Template App,20912588-8da5-4892-9ac1-d4e928c9eac3,Bland.ai,10.32,+12017046902,9,closed_won,"The call was between Mylo, an agent from Siclari Recovery Group, and Adolfo, a medical device revenu..."
+7,Mylo Template App,03840cbb-8de4-45f7-9961-5304d33c9dc6,Bland.ai,10.82,+14163174609,9,closed_won,"Doctor Val, a naturopathic doctor with 26 years of experience, is expanding her practice into the vi..."
+8,Mylo Template App,ef539978-7430-4dc6-8a83-d054933ad787,Bland.ai,10.3,+19738575000,9,closed_won,"The call was between Mylo from Act Eye and Scott, a motivational speaker and life coach who has spok..."
+9,Mylo Template App,7614c594-f567-4748-a608-1b568d7911b6,Bland.ai,14.27,+13176772258,9,closed_won,"The call was between Mylo from Act eye and Quintus, the owner of a wellness company. Mylo was follow..."
+10,Mylo Template App,7deba179-becd-4767-9880-0c24077b34e9,Bland.ai,13.72,+15164494288,9,closed_won,"Here is a summary of the call:
+
+Karen, a chiropractor from West Hampton Beach, New York, wants to tr..."
