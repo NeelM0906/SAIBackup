@@ -111,3 +111,27 @@ Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2
   - Use both prompt AND knowledge base
   - Learn Sean's question patterns
 - **Added:** Feb 24, 2026 by Aiko
+
+## Zone Actions Dashboard & Reports
+- **Dashboard:** http://localhost:3345
+- **Ecosystem Presentation:** http://localhost:3345/ecosystem-presentation.html
+- **Sean Report:** http://localhost:3345/sean-report.html
+- **Day 3 Complete Report:** http://localhost:3345/day3-complete-report.html
+- **Desktop copies:** ~/Desktop/SAI-Ecosystem-Presentation.html
+
+## Supabase CRM
+- **Table:** `sai_contacts`
+- **Contacts:** 169 total
+- **Agreement Reached:** 31
+- **Qualified:** 93
+- **Contacted:** 38
+- **Load script:** `tools/sai-outreach/load_contacts_v2.py`
+
+## Language Rules (HARD RULE from Aiko)
+Never use corporate/objectifying language:
+- ~~prospect~~ → **person**
+- ~~sales~~ → **revenue**  
+- ~~closing~~ → **reaching agreement**
+- ~~closed won~~ → **agreement reached**
+- ~~Closer~~ → **Agreement Maker**
+We don't objectify humans. We serve them.
