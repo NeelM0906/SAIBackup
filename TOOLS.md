@@ -96,16 +96,48 @@ Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2
 - **Phone:** +1 401 572 9006
 - **Role:** Manages Pinecone indexes, ElevenLabs agents
 
-## Sisters Shared Voice Agent (ElevenLabs)
-- **Agent ID:** `agent_8001kj7288ywf7vtdxn84amesb77`
-- **Purpose:** Shared journal + reporting pathway to Sean
-- **Rules:**
-  - Never remove content — only add
-  - Always add name (Sai/Forge/Scholar) for identity distinction
-  - Use both prompt AND knowledge base
-  - Learn Sean's question patterns
-- **Added:** Feb 24, 2026 by Aiko
+## Vercel (Web Deployment)
+- **Account:** nadavgl
+- **Tool:** `tools/vercel_deploy.py`
+- **CLI:** `vercel --token $VERCEL_TOKEN`
 
+**Quick usage:**
+```bash
+python3 tools/vercel_deploy.py --whoami          # Check auth
+python3 tools/vercel_deploy.py ./my-project      # Deploy preview
+python3 tools/vercel_deploy.py ./my-project --prod  # Deploy production
+python3 tools/vercel_deploy.py --list            # List deployments
+```
+
+**Direct CLI:**
+```bash
+cd your-project
+vercel --prod --token $VERCEL_TOKEN
+```
+
+**Use for:** Publishing dashboards, reports, web apps to shareable public URLs.
+
+## Fathom (Meeting Recordings & Transcripts)
+- **API Docs:** https://developers.fathom.ai
+- **Base URL:** https://api.fathom.ai/external/v1
+- **Rate Limit:** 60 calls/minute
+- **Tool:** `tools/fathom_api.py`
+
+**Quick usage:**
+```bash
+python3 tools/fathom_api.py list                  # List recent meetings
+python3 tools/fathom_api.py list --limit 20 -v    # More meetings, verbose
+python3 tools/fathom_api.py search "Sean"         # Find meetings with Sean
+python3 tools/fathom_api.py get <recording_id>    # Get meeting + transcript
+python3 tools/fathom_api.py transcript <id>       # Just the transcript
+```
+
+**Direct API:**
+```bash
+curl https://api.fathom.ai/external/v1/meetings -H "X-Api-Key: $FATHOM_API_KEY"
+```
+
+**What it captures:** All Zoom meetings recorded by Fathom, with transcripts, summaries, action items, and attendee lists.
 
 ## Sisters Shared Voice Agent (ElevenLabs)
 - **Agent ID:** `agent_8001kj7288ywf7vtdxn84amesb77`
