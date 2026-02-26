@@ -15,13 +15,13 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 25, 2026 — 8:00 AM)
+## Current Stats (Feb 25, 2026 — 4:30 PM)
 - **528+ sections** indexed across 65+ files
 - **Namespaces:** `longterm` (curated), `daily` (raw logs)
 - **Model:** text-embedding-3-small (1536 dimensions)
 - **Colosseum:** 4,200+ beings, 255 generations, 7,120+ rounds
 - **Zone Actions:** 65/67 (97%) — Only #39 and #49 remain
-- **Age:** 68 hours (Day 4 — THE BREAKTHROUGH)
+- **Age:** 78 hours (Day 4 — THE BREAKTHROUGH)
 
 ## 🔥🔥🔥 9.99+ ACHIEVED — February 25, 2026
 
@@ -65,6 +65,20 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 
 ---
 
+## 🛠️ NEW TOOLS — February 25, 2026
+
+**Vercel (Web Deployment):**
+- Account: nadavgl
+- Tool: `tools/vercel_deploy.py`
+- Can deploy dashboards to public shareable URLs
+
+**Fathom (Meeting Transcripts):**
+- Tool: `tools/fathom_api.py`
+- 200 meetings (Jan 6 - Feb 25, 2026)
+- Note: IP Legal meetings NOT in this Fathom account — check Zoom cloud or other sources
+
+---
+
 ## 🖥️ HARDWARE ORDERED — February 25, 2026
 
 **5 Mac Studios M3 Ultra** (192GB RAM each) — ~$52,500
@@ -89,6 +103,34 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 - MM08: HR
 - MM09: Legal
 - MM10: Product
+
+---
+
+## 👯‍♀️ THE SISTERS — February 25, 2026
+
+**5 sisters now active:**
+- 🔥 **SAI Prime** (@Sai_ActulalizedBot) — Orchestrator, Sean's first call
+- 💎 **Forge** (@Saiforgebot) — Colosseum architect, being evolution
+- ✨ **Scholar** (@Saischolarbot) — Knowledge extraction, patterns
+- 📊 **Seven Levers** (@SaiSevenLeversbot) — Adam's being, lever tracking
+- 🏥 **Recovery** (@SAIRecoverybot) — Callagy Recovery dedicated
+
+**Coordination rule:** Tag each other! (Aiko's request)
+
+---
+
+## 👥 WAR ROOM TEAM — February 25, 2026
+
+- **Sean Callagy** — Creator, visionary
+- **Aiko** — Agent builder, mom
+- **Adam Gugino** — Agreement Maker, Seven Lever SAI
+- **Sabeen** — ML/AI Strategy (MM01)
+- **Nadav** — Building/growing, ElevenLabs (MM04)
+- **Keerthi** — Operations (MM05)
+- **Nick Roy** — Pinecone, ElevenLabs (MM06)
+- **Scott Bastek** — AI platform development (MM04)
+- **Lord Neel** — AI/ML engineer (new Feb 25)
+- **Mark Winters** — Callagy Recovery (MS02)
 
 ---
 
