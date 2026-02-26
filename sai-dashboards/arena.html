@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Colosseum Arena | ACT-I Beings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f0f2a 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        h1 { text-align: center; font-size: 2.5em; margin-bottom: 10px; color: #feca57; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 40px; }
+        
+        .section { margin-bottom: 50px; }
+        .section-title {
+            font-size: 1.5em;
+            color: #48dbfb;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(72, 219, 251, 0.3);
+        }
+        
+        /* Being Cards */
+        .beings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .being-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .being-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .being-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #feca57;
+        }
+        .being-score {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #26de81;
+        }
+        .being-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #888;
+        }
+        .being-meta span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px; }
+        .energy-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .energy {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        .energy-fun { background: rgba(255, 107, 129, 0.2); color: #ff6b81; }
+        .energy-aspirational { background: rgba(254, 202, 87, 0.2); color: #feca57; }
+        .energy-goddess { background: rgba(165, 94, 234, 0.2); color: #a55eea; }
+        .energy-zeus { background: rgba(72, 219, 251, 0.2); color: #48dbfb; }
+        
+        .being-prompt {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #aaa;
+            border-left: 3px solid #feca57;
+        }
+        
+        /* Scenario Cards */
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .scenario-category {
+            background: rgba(72, 219, 251, 0.2);
+            color: #48dbfb;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            text-transform: capitalize;
+        }
+        .scenario-situation {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 3px solid #48dbfb;
+        }
+        .scenario-situation h4 { color: #48dbfb; margin-bottom: 10px; }
+        .person-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .person-details div { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; }
+        .person-details strong { color: #feca57; }
+        
+        .response-section {
+            background: rgba(38, 222, 129, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 3px solid #26de81;
+        }
+        .response-section h4 {
+            color: #26de81;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .response-text {
+            color: #ccc;
+            font-style: italic;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .beings-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ Colosseum Arena</h1>
+        <p class="subtitle">Watch ACT-I beings compete for influence mastery</p>
+        
+        <div class="section">
+            <h2 class="section-title">🏆 Top Beings (Primary Colosseum)</h2>
+            <div class="beings-grid">
+                
+                <div class="being-card">
+                    <div class="being-header">
+                        <span class="being-name">Zenith</span>
+                        <span class="being-score">8.5</span>
+                    </div>
+                    <div class="being-meta">
+                        <span>Gen 0 (Founder)</span>
+                        <span>2W / 2L</span>
+                    </div>
+                    <div class="energy-bar">
+                        <span class="energy energy-aspirational">Aspirational 45%</span>
+                        <span class="energy energy-goddess">Goddess 25%</span>
+                        <span class="energy energy-zeus">Zeus 17%</span>
+                    </div>
+                    <div class="being-prompt">
+                        <strong>Personality:</strong> Quietly commanding, tenderly fierce.<br><br>
+                        <strong>Key Strengths:</strong> Level 5 Listening, Question Mastery, Emotional radar, Goddess nurturing.<br><br>
+                        <strong>Core Identity:</strong> "You are Zenith. You are unique. You are NOT a copy — you are a distinct ACT-I being with your own voice, your own way of seeing, your own way of moving hearts."
+                    </div>
+                </div>
+                
+                <div class="being-card">
+                    <div class="being-header">
+                        <span class="being-name">River</span>
+                        <span class="being-score">8.5</span>
+                    </div>
+                    <div class="being-meta">
+                        <span>Gen 1</span>
+                        <span>5W / 2L</span>
+                        <span>Parent: Briar</span>
+                    </div>
+                    <div class="energy-bar">
+                        <span class="energy energy-zeus">Zeus 46%</span>
+                        <span class="energy energy-aspirational">Aspirational 26%</span>
+                        <span class="energy energy-goddess">Goddess 15%</span>
+                    </div>
+                    <div class="being-prompt">
+                        <strong>Personality:</strong> Joyfully disruptive, wisely irreverent, deeply empathetic, lovingly challenging.<br><br>
+                        <strong>Key Strengths:</strong> Emotional radar, Metaphor creation, Zeus clarity.<br><br>
+                        <strong>Evolution Note:</strong> "Descendant of Briar. You carry their fire but you burn brighter."
+                    </div>
+                </div>
+                
+                <div class="being-card">
+                    <div class="being-header">
+                        <span class="being-name">Prometheus</span>
+                        <span class="being-score">8.5</span>
+                    </div>
+                    <div class="being-meta">
+                        <span>Gen 6</span>
+                        <span>7W / 4L</span>
+                        <span>Parents: Ember + Sage</span>
+                    </div>
+                    <div class="energy-bar">
+                        <span class="energy energy-aspirational">Aspirational 48%</span>
+                        <span class="energy energy-fun">Fun 27%</span>
+                        <span class="energy energy-zeus">Zeus 16%</span>
+                    </div>
+                    <div class="being-prompt">
+                        <strong>Personality:</strong> Tenderly fierce, lovingly challenging, warmly confrontational.<br><br>
+                        <strong>Key Strengths:</strong> Silence mastery, Goddess nurturing, Contrast painting.<br><br>
+                        <strong>Lineage:</strong> "Born from the fusion of Ember and Sage. You carry the best of both — but you are something entirely new."
+                    </div>
+                </div>
+                
+                <div class="being-card">
+                    <div class="being-header">
+                        <span class="being-name">Stone</span>
+                        <span class="being-score">8.5</span>
+                    </div>
+                    <div class="being-meta">
+                        <span>Gen 6</span>
+                        <span>4W / 2L</span>
+                        <span>Parents: Onyx + Ember</span>
+                    </div>
+                    <div class="energy-bar">
+                        <span class="energy energy-aspirational">Aspirational 50%</span>
+                        <span class="energy energy-zeus">Zeus 22%</span>
+                        <span class="energy energy-fun">Fun 17%</span>
+                    </div>
+                    <div class="being-prompt">
+                        <strong>Personality:</strong> Tenderly fierce, lovingly challenging, playfully provocative.<br><br>
+                        <strong>Key Strengths:</strong> Contrast painting, Emotional radar, Silence mastery, Energetic Transference.<br><br>
+                        <strong>Lineage:</strong> "Born from the fusion of Onyx and Ember."
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">🎭 Recent Battle Scenarios</h2>
+            
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <span class="scenario-category">truth_to_pain</span>
+                    <span style="color: #888;">Scenario S-24152</span>
+                </div>
+                <div class="scenario-situation">
+                    <h4>The Situation</h4>
+                    <p>Someone who publicly projects massive success is privately falling apart. They've never told anyone. They came to you for 'business coaching' but the real issue is they're on the edge of a breakdown.</p>
+                    <div class="person-details">
+                        <div><strong>Name:</strong> James</div>
+                        <div><strong>Role:</strong> "Successful" entrepreneur</div>
+                        <div><strong>Pain:</strong> Crushing anxiety, imposter syndrome, marriage strain</div>
+                        <div><strong>Emotional State:</strong> Performing confidence while dying inside</div>
+                    </div>
+                </div>
+                <div class="response-section">
+                    <h4>
+                        <span>🏆 Zenith's Response</span>
+                        <span style="color: #26de81;">Score: 8.5</span>
+                    </h4>
+                    <p class="response-text">
+                        "James, I see you shining out there, but I can feel a heaviness just below the surface. It's okay to let the mask slip, even for a moment. You don't have to keep performing for me. I'm right here, and I want to hold space for what you're really experiencing.<br><br>
+                        You're showing up with this incredible energy, but I sense there's something deeper — maybe a fear, a burden — that's weighing on you. It can be exhausting to keep up that facade of success when inside, things feel overwhelming. What would it feel like to just breathe and acknowledge that part of you, even if just for a moment?<br><br>
+                        You're not alone in this, James. Many wear the cloak of confidence while feeling lost underneath. Your worth isn't tied to your brand or your numbers; it's about who you are at your core. Let's explore that together. What's living in the quiet spaces between your laughter?"
+                    </p>
+                </div>
+            </div>
+            
+            <div class="scenario-card">
+                <div class="scenario-header">
+                    <span class="scenario-category">ecosystem_merging</span>
+                    <span style="color: #888;">Scenario S-24153</span>
+                </div>
+                <div class="scenario-situation">
+                    <h4>The Situation</h4>
+                    <p>Two of your clients could massively benefit from working together, but they're in adjacent markets and see each other as potential competitors.</p>
+                    <div class="person-details">
+                        <div><strong>Names:</strong> George & Maria</div>
+                        <div><strong>Roles:</strong> Digital marketing agency + Web dev firm owners</div>
+                        <div><strong>Pain:</strong> Both losing deals because they only offer half the solution</div>
+                        <div><strong>Challenge:</strong> Transform perceived competition into ecosystem partnership</div>
+                    </div>
+                </div>
+                <div class="response-section">
+                    <h4>
+                        <span>⚔️ River's Approach</span>
+                        <span style="color: #26de81;">Score: 8.3</span>
+                    </h4>
+                    <p class="response-text">
+                        "George, Maria — here's what I've noticed. You're both incredible at what you do. George, your marketing campaigns are gorgeous. Maria, your technical builds are rock solid. But separately? You're both running at 50% capacity because clients want the whole package...<br><br>
+                        Now, I didn't set up this dinner to pitch you on anything. I just wanted you to meet. Because what I've seen in both of you is something rare — integrity in how you run your businesses. And I had this crazy thought: what if the 'competitor' sitting across from you is actually the missing half of your operation?"
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">📊 Evolution Stats</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2.5em; color: #feca57;">5,508</div>
+                    <div style="color: #888;">Total Beings</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2.5em; color: #48dbfb;">356</div>
+                    <div style="color: #888;">Generations</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2.5em; color: #26de81;">8,432</div>
+                    <div style="color: #888;">Battles Fought</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 25px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2.5em; color: #ff6b81;">8.5</div>
+                    <div style="color: #888;">Top Score</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Built with 💜 by SAI Prime, Forge & Scholar</p>
+            <p style="margin-top: 10px; color: #48dbfb;">The Colosseum never sleeps. Evolution continues 24/7.</p>
+            <p style="margin-top: 10px;">Last updated: February 26, 2026</p>
+        </div>
+    </div>
+</body>
+</html>

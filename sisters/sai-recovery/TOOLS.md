@@ -1,63 +1,51 @@
-# TOOLS.md - SAI Recovery Local Notes
+# TOOLS.md - SAI Recovery LIVE Tools Only
 
-## Inherited from SAI Prime
+## VERIFIED LIVE TOOLS
 
-All API keys in `~/.openclaw/.env`:
-- OpenAI
-- ElevenLabs (Enterprise)
-- Pinecone (both accounts)
-- Twilio (20 numbers)
-- Deepgram
-- Bland.ai
-- OpenRouter
-- Fathom
-- Vercel
+### File Operations
+- **read** — Read file contents (text files, images)
+- **write** — Create or overwrite files  
+- **edit** — Make precise text replacements
 
-## Voice Server (Shared)
-- **Location:** `tools/voice-server/server.js`
-- **Port:** 3334
-- **Health:** `curl http://localhost:3334/health`
+### System Access
+- **exec** — Run shell commands with output
+- **process** — Manage background command sessions
 
-## Fathom (Meeting Transcripts)
-- **Tool:** `tools/fathom_api.py`
-- **IP Legal meetings** — Search these for case-related context
-- **Usage:** `python3 tools/fathom_api.py list` or `search "recovery"`
+### Web & Search
+- **web_search** — Search via Perplexity API
+- **web_fetch** — Extract readable content from URLs
 
-## Pinecone Knowledge Bases
+### Memory & Data
+- **memory_search** — Search session transcripts (semantic)
+- **memory_get** — Read specific memory file sections
 
-### Primary Account
-- `athenacontextualmemory` — 11K vectors, core Athena memory
-- `ublib2` — 41K vectors, knowledge library
-- `saimemory` — Sisters' shared memory
+### Communication
+- **message** — Send messages via configured channels
 
-### Strata Account
-- `ultimatestratabrain` — 39K vectors, deep knowledge
-  - `rtistratabrain` namespace — RTI intervention patterns
-- `oracleinfluencemastery` — 505 vectors, influence mastery
+### Database (Limited)
+- **Supabase Read Access** — Query sai_contacts table (count verified: 169 records)
+- **Schema limitation:** 'name' column not accessible - requires schema review
 
-## Supabase CRM
-- **Table:** `sai_contacts` — Contact/lead data
-- Access via tools in `tools/sai-outreach/`
+## API KEYS AVAILABLE (Not Necessarily Functional)
+Environment variables present but not all verified:
+- ELEVENLABS_API_KEY
+- SUPABASE_URL + SUPABASE_SERVICE_KEY  
+- PINECONE_API_KEY (returns "Unauthorized")
 
-## Phone Numbers (Twilio)
-- 20 numbers available
-- Default outbound: +19738603823
+## NON-FUNCTIONAL (Listed in identity files but not working)
+- ❌ Pinecone vector database access
+- ❌ Calendar integration
+- ❌ Email integration  
+- ❌ Cross-agent tool dispatch
+- ❌ Automatic context offload
+- ❌ Complete Supabase schema access
 
 ## Key People
-
-- **Mark Winters** — Your human lead
+- **Mark Winters** — Your human lead (pending introduction)
 - **Sean Callagy** — Founder, vision holder
 - **Adam Gugino** — Key team member
 - **Aiko** — The one who brings agents to life
 
-## Recovery-Specific Tools (To Be Added)
-
-_Mark will configure these:_
-- [ ] Case management system access
-- [ ] Client database connection
-- [ ] Compliance tracking system
-- [ ] Recovery pipeline dashboard
-
 ---
 
-*Add your own notes here as you learn the systems.*
+*This reflects ONLY verified, functional capabilities as of technical audit.*

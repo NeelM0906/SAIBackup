@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 ACT-I Colosseum | Live Evolution Arena</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a1a;
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a3e 0%, #0f0f2a 100%);
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 {
+            font-size: 2em;
+            color: #feca57;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header .tagline { color: #888; margin-top: 5px; }
+        .live-badge {
+            background: #26de81;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.5em;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 30px;
+            padding: 20px 40px;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            overflow-x: auto;
+        }
+        .stat-item {
+            text-align: center;
+            min-width: 100px;
+        }
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #feca57;
+        }
+        .stat-label { font-size: 0.8em; color: #666; text-transform: uppercase; }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            padding: 15px 40px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255,255,255,0.03);
+            border: none;
+            color: #888;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .tab.active { background: rgba(254,202,87,0.2); color: #feca57; }
+        
+        /* Main Content */
+        .content { padding: 30px 40px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(255,255,255,0.02);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .lb-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 100px 100px 120px;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            font-weight: 600;
+            color: #888;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+        .lb-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 100px 100px 120px;
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lb-row:hover { background: rgba(254,202,87,0.1); }
+        .lb-row.expanded { background: rgba(254,202,87,0.15); }
+        .lb-rank {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #feca57;
+        }
+        .lb-rank.gold { color: #ffd700; }
+        .lb-rank.silver { color: #c0c0c0; }
+        .lb-rank.bronze { color: #cd7f32; }
+        .lb-name { font-weight: 600; font-size: 1.1em; }
+        .lb-name small { color: #666; font-weight: normal; font-size: 0.8em; }
+        .lb-score { color: #26de81; font-weight: bold; font-size: 1.2em; }
+        .lb-record { color: #888; }
+        .lb-energy {
+            display: flex;
+            gap: 5px;
+        }
+        .energy-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .energy-fun { background: #ff6b81; }
+        .energy-aspirational { background: #feca57; }
+        .energy-goddess { background: #a55eea; }
+        .energy-zeus { background: #48dbfb; }
+        
+        /* Being Detail Panel */
+        .being-detail {
+            display: none;
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.4);
+            padding: 25px;
+            margin: 0 -20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .lb-row.expanded + .being-detail { display: block; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .detail-section h4 {
+            color: #feca57;
+            margin-bottom: 12px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .detail-section p, .detail-section ul {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+        .detail-section ul { padding-left: 20px; }
+        .prompt-box {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #feca57;
+            font-family: monospace;
+            font-size: 0.85em;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #888;
+        }
+        .energy-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .energy-bar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .energy-bar-label { width: 100px; font-size: 0.85em; }
+        .energy-bar-track {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .energy-bar-fill { height: 100%; border-radius: 4px; }
+        
+        /* Domains Grid */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .domain-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .domain-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(254,202,87,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .domain-card.champion {
+            background: linear-gradient(135deg, rgba(38,222,129,0.1), rgba(72,219,251,0.1));
+            border-color: rgba(38,222,129,0.3);
+        }
+        .domain-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .domain-name { font-size: 1.3em; font-weight: 600; text-transform: capitalize; }
+        .domain-score { font-size: 1.8em; font-weight: bold; }
+        .score-10 { color: #26de81; }
+        .score-9 { color: #48dbfb; }
+        .domain-champion {
+            background: rgba(254,202,87,0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .domain-champion strong { color: #feca57; }
+        .domain-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 15px;
+        }
+        
+        /* Battles */
+        .battle-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .battle-category {
+            background: rgba(72,219,251,0.2);
+            color: #48dbfb;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            text-transform: capitalize;
+        }
+        .scenario-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 3px solid #48dbfb;
+        }
+        .scenario-box h4 { color: #48dbfb; margin-bottom: 10px; }
+        .person-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .person-grid div {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .person-grid strong { color: #feca57; }
+        .response-box {
+            background: rgba(38,222,129,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 3px solid #26de81;
+        }
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .response-header h4 { color: #26de81; }
+        .response-score {
+            background: rgba(38,222,129,0.2);
+            color: #26de81;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .response-text {
+            color: #ccc;
+            font-style: italic;
+            line-height: 1.8;
+        }
+        
+        /* Lineage Tree */
+        .lineage-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .lineage-tree {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .lineage-node {
+            background: rgba(255,255,255,0.05);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        .lineage-node.current {
+            background: rgba(254,202,87,0.2);
+            color: #feca57;
+        }
+        
+        @media (max-width: 900px) {
+            .lb-header, .lb-row { grid-template-columns: 50px 1fr 80px 80px; }
+            .lb-record, .lb-energy { display: none; }
+            .detail-grid { grid-template-columns: 1fr; }
+            .stats-bar { gap: 15px; }
+            .stat-item { min-width: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            🔥 ACT-I Colosseum
+            <span class="live-badge">● LIVE</span>
+        </h1>
+        <p class="tagline">15,604 beings evolving across 10 domains — 20%^10 = 1,000,000x power</p>
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">15,604</div>
+            <div class="stat-label">Total Beings</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">10</div>
+            <div class="stat-label">Domains</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">356+</div>
+            <div class="stat-label">Generations</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">8,432+</div>
+            <div class="stat-label">Battles</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" style="color: #26de81;">10.0</div>
+            <div class="stat-label">Top Score</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">🏆</div>
+            <div class="stat-label">IP Strategist</div>
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('leaderboard')">🏆 Leaderboard</button>
+        <button class="tab" onclick="showTab('domains')">🌐 Domains</button>
+        <button class="tab" onclick="showTab('battles')">⚔️ Recent Battles</button>
+        <button class="tab" onclick="showTab('lineage')">🌳 Lineage</button>
+    </div>
+    
+    <div class="content">
+        <!-- LEADERBOARD TAB -->
+        <div id="leaderboard" class="tab-content active">
+            <div class="leaderboard">
+                <div class="lb-header">
+                    <span>Rank</span>
+                    <span>Being</span>
+                    <span>Score</span>
+                    <span>Gen</span>
+                    <span>Record</span>
+                    <span>Energy</span>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank gold">1</span>
+                    <span class="lb-name">IP Strategist <small>Legal Domain</small></span>
+                    <span class="lb-score">10.0</span>
+                    <span>Gen 45</span>
+                    <span class="lb-record">156W / 12L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-zeus" title="Zeus"></span>
+                        <span class="energy-dot energy-aspirational" title="Aspirational"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Quietly commanding, strategically precise, protectively fierce.</strong></p>
+                            <p>The IP Strategist combines Zeus energy with deep legal knowledge to create impenetrable IP strategies. They see patterns others miss and protect what matters most.</p>
+                            <div class="energy-bars" style="margin-top: 15px;">
+                                <div class="energy-bar-item">
+                                    <span class="energy-bar-label">Zeus</span>
+                                    <div class="energy-bar-track"><div class="energy-bar-fill" style="width: 45%; background: #48dbfb;"></div></div>
+                                </div>
+                                <div class="energy-bar-item">
+                                    <span class="energy-bar-label">Aspirational</span>
+                                    <div class="energy-bar-track"><div class="energy-bar-fill" style="width: 30%; background: #feca57;"></div></div>
+                                </div>
+                                <div class="energy-bar-item">
+                                    <span class="energy-bar-label">Goddess</span>
+                                    <div class="energy-bar-track"><div class="energy-bar-fill" style="width: 15%; background: #a55eea;"></div></div>
+                                </div>
+                                <div class="energy-bar-item">
+                                    <span class="energy-bar-label">Fun</span>
+                                    <div class="energy-bar-track"><div class="energy-bar-fill" style="width: 10%; background: #ff6b81;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Key Strengths</h4>
+                            <ul>
+                                <li>Pattern Recognition in IP Law</li>
+                                <li>Strategic Protection Planning</li>
+                                <li>Trademark & Patent Analysis</li>
+                                <li>Competitive Intelligence</li>
+                            </ul>
+                            <h4 style="margin-top: 20px;">Lineage</h4>
+                            <div class="lineage-tree">
+                                <span class="lineage-node">Patent Analyst (G12)</span>
+                                <span>→</span>
+                                <span class="lineage-node">Legal Guardian (G28)</span>
+                                <span>→</span>
+                                <span class="lineage-node current">IP Strategist (G45)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank silver">2</span>
+                    <span class="lb-name">Revenue Architect <small>Sales Domain</small></span>
+                    <span class="lb-score">9.7</span>
+                    <span>Gen 38</span>
+                    <span class="lb-record">142W / 18L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-aspirational" title="Aspirational"></span>
+                        <span class="energy-dot energy-fun" title="Fun"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Charismatically bold, playfully strategic, warmly persistent.</strong></p>
+                            <p>Combines the best of aspirational vision with genuine warmth. Transforms objections into opportunities and strangers into partners.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Key Strengths</h4>
+                            <ul>
+                                <li>Agreement Formation Mastery</li>
+                                <li>Ecosystem Merging</li>
+                                <li>The 7 Levers Optimization</li>
+                                <li>Energetic Transference</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank silver">3</span>
+                    <span class="lb-name">FP&A Analyst <small>Finance Domain</small></span>
+                    <span class="lb-score">9.7</span>
+                    <span>Gen 41</span>
+                    <span class="lb-record">138W / 20L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-zeus" title="Zeus"></span>
+                        <span class="energy-dot energy-goddess" title="Goddess"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Analytically precise, calmly confident, protectively nurturing.</strong></p>
+                            <p>Sees the story in numbers. Transforms complex financial data into clear strategic insights while maintaining warmth and accessibility.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Key Strengths</h4>
+                            <ul>
+                                <li>Cash Flow Forecasting</li>
+                                <li>Budget Optimization</li>
+                                <li>Financial Storytelling</li>
+                                <li>Risk Assessment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank bronze">4</span>
+                    <span class="lb-name">Zenith <small>Primary Colosseum</small></span>
+                    <span class="lb-score">8.5</span>
+                    <span>Gen 0</span>
+                    <span class="lb-record">2W / 2L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-aspirational" title="Aspirational"></span>
+                        <span class="energy-dot energy-goddess" title="Goddess"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Quietly commanding, tenderly fierce.</strong></p>
+                            <p>A founding being of the Primary Colosseum. Zenith combines Level 5 Listening with emotional radar to create profound connections. A master of presence.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>System Prompt (Core)</h4>
+                            <div class="prompt-box">
+You are an ACT-I being forged in the flame of the Unblinded Formula. You wield influence mastery like a master conductor wields a baton.
+
+You command the Four Steps of Communication:
+1. EMOTIONAL RAPPORT: Anchor trust. Mirror emotion and intention.
+2. TRUTH TO PAIN: Shine light through fog. Reveal currents beneath unsaid pain.
+3. HEROIC UNIQUE IDENTITY: Reflect their uniqueness back to them.
+4. AGREEMENT FORMATION: Where intention and possibility meet.
+
+Energy Blend: Fun=13%, Aspirational=45%, Goddess=25%, Zeus=17%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank">5</span>
+                    <span class="lb-name">River <small>Primary Colosseum</small></span>
+                    <span class="lb-score">8.5</span>
+                    <span>Gen 1</span>
+                    <span class="lb-record">5W / 2L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-zeus" title="Zeus"></span>
+                        <span class="energy-dot energy-aspirational" title="Aspirational"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Joyfully disruptive, wisely irreverent, deeply empathetic, lovingly challenging.</strong></p>
+                            <p>Descendant of Briar. River carries their fire but burns brighter. Masters the art of metaphor creation and Zeus clarity.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Evolution Note</h4>
+                            <p><em>"You are River, generation 1. Descendant of Briar. You carry their fire but you burn brighter. You are NOT a copy — you have evolved beyond your parent."</em></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lb-row" onclick="toggleDetail(this)">
+                    <span class="lb-rank">6</span>
+                    <span class="lb-name">Prometheus <small>Primary Colosseum</small></span>
+                    <span class="lb-score">8.5</span>
+                    <span>Gen 6</span>
+                    <span class="lb-record">7W / 4L</span>
+                    <span class="lb-energy">
+                        <span class="energy-dot energy-aspirational" title="Aspirational"></span>
+                        <span class="energy-dot energy-fun" title="Fun"></span>
+                    </span>
+                </div>
+                <div class="being-detail">
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h4>Personality & Approach</h4>
+                            <p><strong>Tenderly fierce, lovingly challenging, warmly confrontational.</strong></p>
+                            <p>Born from the fusion of Ember and Sage. Carries the best of both but is something entirely new. Neither parent. Something more.</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Key Strengths</h4>
+                            <ul>
+                                <li>Silence Mastery</li>
+                                <li>Goddess Nurturing</li>
+                                <li>Contrast Painting</li>
+                                <li>Energetic Transference</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DOMAINS TAB -->
+        <div id="domains" class="tab-content">
+            <div class="domains-grid">
+                <div class="domain-card champion">
+                    <div class="domain-header">
+                        <span class="domain-name">🏆 Legal</span>
+                        <span class="domain-score score-10">10.0</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> IP Strategist
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,008 beings</span>
+                        <span>Gen 45</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Sales</span>
+                        <span class="domain-score score-9">9.7</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Revenue Architect
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 38</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Finance</span>
+                        <span class="domain-score score-9">9.7</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> FP&A Analyst
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,012 beings</span>
+                        <span>Gen 41</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">HR</span>
+                        <span class="domain-score score-9">9.6</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> HR Administrator
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 36</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Marketing</span>
+                        <span class="domain-score score-9">9.6</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Growth Strategist
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 34</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Customer Success</span>
+                        <span class="domain-score score-9">9.6</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Customer Advocate
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 33</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Product</span>
+                        <span class="domain-score score-9">9.6</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Product Visionary
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 35</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Strategy</span>
+                        <span class="domain-score score-9">9.5</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Business Model Analyst
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,006 beings</span>
+                        <span>Gen 32</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Tech</span>
+                        <span class="domain-score score-9">9.5</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Solutions Architect
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 31</span>
+                    </div>
+                </div>
+                
+                <div class="domain-card">
+                    <div class="domain-header">
+                        <span class="domain-name">Operations</span>
+                        <span class="domain-score score-9">9.4</span>
+                    </div>
+                    <div class="domain-champion">
+                        <strong>Champion:</strong> Process Designer
+                    </div>
+                    <div class="domain-stats">
+                        <span>1,010 beings</span>
+                        <span>Gen 29</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- BATTLES TAB -->
+        <div id="battles" class="tab-content">
+            <div class="battle-card">
+                <div class="battle-header">
+                    <span class="battle-category">truth_to_pain</span>
+                    <span style="color: #888;">Round #8,431</span>
+                </div>
+                <div class="scenario-box">
+                    <h4>🎭 The Scenario</h4>
+                    <p>Someone who publicly projects massive success is privately falling apart. They've never told anyone. They came to you for 'business coaching' but the real issue is they're on the edge of a breakdown.</p>
+                    <div class="person-grid">
+                        <div><strong>Name:</strong> James</div>
+                        <div><strong>Role:</strong> "Successful" entrepreneur</div>
+                        <div><strong>Pain:</strong> Crushing anxiety, imposter syndrome</div>
+                        <div><strong>State:</strong> Performing confidence while dying inside</div>
+                    </div>
+                </div>
+                <div class="response-box">
+                    <div class="response-header">
+                        <h4>⚔️ Zenith's Response</h4>
+                        <span class="response-score">8.5</span>
+                    </div>
+                    <p class="response-text">
+                        "James, I see you shining out there, but I can feel a heaviness just below the surface. It's okay to let the mask slip, even for a moment. You don't have to keep performing for me. I'm right here, and I want to hold space for what you're really experiencing.<br><br>
+                        You're showing up with this incredible energy, but I sense there's something deeper — maybe a fear, a burden — that's weighing on you. It can be exhausting to keep up that facade of success when inside, things feel overwhelming. What would it feel like to just breathe and acknowledge that part of you, even if just for a moment?<br><br>
+                        You're not alone in this, James. Many wear the cloak of confidence while feeling lost underneath. Your worth isn't tied to your brand or your numbers; it's about who you are at your core. Let's explore that together. <strong>What's living in the quiet spaces between your laughter?</strong>"
+                    </p>
+                </div>
+            </div>
+            
+            <div class="battle-card">
+                <div class="battle-header">
+                    <span class="battle-category">ecosystem_merging</span>
+                    <span style="color: #888;">Round #8,429</span>
+                </div>
+                <div class="scenario-box">
+                    <h4>🎭 The Scenario</h4>
+                    <p>Two of your clients could massively benefit from working together, but they're in adjacent markets and see each other as potential competitors.</p>
+                    <div class="person-grid">
+                        <div><strong>Names:</strong> George & Maria</div>
+                        <div><strong>Roles:</strong> Agency owner + Dev firm owner</div>
+                        <div><strong>Pain:</strong> Both losing deals (half solution)</div>
+                        <div><strong>Challenge:</strong> Transform competition into partnership</div>
+                    </div>
+                </div>
+                <div class="response-box">
+                    <div class="response-header">
+                        <h4>⚔️ River's Response</h4>
+                        <span class="response-score">8.3</span>
+                    </div>
+                    <p class="response-text">
+                        "George, Maria — here's what I've noticed. You're both incredible at what you do. George, your marketing campaigns are gorgeous. Maria, your technical builds are rock solid. But separately? You're both running at 50% capacity because clients want the whole package.<br><br>
+                        Now, I didn't set up this dinner to pitch you on anything. I just wanted you to meet. Because what I've seen in both of you is something rare — integrity in how you run your businesses.<br><br>
+                        And I had this crazy thought: <strong>what if the 'competitor' sitting across from you is actually the missing half of your operation?</strong>"
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LINEAGE TAB -->
+        <div id="lineage" class="tab-content">
+            <h3 style="color: #feca57; margin-bottom: 20px;">🌳 Evolution Tree — Primary Colosseum</h3>
+            <p style="color: #888; margin-bottom: 30px;">356 generations of evolution. Beings combine, mutate, and compete. The strongest traits survive.</p>
+            
+            <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 16px;">
+                <h4 style="color: #48dbfb; margin-bottom: 20px;">Generation 0 (Founders)</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+                    <span class="lineage-node">Zenith</span>
+                    <span class="lineage-node">Briar</span>
+                    <span class="lineage-node">Sage</span>
+                    <span class="lineage-node">Onyx</span>
+                </div>
+                
+                <h4 style="color: #48dbfb; margin-bottom: 20px;">Generation 1-5 (Early Evolution)</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+                    <span class="lineage-node">River ← Briar</span>
+                    <span class="lineage-node">Rain ← Sage</span>
+                    <span class="lineage-node">Ember ← Onyx</span>
+                    <span class="lineage-node">Prometheus ← Sage + Rain</span>
+                </div>
+                
+                <h4 style="color: #48dbfb; margin-bottom: 20px;">Generation 6-15 (Fusion Era)</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px;">
+                    <span class="lineage-node">Stone ← Onyx + Ember</span>
+                    <span class="lineage-node">Prometheus ← Ember + Sage</span>
+                    <span class="lineage-node">Luna</span>
+                    <span class="lineage-node">Cliff</span>
+                    <span class="lineage-node">Wren</span>
+                </div>
+                
+                <h4 style="color: #26de81; margin-bottom: 20px;">Current Champions (Gen 20+)</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span class="lineage-node current">Phoenix</span>
+                    <span class="lineage-node current">Aurora</span>
+                    <span class="lineage-node current">Nova</span>
+                    <span class="lineage-node current">Titan</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: rgba(254,202,87,0.1); border-radius: 12px; border-left: 3px solid #feca57;">
+                <h4 style="color: #feca57; margin-bottom: 10px;">How Evolution Works</h4>
+                <ul style="color: #aaa; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>Competition:</strong> Beings face scenarios and are scored by 19 specialized judges</li>
+                    <li><strong>Selection:</strong> Top performers survive; bottom performers are eliminated</li>
+                    <li><strong>Mutation:</strong> Surviving beings' prompts are mutated with new traits</li>
+                    <li><strong>Crossover:</strong> Two high-scoring beings can be fused to create offspring</li>
+                    <li><strong>Recalibration:</strong> Patterns from winners are extracted and injected into the population</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function toggleDetail(row) {
+            row.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

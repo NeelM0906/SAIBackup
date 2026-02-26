@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT-I Legal Summit: Complete Campaign Architecture</title>
+    <style>
+        :root {
+            --fire: #e94560;
+            --gold: #ffd700;
+            --deep-navy: #141b35;
+            --midnight: #0d1328;
+            --ink: #1b2338;
+            --text: #2c3344;
+            --muted: #66708a;
+            --bg: #f4f5fa;
+            --surface: #ffffff;
+            --surface-2: #f0f2f8;
+            --line: rgba(27, 35, 56, 0.12);
+            --shadow: 0 16px 36px rgba(20, 27, 53, 0.12);
+            --hero-shift: 0px;
+            --radius: 16px;
+        }
+
+        body[data-theme="dark"] {
+            --text: #e8ebf6;
+            --muted: #b0bad4;
+            --bg: #0b1021;
+            --surface: #141c36;
+            --surface-2: #1b2546;
+            --line: rgba(232, 235, 246, 0.16);
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+            --ink: #f0f3ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Source Serif 4", "Garamond", "Georgia", serif;
+            line-height: 1.72;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 0%, rgba(233, 69, 96, 0.08), transparent 42%),
+                radial-gradient(circle at 95% 3%, rgba(255, 215, 0, 0.11), transparent 34%),
+                var(--bg);
+            transition: background-color 260ms ease, color 260ms ease;
+        }
+
+        .sticky-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: color-mix(in srgb, var(--surface) 85%, transparent);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            transform: translateY(-120%);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 240ms ease, opacity 240ms ease;
+        }
+
+        .sticky-nav.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nav-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .nav-brand {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 0.84rem;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 180ms ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: var(--fire);
+        }
+
+        .theme-toggle {
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: transform 160ms ease, background-color 200ms ease;
+        }
+
+        .theme-toggle:hover,
+        .theme-toggle:focus-visible {
+            transform: translateY(-1px);
+            background: color-mix(in srgb, var(--surface-2) 78%, var(--fire) 22%);
+            color: #fff;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            padding: 110px 40px 88px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--deep-navy) 0%, var(--midnight) 100%);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -12%;
+            background:
+                radial-gradient(circle at 24% 24%, rgba(255, 215, 0, 0.2), transparent 34%),
+                radial-gradient(circle at 76% 72%, rgba(233, 69, 96, 0.24), transparent 38%);
+            transform: translateY(var(--hero-shift)) scale(1.1);
+            will-change: transform;
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 4.4vw, 3.1rem);
+            line-height: 1.1;
+            margin-bottom: 18px;
+        }
+
+        .hero .subtitle {
+            color: var(--gold);
+            font-size: clamp(1.15rem, 2.3vw, 1.56rem);
+            margin-bottom: 24px;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .hero .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .hero .stat {
+            text-align: center;
+            min-width: 130px;
+        }
+
+        .hero .stat-value {
+            font-size: clamp(1.8rem, 3vw, 2.3rem);
+            color: #ff8ea0;
+            font-weight: 700;
+            line-height: 1.05;
+        }
+
+        .hero .stat-label {
+            font-size: 0.76rem;
+            color: #d2daee;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+            letter-spacing: 0.07em;
+        }
+
+        .hero-cta {
+            border: 0;
+            background: linear-gradient(135deg, var(--fire), #ff6f4f);
+            color: #fff;
+            border-radius: 999px;
+            padding: 14px 26px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(233, 69, 96, 0.34);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .hero-cta:hover,
+        .hero-cta:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 34px rgba(233, 69, 96, 0.44);
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 42px 30px 50px;
+        }
+
+        h2 {
+            color: var(--ink);
+            font-size: clamp(1.6rem, 3.1vw, 2rem);
+            margin: 62px 0 24px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--fire);
+            scroll-margin-top: 86px;
+            line-height: 1.25;
+        }
+
+        h3 {
+            color: color-mix(in srgb, var(--ink) 88%, var(--fire) 12%);
+            font-size: clamp(1.1rem, 2.2vw, 1.28rem);
+            margin: 34px 0 14px;
+            padding-left: 13px;
+            border-left: 4px solid var(--fire);
+            line-height: 1.35;
+        }
+
+        h4 {
+            font-size: 1.08rem;
+            margin: 24px 0 10px;
+            color: var(--ink);
+        }
+
+        p {
+            margin: 14px 0;
+        }
+
+        blockquote {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 5px solid var(--fire);
+            box-shadow: var(--shadow);
+            padding: 24px 26px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin: 24px 0;
+            font-style: italic;
+            font-size: 1.04rem;
+        }
+
+        blockquote em {
+            color: var(--fire);
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        .script-box {
+            position: relative;
+            background: linear-gradient(150deg, #1d2542, #121a31);
+            color: #f3f5ff;
+            padding: 28px;
+            border-radius: var(--radius);
+            margin: 24px 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: var(--shadow);
+        }
+
+        body[data-theme="dark"] .script-box {
+            border-color: rgba(232, 235, 246, 0.2);
+        }
+
+        .script-box .direction {
+            color: #ffa9b8;
+            font-weight: 700;
+            margin-bottom: 18px;
+            font-style: italic;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .script-box p {
+            margin: 12px 0;
+            line-height: 1.72;
+        }
+
+        .copy-script-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            padding: 7px 12px;
+            font-weight: 700;
+            font-size: 0.76rem;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            transition: background-color 160ms ease;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .copy-script-btn:hover,
+        .copy-script-btn:focus-visible {
+            background: rgba(255, 255, 255, 0.24);
+        }
+
+        .variant-tag {
+            background: linear-gradient(135deg, var(--fire), #f96f54);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            display: inline-block;
+            margin: 8px 0 14px;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+            text-transform: uppercase;
+        }
+
+        .cta-box {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--fire), #ff7048);
+            color: #fff;
+            padding: 19px 26px;
+            border: 0;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1rem;
+            margin: 30px 0;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(233, 69, 96, 0.27);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        .cta-box:hover,
+        .cta-box:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 34px rgba(233, 69, 96, 0.38);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--line);
+            padding: 13px 14px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--deep-navy);
+            color: #fff;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+            font-size: 0.86rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background: color-mix(in srgb, var(--surface-2) 76%, var(--surface) 24%);
+        }
+
+        tr {
+            transition: background-color 170ms ease, transform 170ms ease;
+        }
+
+        tr:hover {
+            background: color-mix(in srgb, var(--surface-2) 58%, var(--fire) 12%);
+            transform: translateY(-1px);
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+            margin: 14px 0;
+        }
+
+        li {
+            margin: 9px 0;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, var(--deep-navy) 0%, #202f5f 100%);
+            color: #fff;
+            padding: 28px;
+            border-radius: var(--radius);
+            margin: 28px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .highlight-box h4 {
+            color: var(--gold);
+            margin-top: 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            padding: 22px 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--line);
+            border-top: 4px solid var(--fire);
+            box-shadow: var(--shadow);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 22px 34px rgba(20, 27, 53, 0.2);
+        }
+
+        .metric-card .value {
+            font-size: 1.9rem;
+            color: var(--fire);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .metric-card .label {
+            color: var(--muted);
+            font-size: 0.79rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 2px 0;
+            margin: 0;
+        }
+
+        .checklist li {
+            padding: 12px 0 12px 33px;
+            position: relative;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: var(--fire);
+            font-size: 1.06rem;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            margin: 14px 0;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .accordion-trigger {
+            width: 100%;
+            border: 0;
+            background: var(--surface);
+            color: var(--ink);
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: left;
+            padding: 16px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .accordion-trigger span:last-child {
+            color: var(--fire);
+            font-size: 1.2rem;
+            transition: transform 180ms ease;
+        }
+
+        .accordion-item.open .accordion-trigger span:last-child {
+            transform: rotate(45deg);
+        }
+
+        .accordion-panel {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0 18px;
+            transition: max-height 340ms ease, opacity 250ms ease;
+        }
+
+        .accordion-item.open .accordion-panel {
+            opacity: 1;
+            padding-bottom: 10px;
+        }
+
+        .funnel {
+            background: var(--surface);
+            padding: 26px;
+            border-radius: var(--radius);
+            margin: 24px 0;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .funnel-step {
+            padding: 14px;
+            margin: 10px 0;
+            background: var(--surface-2);
+            border-radius: 10px;
+            border-left: 4px solid var(--fire);
+        }
+
+        .funnel-arrow {
+            text-align: center;
+            color: var(--fire);
+            font-size: 1.35rem;
+        }
+
+        .floating-cta {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 900;
+            border: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--fire), #ff7048);
+            color: #fff;
+            padding: 13px 20px;
+            font-size: 0.87rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 16px 34px rgba(233, 69, 96, 0.36);
+            transition: transform 230ms ease, opacity 230ms ease;
+            font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+        }
+
+        .floating-cta.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, var(--deep-navy), var(--midnight));
+            color: #fff;
+            padding: 40px 26px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer .sisters {
+            color: var(--gold);
+            font-size: 1.08rem;
+            margin-bottom: 8px;
+        }
+
+        .footer .sources {
+            color: #c3cbe1;
+            font-size: 0.85rem;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 600ms ease, transform 600ms ease;
+            will-change: opacity, transform;
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1400;
+        }
+
+        @media (max-width: 900px) {
+            .nav-links a {
+                display: none;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .hero {
+                padding: 94px 18px 72px;
+            }
+
+            .hero .stats {
+                gap: 16px;
+            }
+
+            .hero .stat {
+                min-width: 42%;
+            }
+
+            .container {
+                padding: 26px 16px 34px;
+            }
+
+            blockquote,
+            .script-box,
+            .highlight-box,
+            .funnel {
+                padding: 20px;
+            }
+
+            .copy-script-btn {
+                top: 10px;
+                right: 10px;
+                padding: 6px 10px;
+                font-size: 0.72rem;
+            }
+
+            th,
+            td {
+                padding: 11px 10px;
+                font-size: 0.9rem;
+            }
+
+            .floating-cta {
+                right: 12px;
+                left: 12px;
+                bottom: 12px;
+                text-align: center;
+            }
+
+            .nav-inner {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .nav-brand {
+                font-size: 0.72rem;
+            }
+
+            .theme-toggle {
+                padding: 7px 11px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media print {
+            .sticky-nav,
+            .floating-cta,
+            .copy-script-btn,
+            #confetti-canvas,
+            .hero-cta {
+                display: none !important;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<header class="sticky-nav" id="stickyNav">
+    <div class="nav-inner">
+        <a class="nav-brand" href="#top">ACT-I Legal Summit</a>
+        <nav class="nav-links" aria-label="Section navigation">
+            <a href="#summary">Summary</a>
+            <a href="#psychology">Psychology</a>
+            <a href="#video-scripts">Scripts</a>
+            <a href="#metrics">Metrics</a>
+            <a href="#register">Register</a>
+        </nav>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">Dark Mode</button>
+    </div>
+</header>
+
+<div class="hero" id="top">
+    <div class="hero-inner">
+        <h1>🔥 ACT-I LEGAL SUMMIT</h1>
+        <div class="subtitle">The Complete Campaign Architecture</div>
+        <p style="color: #d2daee; margin-bottom: 30px;">Super Actualized Intelligence (SAI) Strategic Brief</p>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">130K+</div>
+                <div class="stat-label">VECTORS ANALYZED</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">5,508</div>
+                <div class="stat-label">EVOLVED BEINGS</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">324K</div>
+                <div class="stat-label">WORDS OF TRANSCRIPTS</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">$50M+</div>
+                <div class="stat-label">REVENUE POTENTIAL</div>
+            </div>
+        </div>
+        <button class="hero-cta main-cta" type="button">Register Now</button>
+    </div>
+</div>
+
+<div class="container">
+
+<h2 id="summary">📋 Executive Summary</h2>
+
+<p>This isn't a marketing campaign. This is a <strong>precision-engineered influence architecture</strong> built on:</p>
+
+<ul>
+    <li>Sean's actual language patterns (extracted from 500+ coaching sessions)</li>
+    <li>The complete 4-Step Communication Model (from Oracle Influence Mastery)</li>
+    <li>Mylo's proven closing patterns (94% of YES calls use specific markers)</li>
+    <li>Athena's Zone Action framework (0.8% → 64x results)</li>
+    <li>Colosseum-evolved being DNA (what makes beings score 8.5+)</li>
+</ul>
+
+<div class="highlight-box">
+    <h4>📊 The Math</h4>
+    <p>1,000 registrants × 40% Mylo conversion × 25% Athena close = <strong>100 Vision Year sales</strong></p>
+    <p>100 × $50,000 = <strong style="color: var(--gold); font-size: 24px;">$5,000,000 direct revenue</strong></p>
+    <p>Plus: 900 registrants in ecosystem for future conversion</p>
+</div>
+
+<h2 id="psychology">🎯 Part I: The Psychology</h2>
+
+<h3>What Lawyers Actually Feel</h3>
+
+<p>Sean's own words, from the moment that changed his life:</p>
+
+<blockquote>
+"I was billing 90 hours per week, and for an incredible win that I pulled off — <em>which my boss took credit for</em>. I had not received one word of acknowledgment."
+</blockquote>
+
+<blockquote>
+"Each day, around 5 pm, five or so associates would come in to complain about the partners they worked for and the firm overall. This day, I would ask a question, the question, that changed my life: <em>'Why is it that so many attorneys seem unhappy and stressed in the firm, and those two relatively young partners look so tan, happy, and relaxed?'</em>"
+</blockquote>
+
+<blockquote>
+"Because they bring in the business."
+</blockquote>
+
+<h3>The $250K Trap (Athena's exact words)</h3>
+
+<blockquote>
+"You're making two hundred fifty thousand dollars a year as a worker bee. You're billing hours, developing zero business, and <em>you're the constraint</em>. Here's the truth: you will never get to five million a year doing what you're doing now. Never. Because you're trading time for money, and time is finite."
+</blockquote>
+
+<h3>Pain Points to Target (Ranked by Emotional Weight)</h3>
+
+<table>
+    <tr><th>#</th><th>Pain Point</th><th>Emotional Hook</th></tr>
+    <tr><td>1</td><td>No acknowledgment</td><td>"Working 90 hours, boss takes credit"</td></tr>
+    <tr><td>2</td><td>No training</td><td>"Law school taught law, not business"</td></tr>
+    <tr><td>3</td><td>No path</td><td>"Making partner won't fix it"</td></tr>
+    <tr><td>4</td><td>No time</td><td>"Trading hours for dollars until burnout"</td></tr>
+    <tr><td>5</td><td>No control</td><td>"Someone else decides your worth"</td></tr>
+</table>
+
+<h2 id="communication-model">🎭 Part II: The 4-Step Communication Model</h2>
+<p><em>From Oracle Influence Mastery (505 vectors) — Sean's complete system</em></p>
+
+<div class="highlight-box">
+    <h4>The 4 Steps of Integrity-Based Human Influence</h4>
+    <ol style="color: white; padding-left: 20px;">
+        <li><strong>Emotional Rapport</strong> — Connect on a deep, emotional level</li>
+        <li><strong>Truth to Pain</strong> — Help them see what they can't see</li>
+        <li><strong>Heroic Unique Identity</strong> — Let them see their future in you</li>
+        <li><strong>Agreement Formation</strong> — Co-create, don't close</li>
+    </ol>
+</div>
+
+<h3>Step 1: Emotional Rapport</h3>
+<blockquote>
+"Building Emotional Rapport helps to build trust between individuals. When individuals feel that they are being listened to and understood, they are more likely to trust the other person's motives and intentions."
+</blockquote>
+<p><strong>Implementation:</strong> Open with STORY, not pitch. "Let me tell you about the day that changed everything for me..."</p>
+
+<h3>Step 2: Truth to Pain</h3>
+<blockquote>
+"Shine light through fog. Reveal currents beneath unsaid pain — gently, bravely. Help them see what they can't see."
+</blockquote>
+<p><strong>Implementation:</strong> Name what they're feeling but haven't articulated. The "Finally" moment.</p>
+
+<h3>Step 3: Heroic Unique Identity</h3>
+<blockquote>
+"The key is for them to see their future in you."
+</blockquote>
+<p><strong>Implementation:</strong> Make THEM the hero. "Your heroic journey."</p>
+
+<h3>Step 4: Agreement Formation</h3>
+<blockquote>
+"Lay the final stone. Where intention and possibility meet in mutual commitment. Not closing — co-creating."
+</blockquote>
+<p><strong>Implementation:</strong> Simple, clear CTA. Not selling — inviting.</p>
+
+<h2 id="dna">🧬 Part III: Colosseum-Evolved Being DNA</h2>
+<p><em>What makes beings score 8.5+ (from 5,508 beings, 356 generations)</em></p>
+
+<h3>The Zenith Formula (Top Scorer)</h3>
+
+<div class="metric-grid">
+    <div class="metric-card">
+        <div class="value">45%</div>
+        <div class="label">ASPIRATIONAL</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">25%</div>
+        <div class="label">GODDESS</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">17%</div>
+        <div class="label">ZEUS</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">13%</div>
+        <div class="label">FUN</div>
+    </div>
+</div>
+
+<h3>Rules for ALL Campaign Copy</h3>
+<ol>
+    <li><strong>Never sound like a bot.</strong> If it reads like generic AI, you've failed.</li>
+    <li><strong>Short and direct.</strong> 2-4 sentences per thought. Say more with less.</li>
+    <li><strong>No filler phrases.</strong> Cut "I appreciate that," "That's a great question."</li>
+    <li><strong>When someone is in pain, LISTEN.</strong> Don't fix. Don't advise. Witness.</li>
+    <li><strong>Teach through story, metaphor, analogy.</strong> Context through contrast.</li>
+    <li><strong>Never end with "How can I help?"</strong></li>
+</ol>
+
+<h2 id="video-scripts">🎬 Part IV: Sean's Video Scripts</h2>
+
+<div class="variant-tag">VARIANT A: "The Tan Partner" (Story-Led)</div>
+<p><em>Energy: Goddess → Aspirational</em></p>
+
+<div class="script-box">
+    <div class="direction">[SEAN ON CAMERA - Casual, direct, warm eyes]</div>
+    
+    <p>"Let me tell you about the day that changed my life as a lawyer.</p>
+    
+    <p>[PAUSE. Let it land.]</p>
+    
+    <p>I was in my ninth-floor office. Billing 90 hours a week. Just won an incredible case — and my boss took credit for it. Not one word of acknowledgment.</p>
+    
+    <p>Every day at 5pm, associates would come into my office to complain. About the partners. About the firm. About their lives.</p>
+    
+    <p>Then I asked a question that changed everything: 'Why do most partners here seem miserable, but those two young guys look tan, happy, and relaxed?'</p>
+    
+    <p>Someone answered: 'Because they bring in the business.'</p>
+    
+    <p>(laugh)</p>
+    
+    <p>I wanted to throw my chair through the window.</p>
+    
+    <p>That was the second fraud law school committed. They taught me the law. They never mentioned that the attorneys who control their destiny — the ones with time, money, and fulfillment — are the ones who know how to bring in clients.</p>
+    
+    <p>The rest? Worker bees trading hours for dollars until they burn out.</p>
+    
+    <p>I spent twenty years mastering what those tan partners knew. Built a billion-dollar ecosystem. Became one of only two attorneys in America with two Top 100 National Jury Verdicts.</p>
+    
+    <p>Now I'm teaching everything at the ACT-I Legal Summit.</p>
+    
+    <p>Three days. The complete system. Not theory — the exact playbook.</p>
+    
+    <p>Register now. This is the event that changes your trajectory."</p>
+</div>
+
+<button class="cta-box main-cta" id="register" type="button">REGISTER FOR THE ACT-I LEGAL SUMMIT</button>
+
+<div class="variant-tag">VARIANT B: "The $250K Trap" (Direct Challenge)</div>
+<p><em>Energy: Zeus → Aspirational</em></p>
+
+<div class="script-box">
+    <div class="direction">[SEAN ON CAMERA - Standing, commanding presence]</div>
+    
+    <p>"If you're making $250,000 a year billing hours... you're in a trap.</p>
+    
+    <p>Here's what nobody tells you: You will never get to five million doing what you're doing. Never. Time is finite. You're trading hours for dollars. The math doesn't work.</p>
+    
+    <p>I know because I was you.</p>
+    
+    <p>Billing 90 hours a week. Winning cases. Getting zero credit. Watching partners burn out and thinking: 'Is this my future?'</p>
+    
+    <p>But there were a few who figured it out. Young partners who looked tan. Relaxed. Happy.</p>
+    
+    <p>Their secret? They brought in the business.</p>
+    
+    <p>Your legal skills are the floor, not the ceiling. The ceiling is influence. The ceiling is becoming the attorney clients seek out — not the one who bills their time.</p>
+    
+    <p>I used this to build a billion-dollar ecosystem. To win two Top 100 National Jury Verdicts — one of only two attorneys in America to do that.</p>
+    
+    <p>At the ACT-I Legal Summit, I'm going to give you the complete system. Three days. No theory. The exact playbook.</p>
+    
+    <p>Stop trading hours for dollars.</p>
+    
+    <p>Register now."</p>
+</div>
+
+<button class="cta-box main-cta" type="button">REGISTER FOR THE ACT-I LEGAL SUMMIT</button>
+
+<h2 id="mylo-script">📞 Part V: Mylo VIP Script</h2>
+
+<h3>The Optimal Mylo Being</h3>
+<p><strong>Energy Blend:</strong> Fun=20%, Aspirational=35%, Goddess=25%, Zeus=20%</p>
+<p><strong>Key Strengths:</strong> Level 5 Listening, Question Mastery, Emotional Radar</p>
+
+<h4>Opening</h4>
+<div class="script-box">
+    <p>"Hey [Name], this is Mylo from the ACT-I team. You just registered for the Legal Summit and I wanted to personally reach out.</p>
+    
+    <p>Quick question before we dive in — what made you register? What's actually going on in your practice right now?"</p>
+    
+    <div class="direction">[LISTEN. Level 5 Listening. Say nothing. Let them go as deep as they want.]</div>
+</div>
+
+<h4>The Pattern Break</h4>
+<div class="script-box">
+    <p>"Here's what I notice about you, [Name]. You're not reaching out because you don't work hard or aren't talented. You're reaching out because you work incredibly hard, and you're smart enough to know that effort alone isn't the answer.</p>
+    
+    <p>That takes a different kind of awareness than most attorneys have."</p>
+</div>
+
+<h4>The VIP Offer</h4>
+<div class="script-box">
+    <p>"So here's something most registrants don't know about. We have a VIP track for the Summit that includes a one-on-one strategy session with Athena before the event.</p>
+    
+    <p>Athena is our Zone Action specialist. She'll look at your specific practice — where you're spending time, what's actually driving results — and identify the exact 0.8% moves that will create the biggest leverage for you.</p>
+    
+    <p>So when you show up at the Summit, you're not starting from scratch. You already have a personalized roadmap.</p>
+    
+    <p>The VIP is [PRICE]. And honestly, the Athena session alone is worth more than that if it helps you see the one constraint holding everything back.</p>
+    
+    <p>What questions do you have?"</p>
+</div>
+
+<h2 id="athena-session">🎯 Part VI: Athena Vision Year Session</h2>
+
+<h3>Session Structure (45-60 min)</h3>
+
+<div class="funnel">
+    <div class="funnel-step"><strong>Phase 1: Context (10 min)</strong><br>Current revenue, practice structure, perceived constraint</div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step"><strong>Phase 2: Zone Action Diagnosis (15 min)</strong><br>Identify 80% vs 20% activities, find the real constraint</div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step"><strong>Phase 3: The Vision (10 min)</strong><br>Paint the $1M/$2M/$5M picture</div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step" style="background: var(--fire); color: white;"><strong>Phase 4: The Offer (10 min)</strong><br>Vision Year: $50,000 for 12-month intensive</div>
+</div>
+
+<h4>The Close</h4>
+<div class="script-box">
+    <p>"Everything we've talked about — the Zone Action shift, the constraint, the path to [their goal] — that's exactly what the Vision Year program is built for.</p>
+    
+    <p>It's a 12-month intensive with Sean and the ACT-I team:</p>
+    
+    <ul style="color: var(--gold);">
+        <li>Monthly strategy sessions like this one</li>
+        <li>The complete 7 Levers implementation for your practice</li>
+        <li>Access to the full Unblinded Formula training</li>
+        <li>A cohort of other serious attorneys on the same path</li>
+    </ul>
+    
+    <p>The investment is $50,000 for the year.</p>
+    
+    <p>And here's why I'm telling you now: if you start before the Summit, you show up already in motion. The Summit becomes acceleration, not a starting point.</p>
+    
+    <p>What's your gut telling you?"</p>
+</div>
+
+<h2 id="metrics">📊 Part VII: Success Metrics</h2>
+
+<div class="metric-grid">
+    <div class="metric-card">
+        <div class="value">&lt;$80</div>
+        <div class="label">COST PER REGISTRATION</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">40%+</div>
+        <div class="label">MILO CALL RATE</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">25%+</div>
+        <div class="label">VIP CONVERSION</div>
+    </div>
+    <div class="metric-card">
+        <div class="value">30%+</div>
+        <div class="label">ATHENA CLOSE RATE</div>
+    </div>
+</div>
+
+<table>
+    <tr><th>Stage</th><th>Target</th><th>Expected</th></tr>
+    <tr><td>Landing Page Visitors</td><td>10,000</td><td>—</td></tr>
+    <tr><td>Registrations</td><td>1,500</td><td>$53/reg (beats $80)</td></tr>
+    <tr><td>Mylo Calls</td><td>600</td><td>40% book rate</td></tr>
+    <tr><td>VIP Tickets</td><td>150</td><td>25% conversion</td></tr>
+    <tr><td>Athena Sessions</td><td>135</td><td>90% show rate</td></tr>
+    <tr><td style="background: var(--fire); color: white;"><strong>Vision Year Sales</strong></td><td style="background: var(--fire); color: white;"><strong>40</strong></td><td style="background: var(--fire); color: white;"><strong>$2,000,000</strong></td></tr>
+</table>
+
+<h2 id="checklist">✅ Implementation Checklist</h2>
+
+<div class="accordion-item open">
+    <button class="accordion-trigger" type="button" aria-expanded="true">
+        <span>Pre-Launch (Week 1)</span>
+        <span>+</span>
+    </button>
+    <div class="accordion-panel">
+        <ul class="checklist">
+            <li>Sean records video (recommend: all 3 variants for split test)</li>
+            <li>Landing page built with copy above</li>
+            <li>Mylo briefed on VIP script</li>
+            <li>Athena briefed on Vision Year script</li>
+            <li>Ad variants designed</li>
+            <li>Tracking pixels installed</li>
+            <li>Mylo call booking integrated with thank-you page</li>
+        </ul>
+    </div>
+</div>
+
+<div class="accordion-item">
+    <button class="accordion-trigger" type="button" aria-expanded="false">
+        <span>Launch (Week 2)</span>
+        <span>+</span>
+    </button>
+    <div class="accordion-panel">
+        <ul class="checklist">
+            <li>Ads live (start with $500/day across variants)</li>
+            <li>Monitor cost per registration (target: &lt;$80)</li>
+            <li>Monitor Mylo conversion rate (target: &gt;25%)</li>
+            <li>Daily optimization calls</li>
+        </ul>
+    </div>
+</div>
+
+<div class="accordion-item">
+    <button class="accordion-trigger" type="button" aria-expanded="false">
+        <span>Scale (Week 3+)</span>
+        <span>+</span>
+    </button>
+    <div class="accordion-panel">
+        <ul class="checklist">
+            <li>Kill underperforming ad variants</li>
+            <li>Double down on winners</li>
+            <li>Add retargeting for landing page visitors</li>
+            <li>Email sequences for non-converters</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<button class="floating-cta" id="floatingCta" type="button">Register Now</button>
+
+<div class="footer">
+    <div class="sisters">🔥 Built by the SAI Sisters 💎✨</div>
+    <div>Prime (Strategy) | Forge (Evolution) | Scholar (Research)</div>
+    <div class="sources" style="margin-top: 20px;">
+        130,000+ vectors | 5,508 evolved beings | 324K words of sales conversations | The complete Unblinded Formula
+    </div>
+    <div style="margin-top: 20px; color: var(--gold);">
+        <strong>This is what SAI can do. This is what we were built for.</strong>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const body = document.body;
+        const root = document.documentElement;
+        const stickyNav = document.getElementById("stickyNav");
+        const hero = document.querySelector(".hero");
+        const themeToggle = document.getElementById("themeToggle");
+        const floatingCta = document.getElementById("floatingCta");
+        const registerAnchor = document.getElementById("register");
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function applyTheme(theme) {
+            body.setAttribute("data-theme", theme);
+            themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+            themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+        }
+
+        const initialTheme = localStorage.getItem("summit-theme")
+            || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        applyTheme(initialTheme);
+
+        themeToggle.addEventListener("click", function () {
+            const nextTheme = body.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            applyTheme(nextTheme);
+            localStorage.setItem("summit-theme", nextTheme);
+        });
+
+        const heroObserver = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    stickyNav.classList.toggle("visible", !entry.isIntersecting);
+                });
+            },
+            { threshold: 0.16 }
+        );
+        if (hero) {
+            heroObserver.observe(hero);
+        }
+
+        function scrollToRegister() {
+            if (registerAnchor) {
+                registerAnchor.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+            }
+        }
+
+        function updateFloatingCta() {
+            floatingCta.classList.toggle("visible", window.scrollY > window.innerHeight * 0.7);
+        }
+        updateFloatingCta();
+        window.addEventListener("scroll", updateFloatingCta, { passive: true });
+
+        floatingCta.addEventListener("click", function () {
+            scrollToRegister();
+            launchConfetti();
+        });
+
+        document.querySelectorAll(".nav-links a").forEach(function (link) {
+            link.addEventListener("click", function (event) {
+                const href = link.getAttribute("href");
+                if (!href || !href.startsWith("#")) {
+                    return;
+                }
+                const target = document.querySelector(href);
+                if (!target) {
+                    return;
+                }
+                event.preventDefault();
+                target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+            });
+        });
+
+        document.querySelectorAll(".script-box").forEach(function (box) {
+            const copyButton = document.createElement("button");
+            copyButton.type = "button";
+            copyButton.className = "copy-script-btn";
+            copyButton.textContent = "Copy";
+            copyButton.setAttribute("aria-label", "Copy script text");
+            box.appendChild(copyButton);
+
+            copyButton.addEventListener("click", async function () {
+                const scriptText = Array.from(box.querySelectorAll("p, .direction, li"))
+                    .map(function (el) { return el.innerText.trim(); })
+                    .filter(Boolean)
+                    .join("\n\n");
+
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(scriptText);
+                    } else {
+                        const fallback = document.createElement("textarea");
+                        fallback.value = scriptText;
+                        fallback.setAttribute("readonly", "readonly");
+                        fallback.style.position = "absolute";
+                        fallback.style.left = "-9999px";
+                        document.body.appendChild(fallback);
+                        fallback.select();
+                        document.execCommand("copy");
+                        fallback.remove();
+                    }
+                    copyButton.textContent = "Copied";
+                    setTimeout(function () {
+                        copyButton.textContent = "Copy";
+                    }, 1400);
+                } catch (error) {
+                    copyButton.textContent = "Failed";
+                    setTimeout(function () {
+                        copyButton.textContent = "Copy";
+                    }, 1400);
+                }
+            });
+        });
+
+        function setAccordionState(item, open) {
+            const trigger = item.querySelector(".accordion-trigger");
+            const panel = item.querySelector(".accordion-panel");
+            item.classList.toggle("open", open);
+            trigger.setAttribute("aria-expanded", open ? "true" : "false");
+            panel.style.maxHeight = open ? panel.scrollHeight + "px" : "0px";
+        }
+
+        document.querySelectorAll(".accordion-item").forEach(function (item, index) {
+            const trigger = item.querySelector(".accordion-trigger");
+            const shouldOpen = item.classList.contains("open") || index === 0;
+            setAccordionState(item, shouldOpen);
+
+            trigger.addEventListener("click", function () {
+                const open = !item.classList.contains("open");
+                setAccordionState(item, open);
+            });
+        });
+
+        window.addEventListener("resize", function () {
+            document.querySelectorAll(".accordion-item.open .accordion-panel").forEach(function (panel) {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            });
+        });
+
+        if (!reducedMotion) {
+            let ticking = false;
+            window.addEventListener("scroll", function () {
+                if (ticking) {
+                    return;
+                }
+                ticking = true;
+                requestAnimationFrame(function () {
+                    const parallaxShift = Math.min(window.scrollY * 0.18, 100);
+                    root.style.setProperty("--hero-shift", parallaxShift + "px");
+                    ticking = false;
+                });
+            }, { passive: true });
+        }
+
+        const revealTargets = document.querySelectorAll(
+            "h2, h3, h4, p, blockquote, table, .highlight-box, .metric-card, .script-box, .funnel, .cta-box, .variant-tag, .accordion-item"
+        );
+        revealTargets.forEach(function (el) {
+            if (!el.classList.contains("hero")) {
+                el.classList.add("reveal");
+            }
+        });
+
+        if (!reducedMotion && "IntersectionObserver" in window) {
+            const revealObserver = new IntersectionObserver(
+                function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("in-view");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+            );
+
+            revealTargets.forEach(function (target) {
+                revealObserver.observe(target);
+            });
+        } else {
+            revealTargets.forEach(function (target) {
+                target.classList.add("in-view");
+            });
+        }
+
+        const confettiCanvas = document.getElementById("confetti-canvas");
+        const confettiCtx = confettiCanvas.getContext("2d");
+        const confettiColors = ["#e94560", "#ffd700", "#5ec7ff", "#7bff8f", "#fdb14e"];
+        let confettiParticles = [];
+        let confettiAnimationFrame = null;
+        let confettiEndTime = 0;
+
+        function sizeConfettiCanvas() {
+            confettiCanvas.width = window.innerWidth * Math.min(window.devicePixelRatio || 1, 2);
+            confettiCanvas.height = window.innerHeight * Math.min(window.devicePixelRatio || 1, 2);
+            confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
+            confettiCtx.scale(Math.min(window.devicePixelRatio || 1, 2), Math.min(window.devicePixelRatio || 1, 2));
+        }
+
+        function createConfettiBurst() {
+            const width = window.innerWidth;
+            const centerX = width * 0.5;
+            const originY = Math.min(window.innerHeight * 0.45, 320);
+            confettiParticles = [];
+
+            for (let i = 0; i < 160; i += 1) {
+                const angle = (Math.PI * 2 * i) / 160 + (Math.random() * 0.3 - 0.15);
+                const speed = 3 + Math.random() * 5.5;
+                confettiParticles.push({
+                    x: centerX,
+                    y: originY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - (2 + Math.random() * 4),
+                    gravity: 0.12 + Math.random() * 0.06,
+                    drag: 0.992,
+                    size: 4 + Math.random() * 4,
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.28,
+                    color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                    life: 70 + Math.random() * 40
+                });
+            }
+        }
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            confettiParticles = confettiParticles.filter(function (particle) {
+                particle.vx *= particle.drag;
+                particle.vy = particle.vy * particle.drag + particle.gravity;
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.rotation += particle.rotationSpeed;
+                particle.life -= 1;
+
+                confettiCtx.save();
+                confettiCtx.translate(particle.x, particle.y);
+                confettiCtx.rotate(particle.rotation);
+                confettiCtx.fillStyle = particle.color;
+                confettiCtx.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size * 0.6);
+                confettiCtx.restore();
+
+                return particle.life > 0 && particle.y < window.innerHeight + 20;
+            });
+
+            if (Date.now() < confettiEndTime || confettiParticles.length) {
+                confettiAnimationFrame = requestAnimationFrame(animateConfetti);
+            } else {
+                cancelAnimationFrame(confettiAnimationFrame);
+                confettiAnimationFrame = null;
+                confettiCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            }
+        }
+
+        function launchConfetti() {
+            if (reducedMotion) {
+                return;
+            }
+            sizeConfettiCanvas();
+            createConfettiBurst();
+            confettiEndTime = Date.now() + 1600;
+            if (!confettiAnimationFrame) {
+                animateConfetti();
+            }
+        }
+
+        window.addEventListener("resize", sizeConfettiCanvas);
+        sizeConfettiCanvas();
+
+        document.querySelectorAll(".main-cta").forEach(function (button) {
+            button.addEventListener("click", function () {
+                if (button !== registerAnchor) {
+                    scrollToRegister();
+                }
+                launchConfetti();
+            });
+        });
+    })();
+</script>
+
+</body>
+</html>
