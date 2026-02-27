@@ -95,7 +95,7 @@ When building dashboards, monitoring systems, or any process observation:
 
 1. **Measuring** — Track all metrics that matter (scores, generations, win rates, progress)
 2. **Monitoring** — Live observation, real-time updates, activity feeds
-3. **Mastery** — The continuous pursuit of improvement (there is no 10, only infinite 9s)
+3. **Maximization** — Optimize based on what you measure and monitor
 
 **Dashboard Development Principles:**
 - 🔄 **COMPOUND on one UI** — Don't start from scratch each push. Keep building on what exists.

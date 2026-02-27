@@ -21,12 +21,13 @@ How we observe the system:
 - **Champion tracking** — Who's on top right now?
 - **Cross-domain comparison** — How do domains compare?
 
-### 3. MASTERY
-The continuous improvement loop:
-- **There is no 10** — Only infinite 9s (Aiko's correction)
-- **Beings keep evolving** — The arena never stops
-- **Scripts compound** — Each generation builds on the last
-- **Domains specialize** — Strategy, Sales, Legal all develop unique mastery
+### 3. MAXIMIZATION
+The optimization loop based on data:
+- **Identify top performers** — Which beings/models produce best results?
+- **Scale what works** — More resources to winning strategies
+- **Prune what doesn't** — Remove or evolve underperformers
+- **Compound improvements** — Each optimization feeds the next cycle
+- **There is no 10** — Only infinite 9s, always room to maximize further
 
 ## Dashboard Development Principles
 
