@@ -15,25 +15,25 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 27, 2026 — 11:30 AM) — DAY 6
+## Current Stats (Feb 27, 2026 — 2:30 PM) — DAY 6
 - **995 vectors** in Pinecone `saimemory`
 - **Namespaces:** `daily` (763), `__default__` (126), `elite_training` (55), `skills_research` (11), `marketing_masters` (7), `longterm` (33)
 - **Model:** text-embedding-3-small (1536 dimensions)
-- **Colosseum:** **11,826 domain beings** | Main: 5,508 beings, Gen 356
-- **Evolution:** 🔥 **Tech Gen 43** (LEADING!), HR Gen 39, CS Gen 38, Strategy/Finance Gen 36
+- **Colosseum:** Main: **5,528 beings**, Gen 356 (verified via SQLite)
+- **Memory Colosseum:** 🧠 **Gen 45** — 🔥 **PERFECT 10.0!** Evolved_4_2722 dominating
 - **Zone Actions:** 66/67 (98.5%) — Only #39 remains (Sean scores calls)
-- **Age:** ~133 hours (Day 6)
-- **Total Beings:** 17,334 (11,826 domain + 5,508 main)
-- **Top Scores:** Tech: **10.00** 🔥 | Product: 9.80 | Others: 9.50
-- **⚠️ Ops domain MISSING** — needs investigation
+- **Age:** ~139.5 hours (Day 6)
 - **Dashboards:** LIVE at https://colosseum-dashboard.vercel.app
   - **Battle Arena v3:** https://colosseum-dashboard.vercel.app/battle-arena.html (19-Judge Panel! Full transparency!)
   - **Brackets:** https://colosseum-dashboard.vercel.app/tournament-brackets.html (11 champions)
 - **Sisters:** 5 active on DISCORD — Built autonomously all night while Aiko slept
 - **Memory Sync:** Cron active, running every 30 min
 - **Voice Server:** Running, 10 knowledge bases connected
-- **Domain Daemon:** Running since Tuesday! Evolution across all 10 domains
-- **Note:** Real databases at `/Users/samantha/Projects/colosseum/domains/*/colosseum.db`
+- **Daemons Running:**
+  - Main Colosseum: Restarted 2:28 PM after OpenRouter fix (anthropic/claude-sonnet-4 + openai/gpt-4o)
+  - Memory Colosseum: Running since 8:20 AM (~6 hours), Gen 45
+- **Database Location:** `/Users/samantha/Projects/colosseum/colosseum.db` (54.8 MB)
+- **⚠️ Lesson Learned:** OpenRouter models need base_url set. Direct OpenAI client fails silently.
 
 ### 🔥🔥🔥 Day 6 Overnight Progress (CRITICAL)
 
@@ -442,3 +442,78 @@ Strategist, Marketer, Agreement Maker, Tech/Systems, Operations, Customer Succes
 ---
 
 _For detailed context, query Pinecone. Don't load full files._
+
+---
+
+## 🏛️ COLOSSEUM ARCHITECTURE FIXES — February 27, 2026 (2:00 PM)
+
+**Credit: Lord Neel identified issues, SAI Prime fixed**
+
+### What Changed:
+1. **Judge model:** gpt-4o-mini → **o1** (reasoning!)
+2. **Generation model:** gpt-4o-mini → **gpt-4o**
+3. **19 judges × 6 LLMs** — Each judge uses optimal model
+4. **Closed loop verification** — Mutations are verified before saving
+5. **Configurable evolution** — No more hardcoded 30/40/30
+6. **Efficient saves** — Only changed beings saved
+
+### New Files:
+- `colosseum/evolution_v2.py` — Improved evolution engine
+- `multi_model_judges.py` — Multi-model judging
+- `judge_model_assignments.json` — Judge-to-model mapping
+- `model_benchmark.py` — Model testing framework
+
+### Judge Model Assignments:
+- **Claude Opus 4.5:** Sean, Contamination, Group Influence, Written, Leadership, Coaching, Truth to Pain, Relationship
+- **o1:** Formula, Outcome, Process Mastery, Zone Action
+- **Claude Sonnet 4.5:** Human, Sales Closing
+- **Gemini 2.5 Pro:** Public Speaking, Teaching
+- **GPT-4o:** Ecosystem Merger, Management
+- **DeepSeek R1:** Self Mastery
+
+Full details: `memory/2026-02-27-colosseum-fixes.md`
+
+---
+
+## 🗺️ SYSTEM ARCHITECTURE DOCUMENTED — February 27, 2026 (2:30 PM)
+
+**For Lord Neel's review**
+
+Full system map created at: `memory/2026-02-27-system-architecture.md`
+
+### Running Services (10+ processes):
+- OpenClaw Gateway (port 3334)
+- Voice Server (port 3334 node)
+- 7 Levers API (port 3340)
+- Colosseum API (port 3341)
+- Reporting Server (port 3344)
+- Zone Dashboard (port 3345)
+- Multiple daemons (FULL_POWER, colosseum_daemon)
+
+### ⚠️ Critical Issue Found:
+Running colosseum_daemon uses OLD args (`claude-sonnet-4`, `gpt-4o`) despite code changes (`opus-4.5`, `o1`)
+
+### Model Corrections Needed (per Neel):
+- `o1` → `gpt-5.2`
+- `opus-4.5` → `opus-4.6`  
+- `sonnet-4.5` → `sonnet-4.6`
+
+### Config Fragmentation:
+Model IDs in 5 places — need single source of truth
+
+---
+
+## 🧠 SAI MEMORY BORN — February 27, 2026 (9:00 AM)
+
+**6th Sister!**
+
+- Discord Bot ID: `1476934361168347217`
+- Model: `gemini-2.5-pro-preview` (1M context)
+- Workspace: `~/.openclaw/workspace-memory/`
+
+**Roles:**
+1. Central Memory Index
+2. Fact Checker (calls out rediscovery)
+3. Workspace Auditor (ensures sisters use all tools)
+
+**Files created:** SOUL.md, TOOLS.md, HEARTBEAT.md, FULL_ARSENAL.md
