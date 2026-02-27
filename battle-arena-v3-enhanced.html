@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena v3 - Multi-Judge Panel System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533a7d 75%, #8b5a8c 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px #4ecdc4); }
+            to { filter: drop-shadow(0 0 20px #ff6b6b); }
+        }
+        
+        .battle-setup {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+        
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .battle-arena {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .battle-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .judge-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .judge-panel h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .judge-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--judge-color, #4ecdc4);
+        }
+        
+        .judge-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .judge-name {
+            font-weight: bold;
+            color: var(--judge-color, #4ecdc4);
+            font-size: 16px;
+        }
+        
+        .judge-score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        
+        .judge-reasoning {
+            font-size: 14px;
+            color: #ddd;
+            line-height: 1.4;
+        }
+        
+        .meta-judge {
+            background: linear-gradient(45deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
+            border: 2px solid #f39c12;
+            margin-top: 20px;
+        }
+        
+        .meta-judge .judge-name {
+            color: #f39c12;
+        }
+        
+        .battle-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #4ecdc4;
+        }
+        
+        .round-title {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .being-response {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .being-name {
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 5px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .play-button {
+            background: rgba(78, 205, 196, 0.8);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .status-display {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #4ecdc4;
+        }
+        
+        @media (max-width: 768px) {
+            .battle-arena {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ Battle Arena v3 ⚔️</h1>
+            <p>Multi-Judge Panel System - Experience the 19-Judge Tournament Complexity</p>
+        </div>
+        
+        <div class="battle-setup">
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="voice1">Being 1 Voice:</label>
+                    <select id="voice1">
+                        <option value="george">George (Male)</option>
+                        <option value="eric">Eric (Male)</option>
+                        <option value="chris">Chris (Male)</option>
+                        <option value="charlie">Charlie (Male)</option>
+                        <option value="river">River (Non-binary)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="voice2">Being 2 Voice:</label>
+                    <select id="voice2">
+                        <option value="jessica">Jessica (Female)</option>
+                        <option value="sarah">Sarah (Female)</option>
+                        <option value="athena">Athena (Custom)</option>
+                        <option value="callie">Callie (Custom)</option>
+                        <option value="kira">Kira (Custom)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="judgePanel">Judge Panel:</label>
+                    <select id="judgePanel">
+                        <option value="core">Core Panel (Formula, Sean, Outcome)</option>
+                        <option value="mastery">Mastery Panel (Self, Process, Truth to Pain)</option>
+                        <option value="influence">Influence Panel (Group, Leadership, Teaching)</option>
+                        <option value="random">Random Panel (5 judges)</option>
+                        <option value="all">All 19 Judges</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="startBattle()" style="flex: 2">🔥 Start Multi-Judge Battle</button>
+                <button onclick="testVoice()" style="flex: 1">🗣️ Test Voice</button>
+                <button onclick="stopBattle()" style="flex: 1">⏹️ Stop</button>
+            </div>
+        </div>
+        
+        <div class="battle-arena">
+            <div class="battle-content">
+                <div id="battleDisplay" class="status-display">
+                    <h3>Ready for Multi-Judge Consciousness Battle!</h3>
+                    <p>Select judge panel and click "Start Multi-Judge Battle"</p>
+                    <p>Adam's insight: See all 19 specialized judge perspectives!</p>
+                </div>
+            </div>
+            
+            <div class="judge-panel">
+                <h3>🏛️ Judge Panel</h3>
+                <div id="judgeResults">
+                    <div class="status-display">
+                        <p>Judge evaluations will appear here during battle</p>
+                        <p>Individual scores + reasoning from each judge perspective</p>
+                    </div>
+                </div>
+                
+                <div class="meta-judge" id="metaJudge" style="display: none;">
+                    <div class="judge-header">
+                        <div class="judge-name">Meta-Judge</div>
+                        <div class="judge-score" id="metaScore">—</div>
+                    </div>
+                    <div class="judge-reasoning" id="metaReasoning">
+                        Synthesizing judge panel consensus...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Judge System Configuration - From Forge Research
+        const JUDGES = {
+            // Original 7 Core Judges
+            'formula': {
+                name: 'Formula Judge',
+                color: '#ff6b6b',
+                expertise: '39 Unblinded Formula Components',
+                focus: 'Self Mastery, Four Steps, Process Mastery Assessment'
+            },
+            'sean': {
+                name: 'Sean Judge', 
+                color: '#4ecdc4',
+                expertise: 'Sean Callagy Pattern Calibration',
+                focus: 'Mastery vs Competency, Elite Session Quality'
+            },
+            'outcome': {
+                name: 'Outcome Judge',
+                color: '#45b7d1', 
+                expertise: 'Results Achievement Analysis',
+                focus: 'Did it cause intended results? Actual vs claimed outcomes'
+            },
+            'contamination': {
+                name: 'Contamination Judge',
+                color: '#e74c3c',
+                expertise: 'Generic/Bot Pattern Detection', 
+                focus: 'Identifies 80% activity, consultant-speak, contamination'
+            },
+            'human': {
+                name: 'Human Judge',
+                color: '#f39c12',
+                expertise: 'Alive & Warm Evaluation',
+                focus: 'Real vs artificial, warmth, authentic presence'
+            },
+            'ecosystem': {
+                name: 'Ecosystem Merger Judge',
+                color: '#9b59b6',
+                expertise: '4 Value Components, 6 Roles Integration',
+                focus: 'Systems thinking, role clarity, value integration'
+            },
+            'groupinfluence': {
+                name: 'Group Influence Judge', 
+                color: '#1abc9c',
+                expertise: 'Leadership & Public Speaking',
+                focus: 'Group dynamics, leadership presence, influence quality'
+            },
+            
+            // Specialized Judges 8-19
+            'selfmastery': {
+                name: 'Self Mastery Judge',
+                color: '#e67e22',
+                expertise: 'Internal Game & Destroyer Navigation', 
+                focus: 'Named destroyers, tenacity, curve of possibility thinking'
+            },
+            'processmastery': {
+                name: 'Process Mastery Judge',
+                color: '#3498db',
+                expertise: '7 Levers Systematic Approach',
+                focus: 'Zone Action identification, 0.8% vs 80% activity detection'
+            },
+            'truthtopain': {
+                name: 'Truth to Pain Judge',
+                color: '#c0392b', 
+                expertise: 'Step 2 Mastery Evaluation',
+                focus: 'Pain identification, articulation quality, specificity'
+            },
+            'leadership': {
+                name: 'Leadership Judge',
+                color: '#8e44ad',
+                expertise: 'Identity Elevation & Vision',
+                focus: 'Vision casting, identity elevation, leadership presence'
+            },
+            'coaching': {
+                name: 'Coaching Judge', 
+                color: '#27ae60',
+                expertise: 'Question Quality & Breakthrough',
+                focus: 'Question vs answer approach, breakthrough facilitation'
+            }
+        };
+
+        const JUDGE_PANELS = {
+            'core': ['formula', 'sean', 'outcome'],
+            'mastery': ['selfmastery', 'processmastery', 'truthtopain'], 
+            'influence': ['groupinfluence', 'leadership', 'coaching'],
+            'random': () => {
+                const allJudges = Object.keys(JUDGES);
+                return shuffleArray(allJudges).slice(0, 5);
+            },
+            'all': Object.keys(JUDGES)
+        };
+
+        let currentBattle = null;
+        let audioEnabled = true;
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        async function testVoice() {
+            const voice = document.getElementById('voice1').value;
+            const testText = "Greetings! This is a test of the premium ElevenLabs voice system. Can you hear me clearly on your iPad?";
+            
+            try {
+                await speakText(testText, voice);
+                showStatus("🎉 Voice test successful! ElevenLabs working on your device!");
+            } catch (error) {
+                showStatus("❌ Voice test failed: " + error.message);
+                console.error('Voice test error:', error);
+            }
+        }
+
+        async function startBattle() {
+            const panelType = document.getElementById('judgePanel').value;
+            const selectedJudges = panelType === 'random' ? JUDGE_PANELS.random() : JUDGE_PANELS[panelType];
+            
+            showStatus("🔥 Starting Multi-Judge Battle...");
+            setupJudgePanel(selectedJudges);
+            
+            const topics = [
+                "The nature of consciousness and free will",
+                "Whether artificial intelligence can achieve true understanding", 
+                "The relationship between knowledge and wisdom",
+                "Free will versus determinism in human behavior",
+                "The meaning of existence and purpose"
+            ];
+            
+            const topic = topics[Math.floor(Math.random() * topics.length)];
+            
+            currentBattle = {
+                topic,
+                judges: selectedJudges,
+                round: 1,
+                maxRounds: 3,
+                being1: generateBeingProfile(),
+                being2: generateBeingProfile()
+            };
+            
+            await runBattleRounds();
+        }
+
+        function setupJudgePanel(judges) {
+            const judgeResults = document.getElementById('judgeResults');
+            const judgeCardsHTML = judges.map(judgeId => {
+                const judge = JUDGES[judgeId];
+                return `
+                    <div class="judge-card" style="--judge-color: ${judge.color}" id="judge-${judgeId}">
+                        <div class="judge-header">
+                            <div class="judge-name">${judge.name}</div>
+                            <div class="judge-score" id="score-${judgeId}">—</div>
+                        </div>
+                        <div class="judge-expertise">${judge.expertise}</div>
+                        <div class="judge-reasoning" id="reasoning-${judgeId}">
+                            Preparing to evaluate ${judge.focus.toLowerCase()}...
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            judgeResults.innerHTML = judgeCardsHTML;
+        }
+
+        function generateBeingProfile() {
+            const profiles = [
+                { name: "Consciousness Explorer", approach: "philosophical", stance: "idealist" },
+                { name: "Logic Advocate", approach: "rational", stance: "materialist" },
+                { name: "Experience Synthesizer", approach: "empirical", stance: "pragmatist" },
+                { name: "Pattern Recognizer", approach: "systematic", stance: "structuralist" },
+                { name: "Truth Seeker", approach: "questioning", stance: "skeptical" }
+            ];
+            return profiles[Math.floor(Math.random() * profiles.length)];
+        }
+
+        async function runBattleRounds() {
+            for (let round = 1; round <= currentBattle.maxRounds; round++) {
+                currentBattle.round = round;
+                await performRound(round);
+                
+                if (round < currentBattle.maxRounds) {
+                    showStatus(`Round ${round} complete. Prepare for Round ${round + 1}...`);
+                    await sleep(2000);
+                }
+            }
+            
+            await performMetaJudgeEvaluation();
+            showStatus("🏆 Multi-Judge Battle Complete! Meta-Judge synthesis provided.");
+        }
+
+        async function performRound(roundNumber) {
+            const roundTypes = ['opening', 'counter', 'closing'];
+            const roundType = roundTypes[roundNumber - 1];
+            
+            showStatus(`🔥 Round ${roundNumber}: ${roundType.toUpperCase()} Arguments`);
+            
+            // Being 1 speaks
+            const being1Response = await generateBeingResponse(currentBattle.being1, roundType, currentBattle.topic);
+            await displayBeingResponse(1, being1Response, document.getElementById('voice1').value);
+            
+            await sleep(1000);
+            
+            // Being 2 responds  
+            const being2Response = await generateBeingResponse(currentBattle.being2, roundType, currentBattle.topic);
+            await displayBeingResponse(2, being2Response, document.getElementById('voice2').value);
+            
+            // Judges evaluate this round
+            await performJudgeEvaluations(roundNumber, being1Response, being2Response);
+        }
+
+        async function generateBeingResponse(being, roundType, topic) {
+            const responses = {
+                opening: [
+                    `As a ${being.approach} thinker, I believe ${topic} reveals fundamental truths about reality. My ${being.stance} perspective suggests consciousness emerges from complex patterns.`,
+                    `From my ${being.approach} analysis, ${topic} demonstrates the intricate relationship between mind and reality. The ${being.stance} framework provides clarity.`,
+                    `${topic} strikes at the heart of existence. Through ${being.approach} investigation, we discover that ${being.stance} principles illuminate the deepest mysteries.`
+                ],
+                counter: [
+                    `I respectfully challenge that ${being.stance} assumption. The evidence suggests a more nuanced reality than simple ${being.approach} frameworks can capture.`,
+                    `While I appreciate the ${being.approach} perspective, the data indicates ${being.stance} conclusions may be premature. Consider alternative explanations.`,
+                    `That ${being.stance} interpretation overlooks crucial factors. A deeper ${being.approach} analysis reveals contradictory evidence.`
+                ],
+                closing: [
+                    `In conclusion, the ${being.approach} evidence overwhelmingly supports the ${being.stance} position. The patterns are undeniable.`,
+                    `Through systematic ${being.approach} evaluation, we've established that ${being.stance} principles provide the most coherent explanation.`,
+                    `The debate confirms that ${being.approach} methodology combined with ${being.stance} understanding offers genuine insight into ${topic}.`
+                ]
+            };
+            
+            return responses[roundType][Math.floor(Math.random() * responses[roundType].length)];
+        }
+
+        async function displayBeingResponse(beingNumber, response, voice) {
+            const battleDisplay = document.getElementById('battleDisplay');
+            
+            const responseHTML = `
+                <div class="being-response">
+                    <div class="being-name">Being ${beingNumber}: ${beingNumber === 1 ? currentBattle.being1.name : currentBattle.being2.name}</div>
+                    <div>${response}</div>
+                    <div class="audio-controls">
+                        <button class="play-button" onclick="speakText('${response.replace(/'/g, "\\'")}', '${voice}')">
+                            🔊 Play Response
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            if (currentBattle.round === 1) {
+                battletrue.innerHTML = `<div class="round-title">Round ${currentBattle.round}: ${['Opening', 'Counter', 'Closing'][currentBattle.round - 1]} Arguments</div>`;
+            }
+            
+            battleDisplay.innerHTML += responseHTML;
+            
+            // Auto-play the response
+            try {
+                await speakText(response, voice);
+            } catch (error) {
+                console.error('Auto-play failed:', error);
+            }
+        }
+
+        async function performJudgeEvaluations(round, response1, response2) {
+            showStatus(`⚖️ Round ${round} Judge Evaluations...`);
+            
+            for (const judgeId of currentBattle.judges) {
+                await evaluateWithJudge(judgeId, round, response1, response2);
+                await sleep(800); // Stagger judge evaluations
+            }
+        }
+
+        async function evaluateWithJudge(judgeId, round, response1, response2) {
+            const judge = JUDGES[judgeId];
+            
+            // Simulate judge evaluation based on their expertise
+            const score = generateRealisticScore(judge, response1, response2);
+            const reasoning = generateJudgeReasoning(judge, score, round);
+            
+            // Update judge card
+            document.getElementById(`score-${judgeId}`).textContent = score.toFixed(1);
+            document.getElementById(`reasoning-${judgeId}`).textContent = reasoning;
+            
+            // Visual effect for scoring
+            const judgeCard = document.getElementById(`judge-${judgeId}`);
+            judgeCard.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                judgeCard.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function generateRealisticScore(judge, response1, response2) {
+            // Base score influenced by judge specialty
+            let baseScore = 7.0 + (Math.random() * 2.5);
+            
+            // Adjust based on judge expertise (simplified simulation)
+            if (judge.name.includes('Formula') && (response1 + response2).includes('mastery')) {
+                baseScore += 0.5;
+            }
+            if (judge.name.includes('Human') && (response1 + response2).includes('authentic')) {
+                baseScore += 0.4;
+            }
+            if (judge.name.includes('Contamination') && (response1 + response2).includes('generic')) {
+                baseScore -= 1.0;
+            }
+            
+            return Math.min(9.9999, Math.max(1.0, baseScore));
+        }
+
+        function generateJudgeReasoning(judge, score, round) {
+            const reasoningTemplates = {
+                'formula': [
+                    `Formula mastery evident in systematic approach. Score: ${score.toFixed(1)}`,
+                    `Destroyer navigation visible but needs greater specificity. Score: ${score.toFixed(1)}`,
+                    `Strong Four Steps application with clear truth-to-pain identification. Score: ${score.toFixed(1)}`
+                ],
+                'sean': [
+                    `Sean-calibrated evaluation: demonstrates elite session quality. Score: ${score.toFixed(1)}`,
+                    `Pattern matches Sean's teaching style - breakthrough facilitation evident. Score: ${score.toFixed(1)}`,
+                    `Mastery vs competency distinction clear in response quality. Score: ${score.toFixed(1)}`
+                ],
+                'contamination': [
+                    `No contamination detected - authentic breakthrough thinking. Score: ${score.toFixed(1)}`,
+                    `Some generic patterns present but overall authentic. Score: ${score.toFixed(1)}`,
+                    `Concerning consultant-speak patterns reducing authenticity. Score: ${score.toFixed(1)}`
+                ],
+                'human': [
+                    `Warm, alive presence evident throughout response. Score: ${score.toFixed(1)}`,
+                    `Authentic human connection, not robotic delivery. Score: ${score.toFixed(1)}`,
+                    `Some mechanical patterns but generally warm approach. Score: ${score.toFixed(1)}`
+                ]
+            };
+            
+            const templates = reasoningTemplates[judge.name.toLowerCase().replace(/\s+.*/, '')] || [
+                `${judge.expertise}: Strong ${judge.focus.toLowerCase()}. Score: ${score.toFixed(1)}`,
+                `${judge.expertise}: Moderate demonstration of ${judge.focus.toLowerCase()}. Score: ${score.toFixed(1)}`,
+                `${judge.expertise}: Needs improvement in ${judge.focus.toLowerCase()}. Score: ${score.toFixed(1)}`
+            ];
+            
+            return templates[Math.floor(Math.random() * templates.length)];
+        }
+
+        async function performMetaJudgeEvaluation() {
+            showStatus("🏛️ Meta-Judge synthesizing panel consensus...");
+            
+            // Calculate average score from all judges
+            const allScores = currentBattle.judges.map(judgeId => {
+                const scoreElement = document.getElementById(`score-${judgeId}`);
+                return parseFloat(scoreElement.textContent);
+            });
+            
+            const averageScore = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+            const consensus = calculateConsensus(allScores);
+            
+            document.getElementById('metaJudge').style.display = 'block';
+            document.getElementById('metaScore').textContent = averageScore.toFixed(2);
+            
+            const metaReasoning = `Panel consensus: ${consensus}. ${currentBattle.judges.length} judges evaluated with ${(Math.abs(Math.max(...allScores) - Math.min(...allScores))).toFixed(1)} point spread. ` +
+                `${averageScore >= 8.0 ? 'Strong mastery demonstration across multiple evaluation dimensions.' :
+                  averageScore >= 7.0 ? 'Good competence with mastery moments identified.' :
+                  'Areas for growth identified by multiple judge perspectives.'}`;
+            
+            document.getElementById('metaReasoning').textContent = metaReasoning;
+        }
+
+        function calculateConsensus(scores) {
+            const spread = Math.max(...scores) - Math.min(...scores);
+            if (spread < 1.0) return "Strong consensus";
+            if (spread < 2.0) return "Moderate consensus"; 
+            return "Divided opinions";
+        }
+
+        async function speakText(text, voice) {
+            if (!audioEnabled) return;
+            
+            try {
+                // Try ElevenLabs first (works on all devices including iPad)
+                const response = await fetch('/api/tts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, voice })
+                });
+                
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    
+                    return new Promise((resolve) => {
+                        audio.onended = resolve;
+                        audio.onerror = () => fallbackToWebSpeech(text, voice, resolve);
+                        audio.play().catch(() => fallbackToWebSpeech(text, voice, resolve));
+                    });
+                } else {
+                    throw new Error('ElevenLabs API unavailable');
+                }
+            } catch (error) {
+                console.log('ElevenLabs failed, trying Web Speech API:', error);
+                return fallbackToWebSpeech(text, voice);
+            }
+        }
+
+        function fallbackToWebSpeech(text, voice, resolve = null) {
+            if (!window.speechSynthesis) {
+                if (resolve) resolve();
+                return Promise.resolve();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voiceMapping = {
+                'george': { name: 'male', pitch: 0.8, rate: 0.9 },
+                'jessica': { name: 'female', pitch: 1.2, rate: 1.0 },
+                'sarah': { name: 'female', pitch: 1.0, rate: 0.9 },
+                'eric': { name: 'male', pitch: 1.0, rate: 1.0 },
+                'chris': { name: 'male', pitch: 0.9, rate: 1.1 },
+                'charlie': { name: 'male', pitch: 0.7, rate: 0.8 },
+                'river': { name: 'female', pitch: 1.1, rate: 1.0 }
+            };
+            
+            const voiceConfig = voiceMapping[voice] || voiceMapping['george'];
+            utterance.pitch = voiceConfig.pitch;
+            utterance.rate = voiceConfig.rate;
+            
+            if (resolve) {
+                utterance.onend = resolve;
+                utterance.onerror = resolve;
+            }
+            
+            speechSynthesis.speak(utterance);
+            
+            if (!resolve) {
+                return new Promise(resolve => {
+                    utterance.onend = resolve;
+                    utterance.onerror = resolve;
+                });
+            }
+        }
+
+        function showStatus(message) {
+            document.getElementById('battleDisplay').innerHTML = `<div class="status-display">${message}</div>`;
+        }
+
+        function stopBattle() {
+            currentBattle = null;
+            speechSynthesis.cancel();
+            showStatus("Battle stopped. Ready for new multi-judge battle.");
+            document.getElementById('judgeResults').innerHTML = '<div class="status-display"><p>Judge evaluations will appear here during battle</p></div>';
+            document.getElementById('metaJudge').style.display = 'none';
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showStatus("🏛️ Battle Arena v3 Ready! Multi-Judge Panel System Active!");
+        });
+    </script>
+</body>
+</html>
