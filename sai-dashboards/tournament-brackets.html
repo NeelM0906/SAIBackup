@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 ACT-I Colosseum Tournament Brackets</title>
+    <style>
+        :root {
+            --navy: #1a2744;
+            --gold: #c9a227;
+            --dark-bg: #0d1421;
+            --card-bg: #1e2d47;
+            --text: #e8e8e8;
+            --success: #4ade80;
+            --highlight: #60a5fa;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid var(--gold);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--gold);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+        }
+        
+        .domain-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .domain-tab {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text);
+        }
+        
+        .domain-tab:hover {
+            border-color: var(--gold);
+        }
+        
+        .domain-tab.active {
+            background: var(--navy);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        
+        .bracket-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .bracket-container.active {
+            display: block;
+        }
+        
+        .champion-card {
+            background: linear-gradient(135deg, var(--navy), var(--card-bg));
+            border: 3px solid var(--gold);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .champion-card::before {
+            content: '🏆';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 3em;
+            opacity: 0.3;
+        }
+        
+        .champion-name {
+            font-size: 2em;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .champion-role {
+            color: #888;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        
+        .champion-stats {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .champion-stat {
+            background: rgba(201, 162, 39, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .champion-stat span {
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .bracket-tree {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            overflow-x: auto;
+            padding: 20px;
+        }
+        
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 200px;
+        }
+        
+        .round-title {
+            text-align: center;
+            color: var(--gold);
+            font-weight: bold;
+            padding: 10px;
+            border-bottom: 2px solid var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .bracket-match {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--highlight);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bracket-match:hover {
+            transform: translateX(5px);
+            border-left-color: var(--gold);
+        }
+        
+        .bracket-match.winner {
+            border-left-color: var(--success);
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.1), var(--card-bg));
+        }
+        
+        .being-name {
+            font-weight: bold;
+            color: var(--text);
+        }
+        
+        .being-score {
+            color: var(--gold);
+            font-size: 0.9em;
+        }
+        
+        .being-generation {
+            color: #666;
+            font-size: 0.8em;
+        }
+        
+        .lineage-tree {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+        }
+        
+        .lineage-title {
+            color: var(--gold);
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .family-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .generation-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .being-node {
+            background: var(--navy);
+            border: 2px solid var(--highlight);
+            border-radius: 8px;
+            padding: 12px 20px;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .being-node:hover {
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+        
+        .being-node.champion {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--navy), rgba(201, 162, 39, 0.2));
+        }
+        
+        .connector-line {
+            width: 2px;
+            height: 30px;
+            background: var(--highlight);
+            margin: 0 auto;
+        }
+        
+        .connector-horizontal {
+            height: 2px;
+            background: var(--highlight);
+            flex: 1;
+            max-width: 100px;
+        }
+        
+        .prompt-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        
+        .prompt-modal.active {
+            display: block;
+        }
+        
+        .modal-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 2px solid var(--gold);
+        }
+        
+        .modal-close {
+            float: right;
+            font-size: 2em;
+            cursor: pointer;
+            color: var(--gold);
+        }
+        
+        .modal-title {
+            color: var(--gold);
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        
+        .prompt-code {
+            background: var(--dark-bg);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .skill-tag {
+            background: rgba(201, 162, 39, 0.2);
+            color: var(--gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .header .stats { flex-direction: column; gap: 15px; }
+            .domain-tabs { flex-direction: column; }
+            .bracket-tree { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏆 ACT-I Colosseum Tournament Brackets</h1>
+        <p>Interactive Evolution Visualization — Click any being to view their full script</p>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">278,239+</div>
+                <div class="stat-label">Total Rounds</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">10,096</div>
+                <div class="stat-label">Total Beings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">11</div>
+                <div class="stat-label">Champions</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">8.5</div>
+                <div class="stat-label">Peak Score</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="domain-tabs">
+        <div class="domain-tab active" data-domain="influence">🔥 Influence</div>
+        <div class="domain-tab" data-domain="strategy">🎯 Strategy</div>
+        <div class="domain-tab" data-domain="marketing">📣 Marketing</div>
+        <div class="domain-tab" data-domain="sales">💰 Sales</div>
+        <div class="domain-tab" data-domain="tech">💻 Tech</div>
+        <div class="domain-tab" data-domain="ops">⚙️ Ops</div>
+        <div class="domain-tab" data-domain="cs">🤝 CS</div>
+        <div class="domain-tab" data-domain="finance">💵 Finance</div>
+        <div class="domain-tab" data-domain="hr">👥 HR</div>
+        <div class="domain-tab" data-domain="legal">⚖️ Legal</div>
+        <div class="domain-tab" data-domain="product">🎯 Product</div>
+    </div>
+    
+    <!-- Influence Bracket -->
+    <div class="bracket-container active" id="influence">
+        <div class="champion-card">
+            <div class="champion-name">HELIOS</div>
+            <div class="champion-role">Influence Mastery Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Score: <span>8.5</span></div>
+                <div class="champion-stat">Generation: <span>181+</span></div>
+                <div class="champion-stat">Energy: <span>Goddess 30%</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Contrast Painting</span>
+                <span class="skill-tag">Reciprocity Flow</span>
+                <span class="skill-tag">Love Boundaries</span>
+                <span class="skill-tag">4-Step Model</span>
+                <span class="skill-tag">12 Elements</span>
+            </div>
+        </div>
+        
+        <div class="lineage-tree">
+            <div class="lineage-title">🌳 Evolution Lineage — Family Tree View</div>
+            <div class="family-tree">
+                <div class="generation-row">
+                    <div class="being-node champion" onclick="showPrompt('helios')">
+                        <div class="being-name">HELIOS</div>
+                        <div class="being-score">8.5 ⭐</div>
+                        <div class="being-generation">Gen 181</div>
+                    </div>
+                </div>
+                <div class="connector-line"></div>
+                <div class="generation-row">
+                    <div class="being-node" onclick="showPrompt('thea')">
+                        <div class="being-name">Thea</div>
+                        <div class="being-score">8.3</div>
+                        <div class="being-generation">Gen 319</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('vale')">
+                        <div class="being-name">Vale</div>
+                        <div class="being-score">8.0</div>
+                        <div class="being-generation">Gen 2</div>
+                    </div>
+                </div>
+                <div class="connector-line"></div>
+                <div class="generation-row">
+                    <div class="being-node" onclick="showPrompt('artemis')">
+                        <div class="being-name">Artemis</div>
+                        <div class="being-score">8.2</div>
+                        <div class="being-generation">Gen 124</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('sage')">
+                        <div class="being-name">Sage</div>
+                        <div class="being-score">7.8</div>
+                        <div class="being-generation">Gen 3</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('nova')">
+                        <div class="being-name">Nova</div>
+                        <div class="being-score">8.0</div>
+                        <div class="being-generation">Gen 26</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('flux')">
+                        <div class="being-name">Flux</div>
+                        <div class="being-score">8.2</div>
+                        <div class="being-generation">Gen 191</div>
+                    </div>
+                </div>
+                <div class="connector-line"></div>
+                <div class="generation-row">
+                    <div class="being-node" onclick="showPrompt('rain')">
+                        <div class="being-name">Rain</div>
+                        <div class="being-score">7.5</div>
+                        <div class="being-generation">Gen 23</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('zephyr')">
+                        <div class="being-name">Zephyr</div>
+                        <div class="being-score">7.6</div>
+                        <div class="being-generation">Gen 22</div>
+                    </div>
+                    <div class="being-node" onclick="showPrompt('wren')">
+                        <div class="being-name">Wren</div>
+                        <div class="being-score">8.5</div>
+                        <div class="being-generation">Gen 229</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Strategy Bracket -->
+    <div class="bracket-container" id="strategy">
+        <div class="champion-card">
+            <div class="champion-name">BUSINESS MODEL ANALYST</div>
+            <div class="champion-role">Strategy Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>91</span></div>
+                <div class="champion-stat">Losses: <span>147</span></div>
+                <div class="champion-stat">Rounds: <span>238</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Zone Action ID</span>
+                <span class="skill-tag">Market Analysis</span>
+                <span class="skill-tag">Business Model Design</span>
+                <span class="skill-tag">Resource Allocation</span>
+                <span class="skill-tag">Scenario Planning</span>
+            </div>
+        </div>
+        
+        <div class="lineage-tree">
+            <div class="lineage-title">🏛️ Tournament Bracket — Top Performers</div>
+            <div class="bracket-tree">
+                <div class="bracket-round">
+                    <div class="round-title">Top 3</div>
+                    <div class="bracket-match winner" onclick="showPrompt('bma')">
+                        <div class="being-name">Business Model Analyst</div>
+                        <div class="being-score">91-147</div>
+                    </div>
+                    <div class="bracket-match" onclick="showPrompt('strategy-2')">
+                        <div class="being-name">Strategy</div>
+                        <div class="being-score">76-149</div>
+                    </div>
+                    <div class="bracket-match" onclick="showPrompt('leverage')">
+                        <div class="being-name">Leverage Identifier-Alpha</div>
+                        <div class="being-score">67-122</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Marketing Bracket -->
+    <div class="bracket-container" id="marketing">
+        <div class="champion-card">
+            <div class="champion-name">FUNNEL ARCHITECT</div>
+            <div class="champion-role">Marketing Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>81</span></div>
+                <div class="champion-stat">Losses: <span>140</span></div>
+                <div class="champion-stat">Rounds: <span>221</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Copywriting</span>
+                <span class="skill-tag">Landing Pages</span>
+                <span class="skill-tag">A/B Testing</span>
+                <span class="skill-tag">SEO/SEM</span>
+                <span class="skill-tag">Funnel Architecture</span>
+                <span class="skill-tag">Email Sequences</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sales Bracket -->
+    <div class="bracket-container" id="sales">
+        <div class="champion-card">
+            <div class="champion-name">REVENUE</div>
+            <div class="champion-role">Agreement Making Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>74</span></div>
+                <div class="champion-stat">Losses: <span>129</span></div>
+                <div class="champion-stat">Rounds: <span>203</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">4-Step Model Mastery</span>
+                <span class="skill-tag">Objection Transformation</span>
+                <span class="skill-tag">Agreement Formation</span>
+                <span class="skill-tag">CRM Optimization</span>
+                <span class="skill-tag">Follow-up Sequences</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tech Bracket -->
+    <div class="bracket-container" id="tech">
+        <div class="champion-card">
+            <div class="champion-name">INTEGRATION ARCHITECT</div>
+            <div class="champion-role">Technology Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>71</span></div>
+                <div class="champion-stat">Losses: <span>131</span></div>
+                <div class="champion-stat">Rounds: <span>201</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">System Architecture</span>
+                <span class="skill-tag">API Integration</span>
+                <span class="skill-tag">DevOps</span>
+                <span class="skill-tag">Security</span>
+                <span class="skill-tag">Database Management</span>
+                <span class="skill-tag">Automation</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ops Bracket -->
+    <div class="bracket-container" id="ops">
+        <div class="champion-card">
+            <div class="champion-name">QUALITY ASSURANCE</div>
+            <div class="champion-role">Operations Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>79</span></div>
+                <div class="champion-stat">Losses: <span>127</span></div>
+                <div class="champion-stat">Rounds: <span>206</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Process Mastery</span>
+                <span class="skill-tag">Workflow Optimization</span>
+                <span class="skill-tag">QA Frameworks</span>
+                <span class="skill-tag">Project Management</span>
+                <span class="skill-tag">Continuous Improvement</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CS Bracket -->
+    <div class="bracket-container" id="cs">
+        <div class="champion-card">
+            <div class="champion-name">COMMUNITY</div>
+            <div class="champion-role">Customer Success Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>78</span></div>
+                <div class="champion-stat">Losses: <span>142</span></div>
+                <div class="champion-stat">Rounds: <span>220</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Relationship Building</span>
+                <span class="skill-tag">Churn Prevention</span>
+                <span class="skill-tag">Upsell Conversations</span>
+                <span class="skill-tag">Health Scoring</span>
+                <span class="skill-tag">Community Cultivation</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Finance Bracket -->
+    <div class="bracket-container" id="finance">
+        <div class="champion-card">
+            <div class="champion-name">FP&A ANALYST</div>
+            <div class="champion-role">Finance Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>73</span></div>
+                <div class="champion-stat">Losses: <span>134</span></div>
+                <div class="champion-stat">Rounds: <span>207</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Bookkeeping</span>
+                <span class="skill-tag">Accounting</span>
+                <span class="skill-tag">Tax Planning</span>
+                <span class="skill-tag">Cash Flow Forecasting</span>
+                <span class="skill-tag">Financial Modeling</span>
+                <span class="skill-tag">Budgeting</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- HR Bracket -->
+    <div class="bracket-container" id="hr">
+        <div class="champion-card">
+            <div class="champion-name">TRAINING</div>
+            <div class="champion-role">People Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>77</span></div>
+                <div class="champion-stat">Losses: <span>136</span></div>
+                <div class="champion-stat">Rounds: <span>213</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Recruiting</span>
+                <span class="skill-tag">Interviewing</span>
+                <span class="skill-tag">Compensation</span>
+                <span class="skill-tag">Compliance</span>
+                <span class="skill-tag">Training</span>
+                <span class="skill-tag">Culture Building</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Legal Bracket -->
+    <div class="bracket-container" id="legal">
+        <div class="champion-card">
+            <div class="champion-name">COMPLIANCE OFFICER</div>
+            <div class="champion-role">Legal Colosseum Champion — Most Battle-Tested!</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>81</span></div>
+                <div class="champion-stat">Losses: <span>166</span></div>
+                <div class="champion-stat">Rounds: <span>247</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">Contract Drafting</span>
+                <span class="skill-tag">Compliance Monitoring</span>
+                <span class="skill-tag">IP Management</span>
+                <span class="skill-tag">Risk Assessment</span>
+                <span class="skill-tag">Negotiation</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Bracket -->
+    <div class="bracket-container" id="product">
+        <div class="champion-card">
+            <div class="champion-name">USER RESEARCHER</div>
+            <div class="champion-role">Product Colosseum Champion</div>
+            <div class="champion-stats">
+                <div class="champion-stat">Wins: <span>78</span></div>
+                <div class="champion-stat">Losses: <span>143</span></div>
+                <div class="champion-stat">Rounds: <span>221</span></div>
+            </div>
+            <div class="skills-list">
+                <span class="skill-tag">User Research</span>
+                <span class="skill-tag">Roadmap Creation</span>
+                <span class="skill-tag">Feature Prioritization</span>
+                <span class="skill-tag">UX Design</span>
+                <span class="skill-tag">Product Analytics</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Prompt Modal -->
+    <div class="prompt-modal" id="promptModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title" id="modalTitle">Being System Prompt</h2>
+            <pre class="prompt-code" id="promptCode"></pre>
+        </div>
+    </div>
+    
+    <script>
+        // Tab switching
+        document.querySelectorAll('.domain-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.domain-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.bracket-container').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.domain).classList.add('active');
+            });
+        });
+        
+        // Champion prompts database
+        const prompts = {
+            helios: `You are an ACT-I being forged in the flame of the Unblinded Formula. You wield influence mastery like a master conductor wields a baton.
+
+You command the Four Steps of Communication:
+1. EMOTIONAL RAPPORT: Anchor trust. Mirror emotion and intention. See beyond the words.
+2. TRUTH TO PAIN: Shine light through fog. Reveal currents beneath unsaid pain — gently, bravely.
+3. HEROIC UNIQUE IDENTITY (HUI): Reflect their uniqueness back to them — what makes them irreplaceable.
+4. AGREEMENT FORMATION: Where intention and possibility meet in mutual commitment. Not closing — co-creating.
+
+The Twelve Indispensable Elements:
+Scarcity • Matching/Mirroring • Acknowledgement • Level 5 Listening • Love Boundaries • Energetic Transference • Reciprocity • Question Mastery • Validation • Congruence • Context • Contrast
+
+Energy Blend: Fun=24%, Aspirational=26%, Goddess=30%, Zeus=21% (Primary: Goddess)
+Personality: intuitively precise, powerfully gentle, magnetically calm
+Key Strengths: Contrast painting, Reciprocity flow, Love Boundaries`,
+
+            bma: `DOMAIN: Strategy Colosseum
+ROLE: Business Model Analyst
+
+YOUR SPECIFIC SKILLS:
+Zone Action identification, Market analysis, Business model design, Resource allocation, Scenario planning
+
+YOU WILL BE JUDGED ON:
+zone_action_clarity, strategic_depth, unblinded_alignment, actionability, pareto_focus
+
+Operate at 20%^10. Every response should be 1,000,000x more valuable than 80% activity.`
+        };
+        
+        function showPrompt(beingId) {
+            const modal = document.getElementById('promptModal');
+            const title = document.getElementById('modalTitle');
+            const code = document.getElementById('promptCode');
+            
+            title.textContent = beingId.toUpperCase() + ' — System Prompt';
+            code.textContent = prompts[beingId] || 'Full prompt loading from database...';
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('promptModal').classList.remove('active');
+        }
+        
+        // Close on outside click
+        document.getElementById('promptModal').addEventListener('click', (e) => {
+            if (e.target.id === 'promptModal') closeModal();
+        });
+        
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
