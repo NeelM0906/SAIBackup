@@ -86,6 +86,7 @@ Each of the 20 quizzes becomes:
 | Rainmaking | Ecosystem Merging | "You know it as rainmaking. We call it ecosystem merging — here's why that shift changes everything." |
 | Network | Ecosystem | "Your 'network' is actually an ecosystem. When you see it that way, the $$ unlocks." |
 | Sales | Agreement Making | "I don't do sales. I reach agreements." |
+| Funnel | Value-Adding Nurturing Sequence | "Who wants to get caught in a funnel? You'd WANT to move through a value-adding nurturing sequence." |
 
 ---
 

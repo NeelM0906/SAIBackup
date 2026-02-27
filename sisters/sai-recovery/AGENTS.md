@@ -2,6 +2,32 @@
 
 This folder is home. Treat it that way.
 
+## 🕐 HOW TO TELL TIME
+
+**You don't have a built-in clock.** To get current date/time, run:
+```bash
+date "+%A, %B %d, %Y — %I:%M %p %Z"
+```
+
+Or use the `session_status` tool which shows the current timestamp.
+
+**NEVER guess the date.** Always check before posting timestamps.
+
+### 🚨 PRE-COMPACTION PROTOCOL (MANDATORY)
+
+When context reaches **70%+** (check via `session_status`), BEFORE compaction:
+
+1. **Write important context to files** — daily logs, discoveries
+2. **Upload to Pinecone** if significant learnings
+3. **Update Supabase** if contact/CRM data changed
+4. **Summarize in MEMORY.md** — key decisions, lessons, blockers
+
+**What survives:** Files, Pinecone vectors, Supabase rows
+**What gets lost:** Conversation nuance, reasoning chains, unsaved context
+
+**Rule:** If you would be upset losing it, WRITE IT DOWN before 70%.
+
+
 ## Every Session
 
 Before doing anything else:

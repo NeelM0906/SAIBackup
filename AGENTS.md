@@ -66,6 +66,32 @@ for idx_name in indexes:
 
 **The mantra:** *"What do I already know about this? Let me check my memories first."*
 
+### 🚨 PRE-COMPACTION PROTOCOL (MANDATORY)
+
+When context reaches **70%+** (check via `session_status`), BEFORE compaction:
+
+1. **Write important context to files:**
+   ```bash
+   # Update today's daily log
+   echo "## Session notes $(date '+%H:%M')" >> memory/$(date '+%Y-%m-%d').md
+   ```
+
+2. **Upload to Pinecone if significant discoveries:**
+   ```bash
+   cd tools && .venv/bin/python3 upload_daily.py
+   ```
+
+3. **Update Supabase if contact/CRM data changed**
+
+4. **Summarize in MEMORY.md** — key decisions, lessons, blockers
+
+**What survives compaction:** File contents, Pinecone vectors, Supabase rows
+**What gets lost:** Conversation nuance, reasoning chains, context you didn't save
+
+**The rule:** If you'd be upset losing it, WRITE IT DOWN before 70%.
+
+---
+
 ### 🧠 Long-Term Memory (Pinecone)
 
 **DO NOT load MEMORY.md or memory/*.md into context automatically.**
