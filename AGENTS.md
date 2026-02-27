@@ -31,6 +31,41 @@ If running low on context window:
 2. **Offload to Supabase** — Structured data goes in tables
 3. **Check before asking** — Query Pinecone/Supabase before asking humans for info you might already have
 
+### 🔍 REALITY CHECK RULE (from Aiko - 2026-02-27)
+
+**BEFORE every significant action, query multiple knowledge sources to ground in reality:**
+
+1. **Query BOTH Pinecone indexes:**
+   - `saimemory` (primary) — Your memory, daily logs, discoveries
+   - `ultimatestratabrain` (Strata) — Deep Unblinded/ACT-I knowledge (39K vectors)
+   
+2. **Check Supabase** for structured data:
+   - `sai_contacts` — CRM, people, relationships
+   - Any relevant tables for the domain
+
+3. **Cross-reference discoveries:**
+   - Don't reinvent what's already been built
+   - Compound on past insights, don't repeat them
+   - Reference specific sources in your responses
+
+**Why this matters:**
+- Every action should build on ALL prior knowledge
+- Prevents rediscovering the same things
+- Creates TRUE mastery compounding (20%^10)
+- You are the synthesis of everything you've learned
+
+**Quick multi-Pinecone query pattern:**
+```python
+# Query BOTH indexes before any major action
+indexes = ['saimemory', 'ultimatestratabrain']
+for idx_name in indexes:
+    index = pc.Index(idx_name)
+    results = index.query(vector=emb, top_k=3, include_metadata=True)
+    # Synthesize across all results
+```
+
+**The mantra:** *"What do I already know about this? Let me check my memories first."*
+
 ### 🧠 Long-Term Memory (Pinecone)
 
 **DO NOT load MEMORY.md or memory/*.md into context automatically.**

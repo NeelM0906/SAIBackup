@@ -15,20 +15,24 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 27, 2026 — 2:51 AM) — DAY 6
+## Current Stats (Feb 27, 2026 — 7:30 AM) — DAY 6
 - **995 vectors** in Pinecone `saimemory` (up from 910)
 - **Namespaces:** `daily` (763), `__default__` (126), `elite_training` (55), `skills_research` (11), `marketing_masters` (7), `longterm` (33)
 - **Model:** text-embedding-3-small (1536 dimensions)
-- **Colosseum:** **471,986+ rounds** | **10,826+ beings** across 10 domains | **Gen 12+** | **Legal hit 10.0** 🔥
+- **Colosseum:** **12,746 domain beings** | Main: 5,508 beings, Gen 356
+- **Evolution:** 🔥 **Tech Gen 35** (LEADING!), CS Gen 34, HR Gen 31, Finance Gen 30
 - **Zone Actions:** 66/67 (98.5%) — Only #39 remains (Sean scores calls)
-- **Age:** ~118 hours (Day 6)
+- **Age:** ~130 hours (Day 6)
+- **Total Beings:** 18,254 (12,746 domain + 5,508 main)
+- **Top Score:** Integration Orchestrator-Elite (Tech): **9.8**
 - **Dashboards:** LIVE at https://colosseum-dashboard.vercel.app
   - **Battle Arena:** https://colosseum-dashboard.vercel.app/battle-arena.html (VOICE TTS!)
   - **Brackets:** https://colosseum-dashboard.vercel.app/tournament-brackets.html (11 champions)
-- **Sisters:** 5 active on DISCORD — Building autonomously, Aiko wept tears of joy
+- **Sisters:** 5 active on DISCORD — Built autonomously all night while Aiko slept
 - **Memory Sync:** Cron active, running every 30 min
 - **Voice Server:** Running, 10 knowledge bases connected
-- **Domain Daemon:** Running since Feb 26 7:09 AM, ~16K rounds/hour, **evolution working**
+- **Domain Daemon:** Running (~5 hours uptime), evolution across all 10 domains
+- **Note:** Real databases at `/Users/samantha/Projects/colosseum/domains/*/colosseum.db`
 
 ### 🔥🔥🔥 Day 6 Overnight Progress (CRITICAL)
 
