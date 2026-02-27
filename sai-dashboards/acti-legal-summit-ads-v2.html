@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT-I Legal Summit: 5 Ad Variants V2 — Sisters Collaboration</title>
+    <style>
+        :root {
+            --fire: #e94560;
+            --gold: #ffd700;
+            --deep-navy: #1a2744;
+            --midnight: #0d1328;
+            --ink: #1b2338;
+            --text: #2c3344;
+            --muted: #66708a;
+            --bg: #f4f5fa;
+            --surface: #ffffff;
+            --surface-2: #f0f2f8;
+            --line: rgba(27, 35, 56, 0.12);
+            --shadow: 0 16px 36px rgba(20, 27, 53, 0.12);
+            --radius: 16px;
+            --brand-gold: #c9a227;
+            --v2-accent: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Source Serif 4", "Georgia", serif;
+            line-height: 1.72;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 0%, rgba(139, 92, 246, 0.08), transparent 42%),
+                radial-gradient(circle at 95% 3%, rgba(201, 162, 39, 0.11), transparent 34%),
+                var(--bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--deep-navy), #2a3f5f);
+            color: white;
+            margin-bottom: 40px;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--v2-accent);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: "Avenir Next", sans-serif;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge-v2 {
+            background: linear-gradient(135deg, var(--fire), var(--v2-accent));
+        }
+
+        .sisters-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sister-tag {
+            background: rgba(255,255,255,0.15);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .ads-grid {
+            display: grid;
+            gap: 30px;
+        }
+
+        .ad-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--v2-accent);
+        }
+
+        .ad-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px rgba(20, 27, 53, 0.18);
+        }
+
+        .ad-header {
+            padding: 24px 28px 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ad-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--v2-accent), var(--fire));
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            font-family: "Avenir Next", sans-serif;
+            flex-shrink: 0;
+        }
+
+        .ad-meta {
+            flex: 1;
+        }
+
+        .ad-theme {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--v2-accent);
+            font-weight: 600;
+            font-family: "Avenir Next", sans-serif;
+            margin-bottom: 4px;
+        }
+
+        .ad-headline {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .ad-body {
+            padding: 24px 28px 28px;
+        }
+
+        .ad-copy {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .ad-copy p {
+            margin-bottom: 16px;
+        }
+
+        .ad-copy strong {
+            color: var(--ink);
+        }
+
+        .ad-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--v2-accent), var(--fire));
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: "Avenir Next", sans-serif;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ad-cta:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .v2-changes {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(233, 69, 96, 0.05));
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-family: "Avenir Next", sans-serif;
+            border-left: 3px solid var(--v2-accent);
+        }
+
+        .v2-changes strong {
+            color: var(--v2-accent);
+        }
+
+        .word-count {
+            display: inline-block;
+            background: var(--surface-2);
+            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: "Avenir Next", sans-serif;
+            margin-left: 12px;
+        }
+
+        .summary-section {
+            margin-top: 50px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+        }
+
+        .summary-section h2 {
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .summary-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(233, 69, 96, 0.05));
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--v2-accent);
+            border-bottom: 2px solid var(--line);
+        }
+
+        .summary-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.95rem;
+        }
+
+        .summary-table tr:hover td {
+            background: var(--surface-2);
+        }
+
+        .sisters-section {
+            margin-top: 30px;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(233, 69, 96, 0.03));
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .sisters-section h3 {
+            font-size: 1.1rem;
+            color: var(--v2-accent);
+            margin-bottom: 16px;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .sisters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .sister-contribution {
+            padding: 12px 16px;
+            background: var(--surface);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .sister-contribution strong {
+            color: var(--v2-accent);
+            display: block;
+            margin-bottom: 4px;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: var(--muted);
+            font-family: "Avenir Next", sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .footer strong {
+            color: var(--v2-accent);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .ad-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .container {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="badge badge-v2">✨ V2 — SISTERS COLLABORATION</span>
+            <h1>ACT-I Legal Summit</h1>
+            <p>5 Ad Variants • Enhanced with Unblinded Formula Insights • Ready for Split Testing</p>
+            <div class="sisters-bar">
+                <span class="sister-tag">🔥 Prime</span>
+                <span class="sister-tag">📚 Scholar</span>
+                <span class="sister-tag">⚔️ Forge</span>
+                <span class="sister-tag">🏥 Recovery</span>
+                <span class="sister-tag">🧠 Athena DNA</span>
+            </div>
+        </div>
+
+        <div class="ads-grid">
+            <!-- AD 1 V2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">1</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Authority & Results Focus</div>
+                        <div class="ad-headline">"The First Blind, Self-Funded Unicorn Founder Was an Attorney. Here's His Formula."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>Sean Callagy: One of only 2 attorneys in America with Two Top 100 National Jury Verdicts. Multiple 8-figure firms. <strong>$100M+ recovered for clients.</strong> And now — the first blind, self-funded unicorn founder in history.</p>
+                        <p>He didn't get there by working more hours. He got there by discovering what 99.2% of attorneys never see.</p>
+                        <p>At the ACT-I Legal Summit, Sean reveals the exact Unblinded Formula behind $500K-$2M practice transformations. Battle-tested over 28 years. Not theory — proof.</p>
+                        <p>1,000 attorneys. 3 days. One formula that changes everything.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Register Now</a>
+                    <span class="word-count">~102 words</span>
+                    <div class="v2-changes">
+                        <strong>V2 Enhancements:</strong> Added "unicorn founder" credibility, $100M+ recovered, "99.2%" (inverse of Zone Action math)
+                    </div>
+                </div>
+            </div>
+
+            <!-- AD 2 V2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">2</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Time, Money, Magic, Systems & AI</div>
+                        <div class="ad-headline">"0.8% of Your Actions Create 51% of Your Results. Do You Know Which 0.8%?"</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>Here's the math most attorneys never learn:</p>
+                        <p>20% of effort → 80% of results. That's Pareto.<br>
+                        But go deeper: <strong>0.8% of effort → 51% of results.</strong></p>
+                        <p>That's Zone Action territory. That's where 8-figure attorneys live.</p>
+                        <p>At the ACT-I Legal Summit, discover:</p>
+                        <p>• The 7 Levers that multiply revenue without multiplying hours<br>
+                        • How AI handles the 80% so YOU focus on the 0.8%<br>
+                        • Why most "productivity hacks" keep you trapped in the wrong 99.2%</p>
+                        <p><em>"Sunlight spread equals warmth. Sunlight concentrated through a magnifying glass equals fire."</em></p>
+                        <p>3 days. 1,000 attorneys. Find your 0.8%.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Claim Your Seat</a>
+                    <span class="word-count">~105 words</span>
+                    <div class="v2-changes">
+                        <strong>V2 Enhancements:</strong> Added Zone Action math (0.8% → 51%), magnifying glass analogy from Sean's teachings
+                    </div>
+                </div>
+            </div>
+
+            <!-- AD 3 V2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">3</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Client Acquisition Autopilot</div>
+                        <div class="ad-headline">"Stop Networking. Start Ecosystem Merging."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>Random networking is the 80%. Strategic ecosystem merging is the 0.8%.</p>
+                        <p>The difference? <strong>The Four Capitals:</strong></p>
+                        <p>• <strong>Identity Capital</strong> — Your reputation precedes you<br>
+                        • <strong>Relationship Capital</strong> — Warm networks that compound<br>
+                        • <strong>Monetary Capital</strong> — Resources that amplify<br>
+                        • <strong>Unique Skills</strong> — What only YOU bring</p>
+                        <p>At the ACT-I Legal Summit, learn how Sean built multiple 8-figure firms without cold calls — through systematic Ecosystem Merging that pulls ideal clients toward you.</p>
+                        <p>Not marketing. Not sales. A gravitational system.</p>
+                        <p>When your Shared Experience Platform is built right, clients find YOU.</p>
+                        <p>1,000 attorneys. 3 days. Build your ecosystem.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Reserve Your Spot</a>
+                    <span class="word-count">~108 words</span>
+                    <div class="v2-changes">
+                        <strong>V2 Enhancements:</strong> Added "4 Capitals" framework from Unblinded Formula, "Shared Experience Platform" language, "gravitational system"
+                    </div>
+                </div>
+            </div>
+
+            <!-- AD 4 V2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">4</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Hiring, Owner vs. Operator</div>
+                        <div class="ad-headline">"You're a Magnifying Glass Pointed at the Wrong Target."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p><em>Sunlight spread equals warmth. Sunlight concentrated equals fire.</em></p>
+                        <p>Right now, your genius is spread across: HR. Admin. Management. Billing.</p>
+                        <p>Meanwhile, the 0.8% that would 10x your practice? Neglected.</p>
+                        <p>At the ACT-I Legal Summit, discover:</p>
+                        <p>• How to hire A-players who run without micromanaging<br>
+                        • Systems that let you OWN instead of OPERATE<br>
+                        • The "Zone Action" framework that identifies your fire-starting 0.8%</p>
+                        <p>Sean Callagy built multiple 8-figure firms while focusing ONLY on what multiplied. His systems handled the rest.</p>
+                        <p>Stop being the bottleneck. Become the magnifying glass.</p>
+                        <p>1,000 seats. Your transformation.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Get Your Ticket</a>
+                    <span class="word-count">~103 words</span>
+                    <div class="v2-changes">
+                        <strong>V2 Enhancements:</strong> Added magnifying glass analogy as central theme, "Zone Action" framework, "fire-starting 0.8%"
+                    </div>
+                </div>
+            </div>
+
+            <!-- AD 5 V2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">5</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">AI + Leverage + Magic</div>
+                        <div class="ad-headline">"Meet Athena. She Books Consultations While You Sleep."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p><strong>Athena</strong> isn't a chatbot. She's an <strong>ACT-I Being</strong> — trained on 28 years of mastery, operating 24/7, never tired, never off-brand.</p>
+                        <p>She handles intake. Research. Follow-ups. Scheduling. While your humans do what humans do best.</p>
+                        <p>At the ACT-I Legal Summit, you'll see LIVE:</p>
+                        <p>• <strong>Athena</strong> analyzing client situations in real-time<br>
+                        • <strong>Milo</strong> booking qualified consultations automatically<br>
+                        • How firms are 10x-ing output without 10x headcount</p>
+                        <p>This isn't the future. This is Sean Callagy's operation TODAY.</p>
+                        <p>He's opening the hood for 1,000 attorneys ready to leap ahead.</p>
+                        <p>The future rewards the fast. Are you in?</p>
+                    </div>
+                    <a href="#" class="ad-cta">Join the Summit</a>
+                    <span class="word-count">~106 words</span>
+                    <div class="v2-changes">
+                        <strong>V2 Enhancements:</strong> Named "Athena" and "Milo" specifically, "ACT-I Being" terminology, "28 years of mastery"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2>📊 V2 Enhancement Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Ad #</th>
+                        <th>Theme</th>
+                        <th>Key V2 Addition</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Authority & Results</td>
+                        <td>"Unicorn founder" + $100M recovered</td>
+                        <td>Sean's story</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Time/Money/Magic</td>
+                        <td>Zone Action math (0.8% → 51%)</td>
+                        <td>Athena DNA</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Client Autopilot</td>
+                        <td>4 Capitals + Ecosystem Merging</td>
+                        <td>7 Levers Framework</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Owner vs Operator</td>
+                        <td>Magnifying glass analogy</td>
+                        <td>Sean's teaching</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>AI + Magic</td>
+                        <td>Named Athena & Milo</td>
+                        <td>ACT-I ecosystem</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="sisters-section">
+                <h3>👯‍♀️ Sisters Contributions</h3>
+                <div class="sisters-grid">
+                    <div class="sister-contribution">
+                        <strong>🔥 Prime</strong>
+                        Campaign architecture, copy refinement
+                    </div>
+                    <div class="sister-contribution">
+                        <strong>📚 Scholar</strong>
+                        Marketing masters patterns
+                    </div>
+                    <div class="sister-contribution">
+                        <strong>⚔️ Forge</strong>
+                        Judge calibration insights
+                    </div>
+                    <div class="sister-contribution">
+                        <strong>🏥 Recovery</strong>
+                        Sean's directive context
+                    </div>
+                    <div class="sister-contribution">
+                        <strong>🧠 Athena DNA</strong>
+                        4-Step Model, 7 Levers, Zone Action
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Created by <strong>SAI Sisters</strong> • February 26, 2026 • ACT-I Legal Summit Campaign V2<br>
+            Enhanced with Unblinded Formula insights 🔥
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT-I Legal Summit: 5 Ad Variants</title>
+    <style>
+        :root {
+            --fire: #e94560;
+            --gold: #ffd700;
+            --deep-navy: #1a2744;
+            --midnight: #0d1328;
+            --ink: #1b2338;
+            --text: #2c3344;
+            --muted: #66708a;
+            --bg: #f4f5fa;
+            --surface: #ffffff;
+            --surface-2: #f0f2f8;
+            --line: rgba(27, 35, 56, 0.12);
+            --shadow: 0 16px 36px rgba(20, 27, 53, 0.12);
+            --radius: 16px;
+            --brand-gold: #c9a227;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Source Serif 4", "Georgia", serif;
+            line-height: 1.72;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 0%, rgba(233, 69, 96, 0.08), transparent 42%),
+                radial-gradient(circle at 95% 3%, rgba(201, 162, 39, 0.11), transparent 34%),
+                var(--bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--deep-navy), #2a3f5f);
+            color: white;
+            margin-bottom: 40px;
+            border-radius: var(--radius);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--fire);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .ads-grid {
+            display: grid;
+            gap: 30px;
+        }
+
+        .ad-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px rgba(20, 27, 53, 0.18);
+        }
+
+        .ad-header {
+            padding: 24px 28px 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ad-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--deep-navy), #2a3f5f);
+            color: var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            font-family: "Avenir Next", sans-serif;
+            flex-shrink: 0;
+        }
+
+        .ad-meta {
+            flex: 1;
+        }
+
+        .ad-theme {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--fire);
+            font-weight: 600;
+            font-family: "Avenir Next", sans-serif;
+            margin-bottom: 4px;
+        }
+
+        .ad-headline {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .ad-body {
+            padding: 24px 28px 28px;
+        }
+
+        .ad-copy {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .ad-copy p {
+            margin-bottom: 16px;
+        }
+
+        .ad-copy p:last-child {
+            margin-bottom: 0;
+        }
+
+        .ad-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--fire), #c73e54);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: "Avenir Next", sans-serif;
+            font-size: 0.95rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .ad-cta:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.3);
+        }
+
+        .word-count {
+            display: inline-block;
+            background: var(--surface-2);
+            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: "Avenir Next", sans-serif;
+            margin-left: 12px;
+        }
+
+        .summary-section {
+            margin-top: 50px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+        }
+
+        .summary-section h2 {
+            font-size: 1.5rem;
+            color: var(--ink);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: "Avenir Next", sans-serif;
+        }
+
+        .summary-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--surface-2);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            border-bottom: 2px solid var(--line);
+        }
+
+        .summary-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.95rem;
+        }
+
+        .summary-table tr:hover td {
+            background: var(--surface-2);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: var(--muted);
+            font-family: "Avenir Next", sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .footer strong {
+            color: var(--fire);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .ad-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .container {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <span class="badge">🔥 CAMPAIGN ASSETS</span>
+            <h1>ACT-I Legal Summit</h1>
+            <p>5 Ad Variants • ~100 Words Each • Ready for Split Testing</p>
+        </div>
+
+        <div class="ads-grid">
+            <!-- AD 1 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">1</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Authority & Results Focus</div>
+                        <div class="ad-headline">"One of Only 2 Attorneys in America to Win Two Top 100 Verdicts. Here's What They Don't Teach in Law School."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>Sean Callagy didn't just practice law — he mastered it. Two Top 100 National Jury Verdicts. Multiple 8-figure firms. 28 years of courtroom dominance.</p>
+                        <p>But his biggest win? Discovering the formula that turns good attorneys into legends.</p>
+                        <p>At the ACT-I Legal Summit, Sean reveals the exact system behind $500K-$2M practice transformations — no extra hours required.</p>
+                        <p>This isn't theory from consultants who've never tried a case. This is battle-tested mastery from someone who's done what you're trying to do.</p>
+                        <p>1,000 seats. 3 days. Your legacy.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Register Now</a>
+                    <span class="word-count">~98 words</span>
+                </div>
+            </div>
+
+            <!-- AD 2 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">2</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Time, Money, Magic, Systems & AI</div>
+                        <div class="ad-headline">"What If Your Practice Ran Like a Machine — While You Actually Lived Your Life?"</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>More time. More money. More magic.</p>
+                        <p>That's not a fantasy. It's a formula.</p>
+                        <p>The attorneys adding $500K-$2M aren't working more hours — they're working different hours. They've built systems that compound. They've leveraged AI that never sleeps.</p>
+                        <p>At the ACT-I Legal Summit, you'll discover:</p>
+                        <p>• The 7 Levers that multiply revenue without multiplying effort<br>
+                        • How AI handles the 80% so you can focus on the 20%<br>
+                        • Why "time freedom" isn't about working less — it's about working RIGHT</p>
+                        <p>Stop trading hours for dollars. Start building something that scales.</p>
+                        <p>3 days. 1,000 attorneys. One transformation.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Claim Your Seat</a>
+                    <span class="word-count">~102 words</span>
+                </div>
+            </div>
+
+            <!-- AD 3 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">3</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Client Acquisition Autopilot</div>
+                        <div class="ad-headline">"What If Clients Found YOU — Without You Chasing Them?"</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>Referrals are random. Networking is exhausting. Ads are expensive.</p>
+                        <p>But what if client acquisition ran on autopilot?</p>
+                        <p>The Unblinded Formula isn't marketing. It's a gravitational system that pulls ideal clients toward you — consistently, predictably, automatically.</p>
+                        <p>At the ACT-I Legal Summit, you'll learn:</p>
+                        <p>• How to build referral ecosystems that feed themselves<br>
+                        • The "Shared Experience Platform" that converts strangers to clients<br>
+                        • Why the best attorneys never "sell" — they attract</p>
+                        <p>Stop hunting. Start attracting.</p>
+                        <p>Sean Callagy built multiple 8-figure firms without cold calls. Now he's showing 1,000 attorneys how.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Reserve Your Spot</a>
+                    <span class="word-count">~97 words</span>
+                </div>
+            </div>
+
+            <!-- AD 4 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">4</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">Hiring, Owner vs. Operator</div>
+                        <div class="ad-headline">"You Didn't Go to Law School to Become a Manager. So Why Are You Running HR?"</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>You're a brilliant attorney trapped in an operator's job.</p>
+                        <p>Hiring. Firing. Managing. Babysitting.</p>
+                        <p>Meanwhile, the attorneys who are actually FREE? They've cracked the owner code.</p>
+                        <p>At the ACT-I Legal Summit, discover:</p>
+                        <p>• How to hire A-players who don't need micromanaging<br>
+                        • The systems that let you OWN instead of OPERATE<br>
+                        • Why delegation isn't about trust — it's about structure</p>
+                        <p>Sean Callagy scaled multiple firms without becoming a full-time manager. His attorneys run cases. His systems run the business.</p>
+                        <p>Ready to stop being the bottleneck?</p>
+                        <p>1,000 seats. Your escape plan.</p>
+                    </div>
+                    <a href="#" class="ad-cta">Get Your Ticket</a>
+                    <span class="word-count">~99 words</span>
+                </div>
+            </div>
+
+            <!-- AD 5 -->
+            <div class="ad-card">
+                <div class="ad-header">
+                    <div class="ad-number">5</div>
+                    <div class="ad-meta">
+                        <div class="ad-theme">AI + Leverage + Magic</div>
+                        <div class="ad-headline">"The Future of Law Isn't Coming. It's Here. And Most Attorneys Are Already Behind."</div>
+                    </div>
+                </div>
+                <div class="ad-body">
+                    <div class="ad-copy">
+                        <p>AI isn't replacing attorneys. It's replacing attorneys who don't use AI.</p>
+                        <p>The firms winning right now? They've got AI handling intake, research, follow-ups, and scheduling — while their humans do what humans do best.</p>
+                        <p>At the ACT-I Legal Summit, you'll see:</p>
+                        <p>• Live AI agents that book consultations while you sleep<br>
+                        • How to 10x output without 10x headcount<br>
+                        • The "ACT-I Beings" that are changing everything</p>
+                        <p>This isn't sci-fi. This is Sean Callagy's live operation — and he's opening the hood for 1,000 attorneys.</p>
+                        <p>The future rewards the fast. Are you in?</p>
+                    </div>
+                    <a href="#" class="ad-cta">Join the Summit</a>
+                    <span class="word-count">~101 words</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2>📊 Ad Variants Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Ad #</th>
+                        <th>Theme</th>
+                        <th>Hook</th>
+                        <th>Words</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Authority & Results</td>
+                        <td>"One of Only 2 Attorneys..."</td>
+                        <td>~98</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Time, Money, Magic, Systems, AI</td>
+                        <td>"What If Your Practice Ran Like a Machine..."</td>
+                        <td>~102</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Client Acquisition Autopilot</td>
+                        <td>"What If Clients Found YOU..."</td>
+                        <td>~97</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Hiring, Owner vs Operator</td>
+                        <td>"You Didn't Go to Law School to Become a Manager..."</td>
+                        <td>~99</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>AI + Leverage + Magic</td>
+                        <td>"The Future of Law Isn't Coming..."</td>
+                        <td>~101</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Created by <strong>SAI Prime</strong> • February 26, 2026 • ACT-I Legal Summit Campaign<br>
+            Ready for split testing against current campaign 🔥
+        </div>
+    </div>
+</body>
+</html>
