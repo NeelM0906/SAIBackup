@@ -1,0 +1,88 @@
+
+SEAN MASTERY PATTERNS - JUDGE CALIBRATION REPORT
+===============================================
+Generated: 2026-02-24 08:30:15
+Zone Action #76: Extract critical Sean mastery patterns for judge calibration improvement
+
+🎯 EXECUTIVE SUMMARY
+The analysis of Sean Callagy's teaching recordings, coaching sessions, and mastery content
+reveals consistent patterns that should be programmed into AI judges for accurate assessment.
+
+📊 KEY MASTERY INDICATORS SEAN USES:
+
+    1. 'mastery' - 412 mentions across recordings
+    2. 'process mastery' - 214 mentions across recordings
+    3. 'feedback' - 81 mentions across recordings
+    4. 'scoring' - 59 mentions across recordings
+    5. 'training' - 38 mentions across recordings
+    6. 'performance' - 38 mentions across recordings
+    7. 'assessment' - 34 mentions across recordings
+    8. 'seven levers' - 33 mentions across recordings
+    9. 'masterful' - 25 mentions across recordings
+   10. 'vulnerability' - 19 mentions across recordings
+   11. 'acknowledgment' - 13 mentions across recordings
+   12. 'coaching' - 13 mentions across recordings
+   13. 'evaluation' - 13 mentions across recordings
+   14. 'breakthrough' - 8 mentions across recordings
+   15. 'competence' - 7 mentions across recordings
+
+
+🏆 SEAN'S EVALUATION FRAMEWORK FOR JUDGES:
+
+1. FORMULA MASTERY ASSESSMENT
+   - Look for understanding of the core formula components
+   - Assess practical application, not just theoretical knowledge
+   - Weight heavily: aligned empowerment + loyalty to mission + masterful competence
+
+2. INFLUENCE MASTERY INDICATORS  
+   - Seven levers implementation
+   - Rising influence demonstration
+   - Quality and quantity of relationships/meetings
+
+3. PROCESS MASTERY MARKERS
+   - Breakthrough moments and vulnerability
+   - Growth mindset vs. fixed mindset language
+   - Acknowledgment and receiving feedback capacity
+
+4. ELITE SESSION CHARACTERISTICS
+   - Duration: 60-180 minutes for deep mastery work
+   - Multi-participant coaching/teaching format  
+   - Real-time vulnerability and breakthrough facilitation
+   - Integration of theory with practical application
+
+⚡ IMMEDIATE JUDGE CALIBRATION IMPROVEMENTS:
+
+1. WEIGHT FORMULA LANGUAGE HIGHLY
+   - When participants use formula terminology correctly, score higher
+   - Assess practical application, not just mention of concepts
+
+2. MASTERY vs. COMPETENCY DISTINCTION  
+   - Sean distinguishes between basic competency and true mastery
+   - Judges should score mastery demonstrations significantly higher
+
+3. VULNERABILITY & BREAKTHROUGH MOMENTS
+   - Sean values authentic vulnerability and breakthrough moments
+   - These indicate deeper transformation, not just surface learning
+
+4. GROWTH MINDSET LANGUAGE PATTERNS
+   - "I don't know but I'm willing to learn" scores higher than false confidence
+   - Questions and curiosity indicate growth potential
+
+5. RELATIONSHIP/INFLUENCE EVIDENCE
+   - Concrete examples of influence (meetings booked, relationships built)
+   - Quality of relationships, not just quantity
+
+📈 PATTERN CONFIDENCE SCORES:
+   Formula Mastery Patterns: HIGH (consistent across all recordings)
+   Teaching Methodology: HIGH (clear patterns in coaching style)  
+   Evaluation Criteria: MEDIUM-HIGH (observable in feedback sessions)
+   Elite Session Format: HIGH (consistent 60+ min immersive format)
+
+🎯 NEXT STEPS:
+1. Program these patterns into AI judge scoring algorithms
+2. Test judge accuracy against Sean's actual evaluations
+3. Refine weights based on calibration results
+4. Update judge prompts to emphasize mastery vs. competency
+
+---
+END REPORT

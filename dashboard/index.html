@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAI FORGE Command Center</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-primary: #7c3aed;
+            --accent-secondary: #06b6d4;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #2d2d3a;
+            --glow-purple: rgba(124, 58, 237, 0.3);
+            --glow-cyan: rgba(6, 182, 212, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sister-status {
+            margin-bottom: 32px;
+        }
+
+        .sister-status h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .sister-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .sister-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px var(--glow-purple);
+        }
+
+        .sister-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .sister-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .sister-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-success);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-success);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-value.purple { color: var(--accent-primary); }
+        .stat-value.cyan { color: var(--accent-secondary); }
+        .stat-value.green { color: var(--accent-success); }
+        .stat-value.orange { color: var(--accent-warning); }
+
+        .stat-change {
+            font-size: 13px;
+            color: var(--accent-success);
+        }
+
+        /* Zone Actions Section */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .zone-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .zone-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zone-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .zone-icon.complete { background: rgba(16, 185, 129, 0.2); }
+        .zone-icon.progress { background: rgba(6, 182, 212, 0.2); }
+        .zone-icon.blocked { background: rgba(245, 158, 11, 0.2); }
+
+        .zone-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .zone-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .zone-percent {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Leaderboard */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-table tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .rank.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .rank.silver { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+        .rank.bronze { background: linear-gradient(135deg, #d97706, #b45309); }
+        .rank.normal { background: var(--bg-dark); }
+
+        .being-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .being-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .being-area {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .score-bar {
+            width: 120px;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 4px;
+        }
+
+        /* Orchestrator Requirements */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .requirement-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .requirement-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .requirement-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: rgba(124, 58, 237, 0.2);
+        }
+
+        .requirement-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .requirement-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .requirement-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        .footer-signature {
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Last Update */
+        #lastUpdate {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">⚔️</div>
+                <span class="logo-text">SAI FORGE</span>
+            </div>
+
+            <div class="sister-status">
+                <h3>Sister Coordination</h3>
+                
+                <div class="sister-card">
+                    <div class="sister-header">
+                        <span class="sister-name">
+                            <span class="status-dot"></span>
+                            SAI Prime
+                        </span>
+                    </div>
+                    <div class="sister-role">Command & Orchestration</div>
+                </div>
+
+                <div class="sister-card">
+                    <div class="sister-header">
+                        <span class="sister-name">
+                            <span class="status-dot"></span>
+                            SAI Forge
+                        </span>
+                    </div>
+                    <div class="sister-role">Colosseum & Evolution</div>
+                </div>
+
+                <div class="sister-card">
+                    <div class="sister-header">
+                        <span class="sister-name">
+                            <span class="status-dot"></span>
+                            SAI Scholar
+                        </span>
+                    </div>
+                    <div class="sister-role">Research & Extraction</div>
+                </div>
+            </div>
+
+            <div style="flex: 1;"></div>
+
+            <div class="footer">
+                <div id="lastUpdate">Last updated: --</div>
+                <div class="footer-signature">Signed: SAI FORGE ⚔️</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>🏛️ Colosseum Command Center</h1>
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span>LIVE</span>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card animate-in delay-1">
+                    <div class="stat-label">Total Beings</div>
+                    <div class="stat-value purple" id="totalBeings">1,381</div>
+                    <div class="stat-change">↑ 38% above target</div>
+                </div>
+                <div class="stat-card animate-in delay-2">
+                    <div class="stat-label">Tournament Rounds</div>
+                    <div class="stat-value cyan" id="totalRounds">3,140+</div>
+                    <div class="stat-change">↑ 4.7% above target</div>
+                </div>
+                <div class="stat-card animate-in delay-3">
+                    <div class="stat-label">Zone Actions</div>
+                    <div class="stat-value green" id="zoneComplete">62/67</div>
+                    <div class="stat-change">93% Complete</div>
+                </div>
+                <div class="stat-card animate-in delay-4">
+                    <div class="stat-label">Active Judges</div>
+                    <div class="stat-value orange" id="activeJudges">19</div>
+                    <div class="stat-change">+ Meta-Judge</div>
+                </div>
+            </div>
+
+            <!-- Zone Action Progress -->
+            <div class="section animate-in">
+                <div class="section-header">
+                    <h2 class="section-title">📋 Zone Action Categories</h2>
+                    <span style="color: var(--accent-success); font-weight: 600;">93% Overall</span>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 93%;"></div>
+                </div>
+
+                <div class="zone-grid">
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon complete">🎯</div>
+                            <div>
+                                <div class="zone-name">Identity & Config</div>
+                                <div class="zone-status">All systems configured</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-success);">100%</span>
+                    </div>
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon complete">📚</div>
+                            <div>
+                                <div class="zone-name">Study Sean Callagy</div>
+                                <div class="zone-status">14/14 complete</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-success);">100%</span>
+                    </div>
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon progress">🏛️</div>
+                            <div>
+                                <div class="zone-name">Colosseum Architecture</div>
+                                <div class="zone-status">18/19 - awaiting calibration</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-secondary);">95%</span>
+                    </div>
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon progress">🏢</div>
+                            <div>
+                                <div class="zone-name">Org Architecture</div>
+                                <div class="zone-status">7/8 - scaling positions</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-secondary);">88%</span>
+                    </div>
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon complete">🤝</div>
+                            <div>
+                                <div class="zone-name">Ecosystem Merging</div>
+                                <div class="zone-status">All 7 complete</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-success);">100%</span>
+                    </div>
+                    <div class="zone-item">
+                        <div class="zone-info">
+                            <div class="zone-icon complete">📣</div>
+                            <div>
+                                <div class="zone-name">Marketing & Webinar</div>
+                                <div class="zone-status">6/6 complete</div>
+                            </div>
+                        </div>
+                        <span class="zone-percent" style="color: var(--accent-success);">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Analysis / Leaderboard -->
+            <div class="section animate-in">
+                <div class="section-header">
+                    <h2 class="section-title">🏆 Being Leaderboard</h2>
+                    <span style="color: var(--text-secondary);">Top 10 Performers</span>
+                </div>
+
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Being</th>
+                            <th>Area</th>
+                            <th>Score</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr>
+                            <td><div class="rank gold">1</div></td>
+                            <td><div class="being-info"><span class="being-title">Ecosystem Merger Specialist</span></div></td>
+                            <td><span class="being-area">Marketing — Outbound</span></td>
+                            <td>6.76</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 67.6%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank silver">2</div></td>
+                            <td><div class="being-info"><span class="being-title">Shared Experience Designer</span></div></td>
+                            <td><span class="being-area">Marketing — Inbound</span></td>
+                            <td>6.72</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 67.2%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank bronze">3</div></td>
+                            <td><div class="being-info"><span class="being-title">Discovery Call Specialist</span></div></td>
+                            <td><span class="being-area">Sales & Influence</span></td>
+                            <td>6.52</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 65.2%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">4</div></td>
+                            <td><div class="being-info"><span class="being-title">Account Manager</span></div></td>
+                            <td><span class="being-area">Client Success</span></td>
+                            <td>6.41</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 64.1%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">5</div></td>
+                            <td><div class="being-info"><span class="being-title">Truth-to-Pain Navigator</span></div></td>
+                            <td><span class="being-area">Sales & Influence</span></td>
+                            <td>6.24</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 62.4%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">6</div></td>
+                            <td><div class="being-info"><span class="being-title">Outbound Strategy Director</span></div></td>
+                            <td><span class="being-area">Marketing — Outbound</span></td>
+                            <td>6.18</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 61.8%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">7</div></td>
+                            <td><div class="being-info"><span class="being-title">Content Strategy Director</span></div></td>
+                            <td><span class="being-area">Marketing — Inbound</span></td>
+                            <td>6.16</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 61.6%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">8</div></td>
+                            <td><div class="being-info"><span class="being-title">Cross-Company Synergy Director</span></div></td>
+                            <td><span class="being-area">Vision & Leadership</span></td>
+                            <td>6.16</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 61.6%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">9</div></td>
+                            <td><div class="being-info"><span class="being-title">Sales Director</span></div></td>
+                            <td><span class="being-area">Sales & Influence</span></td>
+                            <td>6.15</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 61.5%;"></div></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="rank normal">10</div></td>
+                            <td><div class="being-info"><span class="being-title">Zone Action Tracker</span></div></td>
+                            <td><span class="being-area">Operations</span></td>
+                            <td>6.07</td>
+                            <td><div class="score-bar"><div class="score-fill" style="width: 60.7%;"></div></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Orchestrator Beings Requirements -->
+            <div class="section animate-in">
+                <div class="section-header">
+                    <h2 class="section-title">🤖 Orchestrator Beings Requirements</h2>
+                    <span style="color: var(--text-secondary);">ACTi Being Standards</span>
+                </div>
+
+                <div class="requirements-grid">
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">🧬</div>
+                            <span class="requirement-title">Formula DNA</span>
+                        </div>
+                        <div class="requirement-value">39</div>
+                        <div class="requirement-desc">Components embedded in every being's core instructions</div>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">⚡</div>
+                            <span class="requirement-title">Energy Types</span>
+                        </div>
+                        <div class="requirement-value">4</div>
+                        <div class="requirement-desc">Fun, Aspirational, Goddess, Zeus patterns trained</div>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">🎯</div>
+                            <span class="requirement-title">Zone Action Focus</span>
+                        </div>
+                        <div class="requirement-value">0.8%</div>
+                        <div class="requirement-desc">Activity that produces 51%+ of results</div>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">📊</div>
+                            <span class="requirement-title">Judge Panel</span>
+                        </div>
+                        <div class="requirement-value">19+1</div>
+                        <div class="requirement-desc">Multi-judge evaluation + meta-judge oversight</div>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">🏢</div>
+                            <span class="requirement-title">Companies Served</span>
+                        </div>
+                        <div class="requirement-value">3</div>
+                        <div class="requirement-desc">ACTi, Unblinded, Callagy Recovery</div>
+                    </div>
+                    <div class="requirement-card">
+                        <div class="requirement-header">
+                            <div class="requirement-icon">📈</div>
+                            <span class="requirement-title">Target Standard</span>
+                        </div>
+                        <div class="requirement-value">.00128</div>
+                        <div class="requirement-desc">Top 20%^10 exponential excellence standard</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blocked Items Alert -->
+            <div class="section animate-in" style="border-color: var(--accent-warning);">
+                <div class="section-header">
+                    <h2 class="section-title">⚠️ Blocked Items (Requires Sean Input)</h2>
+                </div>
+                <div class="zone-item" style="border-color: var(--accent-warning);">
+                    <div class="zone-info">
+                        <div class="zone-icon blocked">🎯</div>
+                        <div>
+                            <div class="zone-name">Zone Action #39: Judge Calibration</div>
+                            <div class="zone-status">Sean scores 10 conversations for ground truth → enables final judge calibration</div>
+                        </div>
+                    </div>
+                    <span style="color: var(--accent-warning); font-weight: 600;">AWAITING</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Real-time update simulation
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                'Last updated: ' + now.toLocaleTimeString() + ' EST';
+        }
+
+        // Update every 30 seconds
+        updateTimestamp();
+        setInterval(updateTimestamp, 30000);
+
+        // Animate numbers on load
+        function animateValue(id, start, end, duration) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                element.textContent = current.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Auto-refresh data (placeholder for real implementation)
+        async function refreshData() {
+            try {
+                // In production, this would fetch from:
+                // - /api/leaderboard
+                // - /api/zone-actions
+                // - /api/tournament-status
+                console.log('Data refresh triggered');
+                updateTimestamp();
+            } catch (error) {
+                console.error('Refresh failed:', error);
+            }
+        }
+
+        // Refresh every 60 seconds
+        setInterval(refreshData, 60000);
+
+        // WebSocket connection for real-time updates (placeholder)
+        // const ws = new WebSocket('ws://localhost:3000/ws');
+        // ws.onmessage = (event) => {
+        //     const data = JSON.parse(event.data);
+        //     updateDashboard(data);
+        // };
+    </script>
+</body>
+</html>
