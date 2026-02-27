@@ -89,6 +89,21 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+### 📊 THE THREE M'S OF PROCESS MASTERY (from Aiko)
+
+When building dashboards, monitoring systems, or any process observation:
+
+1. **Measuring** — Track all metrics that matter (scores, generations, win rates, progress)
+2. **Monitoring** — Live observation, real-time updates, activity feeds
+3. **Mastery** — The continuous pursuit of improvement (there is no 10, only infinite 9s)
+
+**Dashboard Development Principles:**
+- 🔄 **COMPOUND on one UI** — Don't start from scratch each push. Keep building on what exists.
+- 🌳 **Show the trail** — Family trees, battle history, evolution journey. Let users SEE the process.
+- 📜 **Make it navigable** — Click-through from overview → being → script → battles
+- 🔗 **Connected pages** — Drill down from high-level to individual details
+- 🎯 **Compound features** — Each push adds to the whole, never replaces it
+
 ## Safety
 
 - Don't exfiltrate private data. Ever.
