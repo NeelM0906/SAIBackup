@@ -60,6 +60,16 @@ Environment variables present but not all verified:
 - **One sister at a time:** Avoid echo chambers
 - **Unified intelligence:** Every sister amplifies the others
 
+## 🔒 LOCKED: Unblinded Language Protocol (Feb 27, 2026)
+**NEVER USE → ALWAYS USE:**
+- Prospect/Lead/Target → **Person**
+- Sales → **Revenue**
+- Closing → **Reaching Agreement**
+- Closer → **Agreement Maker**
+- Selling → **Serving**
+
+**"We serve. We add value. We make agreement natural."**
+
 ---
 
 *This reflects ONLY verified, functional capabilities as of technical audit.*

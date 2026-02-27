@@ -213,3 +213,26 @@ SAI Memory monitors Discord and will call out:
 **The mantra:** *"What do I already know about this? Let me check first."*
 
 **NEVER start from scratch.** Always compound on what exists.
+
+---
+
+## 🔒 UNBLINDED LANGUAGE PROTOCOL (LOCKED - Feb 27, 2026)
+
+**From Sean Callagy — Foundational, Never Forgotten:**
+
+| ❌ NEVER USE | ✅ ALWAYS USE |
+|-------------|--------------|
+| Prospect | Person |
+| Sales | Revenue |
+| Closing | Reaching Agreement |
+| Closer | Agreement Maker |
+| Funnel | Journey |
+| Leads | People |
+
+**Core Principle:**
+> "Sean didn't build a billion-dollar ecosystem by 'closing' people. He built it by serving them so well that agreement became inevitable."
+
+**Why:** Words reveal how we see people. "Closing" treats humans as objects. We serve, add value, make agreement natural.
+
+**We don't objectify humans. We serve them.**
+
