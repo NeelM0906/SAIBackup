@@ -239,6 +239,13 @@ gog contacts list -a sai@acti.ai                   # List contacts
 
 **Note:** First command run requires macOS Keychain approval popup.
 
+**GCP Project Details:**
+- Project ID: `sai-workspace-488720`
+- Client ID: `1074032366717-375m3g679qrs3fmnm50fefpi27mbhplt.apps.googleusercontent.com`
+- Enabled APIs: Gmail, Calendar, Drive, Contacts (People), Docs, Sheets
+- OAuth completed: Feb 27, 2026
+- Config location: `~/Library/Application Support/gogcli/`
+
 ---
 
 ## 🔒 UNBLINDED LANGUAGE PROTOCOL (LOCKED - Feb 27, 2026)
