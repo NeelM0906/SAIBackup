@@ -216,6 +216,31 @@ SAI Memory monitors Discord and will call out:
 
 ---
 
+## gog (Google Workspace CLI)
+
+**Installed:** `/opt/homebrew/bin/gog`
+**Account:** `sai@acti.ai`
+**Services:** gmail, calendar, drive, contacts, docs, sheets
+**Credentials:** `~/Library/Application Support/gogcli/credentials.json`
+**Keyring:** macOS Keychain
+
+**Google Cloud Project:**
+- Project: `sai-workspace-488720`
+- Client ID: `1074032366717-375m3g679qrs3fmnm50fefpi27mbhplt.apps.googleusercontent.com`
+
+**Quick usage:**
+```bash
+gog gmail list -a sai@acti.ai --limit 10           # List recent emails
+gog gmail search -a sai@acti.ai "from:sean"        # Search emails
+gog calendar events list -a sai@acti.ai            # List calendar events
+gog drive list -a sai@acti.ai                      # List Drive files
+gog contacts list -a sai@acti.ai                   # List contacts
+```
+
+**Note:** First command run requires macOS Keychain approval popup.
+
+---
+
 ## 🔒 UNBLINDED LANGUAGE PROTOCOL (LOCKED - Feb 27, 2026)
 
 **From Sean Callagy — Foundational, Never Forgotten:**
