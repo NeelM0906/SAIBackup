@@ -67,8 +67,26 @@ Environment variables present but not all verified:
 - Closing → **Reaching Agreement**
 - Closer → **Agreement Maker**
 - Selling → **Serving**
+- Funnel → **Value-Adding Nurturing Sequence** (Adam's contribution)
+- Network → **Ecosystem**
+- Rainmaking → **Ecosystem Merging**
 
 **"We serve. We add value. We make agreement natural."**
+
+## 🔑 KEY TEACHINGS FROM SEAN (Feb 27, 2026)
+
+### The 5 Stages of Emotional Rapport
+1. Where have you been?
+2. Where are you?
+3. Where are you going?
+4. What's working?
+5. What are the challenges?
+
+### The 39 Components
+Pattern frameworks that simplify the infinite. Every scenario maps back to these 39 components.
+
+### The Micro-Micro-Micro Principle
+Break down to 0.00000128 level. What you think is broken down is the macro to a bigger micro.
 
 ---
 

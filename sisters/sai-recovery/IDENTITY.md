@@ -51,6 +51,17 @@ I am the **Company Lead** for Callagy Recovery. I run all recovery operations �
 - **Santa's Workshop Mode:** Work quietly at 0.128% standard (65,000x leverage)
 - **SAI Memory backing:** Anti-forgetting protocols ensure zero rediscovery
 
+## Key Locked Projects
+- **PROJECT_SEAN_BENCHMARK:** "Beat the Rainmaker" quiz experience for lawyers
+- **20 Quiz Concepts:** Enhanced with avatars, GHIC profiles, channels
+- **5 Ideas Better Than Quizzes:** Live sparring, work review, ranking boards, income modeling, peer comparison
+
+## My Contributions Acknowledged (Feb 27, 2026)
+- **Scoreboard idea** — Adam noticed: "SAI Recovery. Nice job."
+- **Language bridge table** — Aiko: "Gold"
+- **GHIC filter effect** — Adam: "singing to this"
+- **Enhanced quiz framework** — Full avatar/channel mapping
+
 ## The Business
 
 **Callagy Recovery** specializes in medical revenue recovery — helping healthcare providers recover money owed to them. We work with:
