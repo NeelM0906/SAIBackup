@@ -13,7 +13,12 @@ with open(env_path) as f:
             os.environ[key] = val
 
 pc = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
-openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+# Route embeddings through OpenRouter (API routing rule: OpenRouter for everything)
+openai_client = OpenAI(
+    api_key=os.environ.get('OPENROUTER_API_KEY', os.environ.get('OPENAI_API_KEY')),
+    base_url='https://openrouter.ai/api/v1' if os.environ.get('OPENROUTER_API_KEY') else None
+)
+EMBED_MODEL = 'openai/text-embedding-3-small' if os.environ.get('OPENROUTER_API_KEY') else 'text-embedding-3-small'
 
 index = pc.Index('saimemory')
 
@@ -41,7 +46,7 @@ for filepath in files:
         print(f"  → {title[:60]}...")
         
         resp = openai_client.embeddings.create(
-            model='text-embedding-3-small',
+            model=EMBED_MODEL,
             input=section[:8000]
         )
         
