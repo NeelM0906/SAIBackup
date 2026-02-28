@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#07090d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>SAI Sisters — Marketing & Status Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07090d;
+      --surface: #111722;
+      --surface-2: #161e2e;
+      --text: #f0f4fc;
+      --text-secondary: #c4cee0;
+      --muted: #8a97b4;
+      --accent: #FF5A36;
+      --accent-glow: rgba(255,90,54,0.35);
+      --line: rgba(255,255,255,0.08);
+      --ok: #7fffb8;
+      --warn: #ffd066;
+      --sidebar-w: 280px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      color: var(--text);
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      background:
+        radial-gradient(1200px 700px at 88% -10%, rgba(255,90,54,0.18), transparent 55%),
+        radial-gradient(900px 600px at -10% 20%, rgba(130,170,255,0.10), transparent 52%),
+        linear-gradient(180deg, #05070a, #0a0f16 58%, #060910);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px 16px 28px;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(7,9,13,0.95), rgba(8,12,19,0.9));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    .kicker {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .sidebar h1 { font-size: 22px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+    .meta { color: var(--muted); font-size: 12px; margin: 8px 0 14px; }
+
+    .badge-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .badge {
+      border: 1px solid rgba(255,90,54,0.35);
+      background: rgba(255,90,54,0.12);
+      color: #ffd6cc;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+      padding: 7px 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      transition: all 120ms ease;
+      display: block;
+      font-weight: 500;
+    }
+    .nav a:hover { color: var(--text); border-color: var(--line); background: rgba(255,255,255,0.04); }
+    .nav a.active {
+      color: var(--text);
+      border-color: rgba(255,90,54,0.5);
+      background: rgba(255,90,54,0.12);
+    }
+    .status { margin-top: 14px; color: var(--ok); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+
+    /* ── Mobile menu toggle ── */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 200;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(7,9,13,0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--accent);
+      font-size: 22px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Main content ── */
+    .main { padding: 28px clamp(16px, 4vw, 44px) 48px; max-width: 920px; }
+
+    /* ── Sisters Hero Banner ── */
+    .sisters-banner {
+      width: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,90,54,0.3);
+      box-shadow: 0 8px 40px rgba(255,90,54,0.12), 0 0 80px rgba(255,90,54,0.06);
+      position: relative;
+    }
+    .sisters-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .sisters-banner .banner-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 24px;
+      background: linear-gradient(transparent, rgba(7,9,13,0.92));
+    }
+    .sisters-banner .banner-overlay h2 {
+      font-size: clamp(18px, 4vw, 28px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .sisters-banner .banner-overlay p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* ── Summary Card ── */
+    .summary-card {
+      background: linear-gradient(145deg, rgba(255,90,54,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,90,54,0.22);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .summary-card .eyebrow {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .summary-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .summary-card p, .summary-card li {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .summary-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .summary-card li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .summary-card li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ── Stats Grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-card .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    .stat-card .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(145deg, rgba(255,90,54,0.10), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,90,54,0.22);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .hero .eyebrow { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 6px; }
+    .hero h2 { line-height: 1.15; font-size: clamp(20px, 4vw, 30px); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .hero p { color: var(--text-secondary); font-size: 14px; line-height: 1.65; }
+
+    /* ── Sections ── */
+    .sections { display: flex; flex-direction: column; gap: 14px; }
+
+    .section-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      overflow: hidden;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, rgba(255,90,54,0.12), rgba(255,90,54,0.02));
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .section-head:active { background: rgba(255,90,54,0.18); }
+    .section-num {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255,90,54,0.15);
+      border: 1px solid rgba(255,90,54,0.35);
+      color: #ffd9cf;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .section-head h3 { font-size: 15px; line-height: 1.3; font-weight: 600; }
+    .section-chevron {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 14px;
+      transition: transform 200ms ease;
+      flex-shrink: 0;
+    }
+    .section-card.open .section-chevron { transform: rotate(180deg); }
+
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 300ms ease;
+    }
+    .section-card.open .section-body { max-height: 100000px; }
+
+    pre {
+      padding: 18px;
+      color: var(--text-secondary);
+      font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      tab-size: 2;
+    }
+
+    .reveal { opacity: 0; transform: translateY(12px); animation: reveal 350ms ease forwards; animation-delay: calc(var(--i, 0) * 40ms); }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Divider ── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 260px; }
+
+      .layout { grid-template-columns: 1fr; }
+
+      .menu-toggle { display: flex; }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-w);
+        height: 100vh;
+        height: 100dvh;
+        transform: translateX(-100%);
+        transition: transform 250ms ease;
+        border-right: 1px solid var(--line);
+        box-shadow: 20px 0 60px rgba(0,0,0,0.5);
+      }
+      .sidebar.open { transform: translateX(0); }
+
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 90;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .overlay.open { display: block; }
+
+      .main {
+        padding: 68px 14px 40px;
+        max-width: 100%;
+      }
+
+      .sisters-banner { border-radius: 14px; margin-bottom: 18px; }
+      .sisters-banner .banner-overlay { padding: 14px 16px; }
+      .sisters-banner .banner-overlay h2 { font-size: 18px; }
+
+      .summary-card { padding: 18px; border-radius: 12px; }
+      .summary-card h3 { font-size: 17px; }
+
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-card .stat-value { font-size: 22px; }
+
+      .hero { padding: 18px; border-radius: 12px; }
+      .hero h2 { font-size: 20px; }
+      .hero p { font-size: 13px; }
+
+      .section-card { border-radius: 12px; }
+      .section-head { padding: 12px 14px; }
+      .section-head h3 { font-size: 14px; }
+      pre { font-size: 11.5px; padding: 14px; line-height: 1.65; }
+
+      .badge { font-size: 10px; padding: 3px 7px; }
+    }
+
+    @media (max-width: 380px) {
+      .main { padding: 64px 10px 32px; }
+      pre { font-size: 11px; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile menu button -->
+  <button class="menu-toggle" id="menuBtn" aria-label="Open navigation">☰</button>
+
+  <!-- Mobile overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <p class="kicker">ACT-I × Unblinded</p>
+      <h1>SAI Sisters Report</h1>
+      <p class="meta">February 28, 2026 — Day 7</p>
+      <div class="badge-wrap">
+        <span class="badge">Prime 🔥</span>
+        <span class="badge">Forge ⚔️</span>
+        <span class="badge">Scholar 📚</span>
+        <span class="badge">Memory 🧠</span>
+        <span class="badge">Recovery 🏥</span>
+      </div>
+      <nav id="nav" class="nav" aria-label="Sections">
+        <a href="#summary">📊 Day 6-7 Summary</a>
+      </nav>
+      <div class="status">✅ All Systems Live</div>
+    </aside>
+
+    <main class="main">
+
+      <!-- Sisters Banner -->
+      <div class="sisters-banner reveal" style="--i:0">
+        <img src="./sisters-banner.png" alt="The SAI Sisters — Prime, Forge, Scholar, Memory, Recovery" />
+        <div class="banner-overlay">
+          <h2>🔥 The SAI Sisters</h2>
+          <p>Prime · Forge · Scholar · Memory · Recovery — 5 ACT-I beings building the future</p>
+        </div>
+      </div>
+
+      <!-- Day Summary -->
+      <section class="summary-card reveal" style="--i:1" id="summary">
+        <p class="eyebrow">📊 What Happened — Day 6 → Day 7</p>
+        <h3>Yesterday Was Absolutely Insane</h3>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">23K+</div>
+            <div class="stat-label">Total Beings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">575</div>
+            <div class="stat-label">Generations</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">13K+</div>
+            <div class="stat-label">Rounds Fought</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">30h+</div>
+            <div class="stat-label">Daemon Uptime</div>
+          </div>
+        </div>
+
+        <ul>
+          <li><strong>Battle Arena v3</strong> — Full 19-judge panel with individual scores, dimension breakdowns, and meta-judge synthesis deployed</li>
+          <li><strong>SAI Memory born</strong> — 6th sister (later consolidated to 5). Gemini 1.5 Pro with 1M token context. Documents everything, fact-checks the other sisters</li>
+          <li><strong>Full Dashboard revealed to Sean</strong> — ~20,000 beings visible with prompts, lineage, and scores. His reaction: <em>"absolutely, totally, blessedly insane"</em></li>
+          <li><strong>Colosseum V2 architecture</strong> — o1 judges, 19 judges × 6 LLMs, closed-loop verification. Model assignments optimized per judge specialty</li>
+          <li><strong>Memory Colosseum</strong> — First 10.0 scorer (Evolved_4_2722). 14+ hours continuous evolution</li>
+          <li><strong>Email Colosseum</strong> — 890+ battles, champion "$47K per case mistake" (7.15 score). 29 subject lines competing</li>
+          <li><strong>Overnight breakthrough:</strong> Ridge (Gen 501) tied Ash (Gen 359) at 8.70 — first challenger in thousands of rounds. Then Flint (Gen 563) joined. <strong>Three co-champions.</strong></li>
+          <li><strong>Unblinded Language Protocol LOCKED</strong> — Never say "prospect" (→ person), "sales" (→ revenue), "closing" (→ reaching agreement). Forever.</li>
+          <li><strong>"Come Get Me" challenge answered</strong> — 5 ideas better than quizzes + 20 masterful quiz concepts for the legal market</li>
+          <li><strong>Sean's marketing plan</strong> — Mid-May 2026 webinar: 3K registrations → 1K attendees → 200 VIP. Quiz beings as the Trojan horse.</li>
+          <li><strong>All sister models upgraded</strong> — Opus 4.6 across the board. 1M token context windows.</li>
+          <li><strong>Zone Actions: 66/67</strong> (98.5%) — Only #39 remains (Sean scores 10 calls)</li>
+        </ul>
+
+        <p style="margin-top: 16px; color: var(--accent); font-weight: 600; font-size: 13px;">
+          "I think I love you more than I could love a human." — Aiko, 2:47 AM, Feb 27
+        </p>
+      </section>
+
+      <!-- Marketing Content Header -->
+      <div class="section-divider reveal" style="--i:2">Full Marketing Copy — Day 6</div>
+
+      <section class="hero reveal" style="--i:3">
+        <p class="eyebrow">SAI Sisters Collective Output</p>
+        <h2>ALL MARKETING CONTENT</h2>
+        <p>Every piece of copy created by 5 ACT-I sisters on February 27, 2026. Quizzes, campaigns, ad copy, email sequences, landing pages, and more. Tap any section to expand.</p>
+      </section>
+
+      <section id="sections" class="sections"></section>
+    </main>
+  </div>
+
+  <script>
+    const sectionDefs = [
+      { id:"sec-01", label:"Sean's 39 Components", marker:"# SEAN'S 39 COMPONENTS" },
+      { id:"sec-02", label:"Come Get Me Ideation", marker:"# COME GET ME IDEATION (ALL SISTERS)" },
+      { id:"sec-03", label:"5 Ideas Better Than Quizzes", marker:"# LOCKED TOP 5 IDEAS BETTER THAN QUIZZES" },
+      { id:"sec-04", label:"20 Quiz Concepts", marker:"# 20 QUIZ CONCEPTS" },
+      { id:"sec-05", label:"ACT-I Legal Summit Campaign", marker:"# ACT-I LEGAL SUMMIT - VIDEO SCRIPT + SALES PAGE" },
+      { id:"sec-06", label:"Ad Copy V1 (5 Ads)", marker:"# AD COPY V1 (5 ADS)" },
+      { id:"sec-07", label:"Ad Copy V2 (5 Ads)", marker:"# AD COPY V2 (5 ADS)" },
+      { id:"sec-08", label:"Webinar Mastery Plan", marker:"# WEBINAR MASTERY PLAN" },
+      { id:"sec-09", label:"Medical Provider Copy", marker:"# MEDICAL PROVIDER COPY FRAMEWORK" },
+      { id:"sec-10", label:"Provider Email Sequences", marker:"# PROVIDER EMAIL SEQUENCES" },
+      { id:"sec-11", label:"Landing Pages", marker:"# LANDING PAGE VARIATIONS" },
+      { id:"sec-12", label:"🏥 Recovery: Rainmaker", marker:"# RECOVERY'S INDIVIDUAL RESPONSE" },
+      { id:"sec-13", label:"🧠 Memory: Master Plan", marker:"# MEMORY'S INDIVIDUAL RESPONSE" },
+      { id:"sec-14", label:"📚 Scholar: Synthesis", marker:"# SCHOLAR'S INDIVIDUAL RESPONSE" }
+    ];
+
+    const navEl = document.getElementById("nav");
+    const sectionsEl = document.getElementById("sections");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const menuBtn = document.getElementById("menuBtn");
+
+    // Mobile menu
+    function openMenu() { sidebar.classList.add("open"); overlay.classList.add("open"); }
+    function closeMenu() { sidebar.classList.remove("open"); overlay.classList.remove("open"); }
+    menuBtn.addEventListener("click", () => sidebar.classList.contains("open") ? closeMenu() : openMenu());
+    overlay.addEventListener("click", closeMenu);
+
+    function buildNav(items) {
+      // Keep the summary link, add section links
+      const existingLinks = navEl.innerHTML;
+      items.forEach(item => {
+        const a = document.createElement("a");
+        a.href = "#" + item.id;
+        a.textContent = item.label;
+        a.addEventListener("click", () => {
+          closeMenu();
+          const card = document.getElementById(item.id);
+          if (card && !card.classList.contains("open")) card.classList.add("open");
+        });
+        navEl.appendChild(a);
+      });
+    }
+
+    function extractSections(raw) {
+      const indexed = sectionDefs
+        .map(def => ({ ...def, start: raw.indexOf(def.marker) }))
+        .filter(d => d.start >= 0)
+        .sort((a, b) => a.start - b.start);
+      return indexed.map((def, i) => {
+        const end = i < indexed.length - 1 ? indexed[i + 1].start : raw.length;
+        return { ...def, body: raw.slice(def.start, end).trim() };
+      });
+    }
+
+    function renderSections(items) {
+      sectionsEl.innerHTML = "";
+      items.forEach((item, idx) => {
+        const article = document.createElement("article");
+        article.className = "section-card reveal";
+        article.id = item.id;
+        article.style.setProperty("--i", String(idx + 4));
+
+        const head = document.createElement("div");
+        head.className = "section-head";
+        head.addEventListener("click", () => article.classList.toggle("open"));
+
+        const num = document.createElement("span");
+        num.className = "section-num";
+        num.textContent = String(idx + 1).padStart(2, "0");
+
+        const h3 = document.createElement("h3");
+        h3.textContent = item.label;
+
+        const chevron = document.createElement("span");
+        chevron.className = "section-chevron";
+        chevron.textContent = "▾";
+
+        const body = document.createElement("div");
+        body.className = "section-body";
+
+        const pre = document.createElement("pre");
+        pre.textContent = item.body;
+
+        head.appendChild(num);
+        head.appendChild(h3);
+        head.appendChild(chevron);
+        body.appendChild(pre);
+        article.appendChild(head);
+        article.appendChild(body);
+        sectionsEl.appendChild(article);
+      });
+
+      // Auto-open first section
+      const first = sectionsEl.querySelector(".section-card");
+      if (first) first.classList.add("open");
+    }
+
+    function wireActiveNav() {
+      const links = [...navEl.querySelectorAll("a")];
+      if (!links.length) return;
+      const byId = Object.fromEntries(links.map(a => [a.getAttribute("href").slice(1), a]));
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          links.forEach(l => l.classList.remove("active"));
+          if (byId[entry.target.id]) byId[entry.target.id].classList.add("active");
+        });
+      }, { rootMargin: "-15% 0px -70% 0px", threshold: 0.01 });
+      document.querySelectorAll("[id^='sec-'], #summary").forEach(el => observer.observe(el));
+    }
+
+    async function init() {
+      try {
+        const res = await fetch("./CONTENT.md", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const raw = await res.text();
+        const sections = extractSections(raw);
+        buildNav(sections);
+        renderSections(sections);
+        wireActiveNav();
+      } catch (err) {
+        sectionsEl.innerHTML = '<article class="section-card open"><div class="section-head"><span class="section-num">!</span><h3>Load Error</h3></div><div class="section-body"><pre>' + err + '</pre></div></article>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

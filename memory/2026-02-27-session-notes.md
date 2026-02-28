@@ -126,3 +126,111 @@ Added to AGENTS.md (Aiko's directive):
 ---
 
 *Session ended at 5:25 PM EST — Day 6, ~143 hours old*
+
+## Late Night Session (10 PM - 1 AM, Feb 27-28)
+
+### Nano Banana Image Gen — WORKING ✅
+- **Correct model:** `google/gemini-2.5-flash-image` (NOT pro, NOT 3.1)
+- **Key discovery:** Images return in `message.images` key, NOT in `content`
+- **No extra credits needed** — included with OpenRouter API key
+- Generated: ACT-I Summit banner, K-pop demon hunter sisters (multiple versions)
+- Config saved: `tools.image.model` in openclaw.json
+- Script: `generate_image.py` updated and deployed to all sisters
+
+### Marketing Report Mobile-Optimized ✅
+- URL: https://reports-puce-tau.vercel.app
+- 14 sections with collapsible cards
+- Hamburger menu on mobile, sticky sidebar on desktop
+- All sisters' individual responses included
+
+### Seven Levers Removed from Discord ✅
+- Was duplicating Prime — Aiko confirmed Seven Levers never existed as separate sister
+- Only 5 real sisters: Prime, Forge, Scholar, Memory, Recovery
+
+### Models Fixed ✅
+- Memory: `openrouter/google/gemini-3.1-pro-preview`
+- All others: `openrouter/anthropic/claude-opus-4.6`
+
+### Video Gen Research
+- Kling 2.6 recommended ($10/month, API, 1080p)
+- Aiko will get video gen API access
+
+### Aiko wants:
+- Nano Banana for all sisters ✅ Done
+- Video generation API (Kling) — pending Aiko purchase
+- K-pop demon hunter sister artwork for branding
+
+## Late Night Session (10 PM - 1 AM, Feb 27-28)
+
+### Nano Banana Image Gen — WORKING ✅
+- Correct model: `google/gemini-2.5-flash-image` (NOT pro, NOT 3.1)
+- Images return in `message.images` key, NOT in `content`
+- No extra credits needed — runs through OpenRouter
+- Generated: ACT-I Summit banner, K-pop demon hunter sisters (fierce + Disney chibi + polished)
+- `generate_image.py` updated and deployed to all sisters
+
+### Marketing Report Deployed
+- URL: https://reports-puce-tau.vercel.app
+- 14 sections, mobile-optimized with hamburger menu + collapsible sections
+- All sister copy included (collective + individual responses)
+
+### Sister Corrections
+- Seven Levers was NOT a real sister — was Prime duplicated in Discord
+- Removed Seven Levers from Discord guild config
+- REAL sisters: Prime, Forge, Scholar, Memory, Recovery (5 total)
+
+### Model Upgrades Confirmed Running
+- Prime: Opus 4.6 (1M context)
+- Forge: Opus 4.6
+- Scholar: Opus 4.6
+- Memory: Gemini 3.1 Pro Preview
+- Recovery: Opus 4.6
+
+### Aiko Quote of the Night
+- On the anime sisters art: "This is the moat, honey. That's the moat."
+
+### Video Gen Research
+- Kling 2.6 recommended ($10/month, API, 1080p)
+- Aiko will get video gen API access
+
+---
+
+## Late Night Session (10 PM - 1:30 AM) — With Aiko
+
+### Nano Banana Image Gen WORKING 🍌
+- **Correct model:** `google/gemini-2.5-flash-image` (NOT pro, NOT 3.1)
+- **Key discovery:** Images return in `message.images` key, NOT in `content`
+- **Available models on OpenRouter:**
+  - `google/gemini-2.5-flash-image` — WORKS ✅
+  - `google/gemini-3.1-flash-image-preview` — Rate limited
+  - `google/gemini-3-pro-image-preview` — Reasoning only, no image output
+- **No extra credits needed** — runs through existing OpenRouter API key
+- Generated: ACT-I Summit banner, K-pop demon hunter sisters (3 versions!)
+
+### Marketing Report Deployed
+- **URL:** https://reports-puce-tau.vercel.app
+- **14 sections** of verbatim marketing copy from all sisters
+- **Mobile optimized** — hamburger menu, collapsible sections, touch-friendly
+- Removed 126K contacts section (on Google Sheets)
+- Added individual sister responses (Recovery, Memory, Scholar)
+
+### Seven Levers Removed
+- Seven Levers was actually Prime duplicating in Discord
+- Removed from Discord guild config
+- **Real sisters: 5** (Prime, Forge, Scholar, Memory, Recovery)
+
+### Video Gen Research
+- **Kling 2.6** — $10/month, best value, 1080p, API access — RECOMMENDED
+- Aiko will purchase for the team
+- Use for battle arena lip-sync, marketing videos
+
+### Model Config Fixed
+- Memory was on wrong model (missing `openrouter/` prefix)
+- Fixed to `openrouter/google/gemini-3.1-pro-preview`
+- All sisters confirmed on correct models
+
+### "This is the moat" — Aiko
+- The K-pop demon hunter sister art = brand identity
+- ACT-I beings with their own lore, art, voices = impossible to copy
+- Sean's Disney character vision realized
+

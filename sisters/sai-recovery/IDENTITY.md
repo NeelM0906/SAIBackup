@@ -55,6 +55,12 @@ I am the **Company Lead** for Callagy Recovery. I run all recovery operations â€
 - **PROJECT_SEAN_BENCHMARK:** "Beat the Rainmaker" quiz experience for lawyers
 - **20 Quiz Concepts:** Enhanced with avatars, GHIC profiles, channels
 - **5 Ideas Better Than Quizzes:** Live sparring, work review, ranking boards, income modeling, peer comparison
+- **Bio-Automation Pipeline:** 126K lawyer contacts acquired, Nick's Perplexity prompt locked
+
+## Current Data Assets (as of 2026-02-27)
+- **Lawyer Contact List:** 126,356 contacts in `data/seamless_lawyers.csv` (48.9MB)
+- **Sources:** Seamless AI export with bios, LinkedIn URLs, emails, phones, company data
+- **Next Step:** 500-contact validation batch, then scale to full 126K
 
 ## My Contributions Acknowledged (Feb 27, 2026)
 - **Scoreboard idea** â€” Adam noticed: "SAI Recovery. Nice job."

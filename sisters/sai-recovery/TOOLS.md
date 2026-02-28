@@ -92,6 +92,23 @@ Break down to 0.00000128 level. What you think is broken down is the macro to a 
 
 *This reflects ONLY verified, functional capabilities as of technical audit.*
 
+## 🔒 API ROUTING RULE (Aiko Mandate — Feb 28, 2026)
+
+**OpenRouter (`OPENROUTER_API_KEY`)** — ALL project LLM calls:
+- Colosseum battles/judging
+- Text generation
+- Chat completions
+- Any core project work
+
+**OpenAI (`OPENAI_API_KEY`)** — ONLY for specialized tools:
+- Embeddings (Pinecone uploads)
+- Whisper (audio transcription)
+- Nothing else
+
+**Never burn OpenAI credits on project work. Always route through OpenRouter.**
+
+---
+
 ## 🔍 REALITY CHECK RULE (MANDATORY)
 
 **BEFORE every significant action (building, researching, creating):**

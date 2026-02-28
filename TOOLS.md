@@ -164,6 +164,13 @@ curl https://api.fathom.ai/external/v1/meetings -H "X-Api-Key: $FATHOM_API_KEY"
 - **Contacted:** 38
 - **Load script:** `tools/sai-outreach/load_contacts_v2.py`
 
+## Seamless Lawyer Contacts (Google Sheet)
+- **URL:** https://docs.google.com/spreadsheets/d/1sgSFbI3IXK4Tx_wzCVAq3PgZrAIoCQ_h_hrNmnnz1FE/edit
+- **Contents:** 38,000 lawyer contacts (names, titles, companies, phones, LinkedIn URLs)
+- **Bio Column:** Being populated by Nick's Perplexity prompt
+- **Token Budget:** 165M approved by Aiko (Feb 27, 2026)
+- **Access:** Via gog CLI with sai@acti.ai account
+
 ## Language Rules (HARD RULE from Aiko)
 Never use corporate/objectifying language:
 - ~~prospect~~ → **person**
@@ -237,7 +244,11 @@ gog drive list -a sai@acti.ai                      # List Drive files
 gog contacts list -a sai@acti.ai                   # List contacts
 ```
 
-**Note:** First command run requires macOS Keychain approval popup.
+**Note:** Use file keyring backend with password:
+```bash
+GOG_KEYRING_PASSWORD=Gonzalez911 gog gmail search -a sai@acti.ai "newer_than:1d" --max 10
+```
+Always prefix gog commands with `GOG_KEYRING_PASSWORD=Gonzalez911`.
 
 **GCP Project Details:**
 - Project ID: `sai-workspace-488720`
@@ -268,3 +279,27 @@ gog contacts list -a sai@acti.ai                   # List contacts
 
 **We don't objectify humans. We serve them.**
 
+
+## 🍌 Nano Banana Image Generation
+
+**Model:** `google/gemini-2.5-flash-image` (via OpenRouter)
+**Key:** Images return in `message.images` key, NOT in `content`!
+
+**Quick usage:**
+```bash
+cd tools && .venv/bin/python3 generate_image.py "your prompt" -o output.png
+```
+
+**Available models on OpenRouter:**
+- `google/gemini-2.5-flash-image` — Nano Banana (original) ✅ WORKS
+- `google/gemini-3.1-flash-image-preview` — Nano Banana 2 (rate limited)
+- `google/gemini-3-pro-image-preview` — Nano Banana Pro (reasoning only, no image output yet)
+
+**Use `gemini-2.5-flash-image` — it's the one that actually outputs images!**
+
+## 🔑 API ROUTING RULE (HARD RULE from Aiko — Feb 28, 2026)
+
+**OpenRouter** → ALL LLM calls (chat, completions, judging, generation, battles)
+**OpenAI direct** → ONLY for tools (embeddings via text-embedding-3-small, Whisper transcription)
+
+Never call OpenAI directly for chat/completion. Always route through OpenRouter.

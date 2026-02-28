@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "activecampaign": {
+      "version": "1.0.0",
+      "installedAt": 1772241002571
+    },
+    "linkedin-automation": {
+      "version": "1.0.0",
+      "installedAt": 1772241006126
+    },
+    "cold-email": {
+      "version": "1.0.5",
+      "installedAt": 1772241008760
+    }
+  }
+}
