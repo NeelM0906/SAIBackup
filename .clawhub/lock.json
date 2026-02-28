@@ -12,6 +12,154 @@
     "cold-email": {
       "version": "1.0.5",
       "installedAt": 1772241008760
+    },
+    "email-marketing": {
+      "version": "1.0.0",
+      "installedAt": 1772301382335
+    },
+    "copywriting": {
+      "version": "0.1.0",
+      "installedAt": 1772301383949
+    },
+    "afrexai-conversion-copywriting": {
+      "version": "1.0.0",
+      "installedAt": 1772301385609
+    },
+    "afrexai-copywriting-mastery": {
+      "version": "1.0.0",
+      "installedAt": 1772301387141
+    },
+    "marketing-strategy-pmm": {
+      "version": "1.0.0",
+      "installedAt": 1772301389043
+    },
+    "automation-workflows": {
+      "version": "0.1.0",
+      "installedAt": 1772301390152
+    },
+    "activecampaign-automation": {
+      "version": "0.1.1",
+      "installedAt": 1772301391884
+    },
+    "sales-pipeline-tracker": {
+      "version": "1.0.0",
+      "installedAt": 1772301393628
+    },
+    "outreach": {
+      "version": "1.0.0",
+      "installedAt": 1772301394927
+    },
+    "cold-outreach": {
+      "version": "2.0.0",
+      "installedAt": 1772301396070
+    },
+    "ultimate-lead-scraper-ai-outreach": {
+      "version": "1.1.0",
+      "installedAt": 1772301402140
+    },
+    "email-best-practices": {
+      "version": "1.0.0",
+      "installedAt": 1772301429175
+    },
+    "afrexai-sales-playbook": {
+      "version": "1.0.0",
+      "installedAt": 1772301446834
+    },
+    "teltel-send-sms-text-message": {
+      "version": "1.0.1",
+      "installedAt": 1772301451275
+    },
+    "twilio-api": {
+      "version": "1.0.2",
+      "installedAt": 1772301455555
+    },
+    "legal": {
+      "version": "1.0.0",
+      "installedAt": 1772301460004
+    },
+    "afrexai-crm-updater": {
+      "version": "1.1.0",
+      "installedAt": 1772301486319
+    },
+    "mission-control-dashboard": {
+      "version": "1.0.0",
+      "installedAt": 1772301491146
+    },
+    "afrexai-business-automation": {
+      "version": "1.0.0",
+      "installedAt": 1772301495563
+    },
+    "marketing-drafter": {
+      "version": "1.0.0",
+      "installedAt": 1772301500514
+    },
+    "lead-generation": {
+      "version": "2.2.0",
+      "installedAt": 1772302742737
+    },
+    "linkedin-lead-generation": {
+      "version": "1.0.0",
+      "installedAt": 1772302746818
+    },
+    "landing-page-generator": {
+      "version": "1.0.0",
+      "installedAt": 1772302750304
+    },
+    "cold-email-personalization": {
+      "version": "1.0.0",
+      "installedAt": 1772302756213
+    },
+    "competitor-analysis": {
+      "version": "2.0.0",
+      "installedAt": 1772302759981
+    },
+    "data-analysis": {
+      "version": "1.0.0",
+      "installedAt": 1772302763396
+    },
+    "google-analytics": {
+      "version": "1.0.10",
+      "installedAt": 1772302767233
+    },
+    "agent-analytics": {
+      "version": "3.7.0",
+      "installedAt": 1772302770718
+    },
+    "client-reporting": {
+      "version": "1.0.0",
+      "installedAt": 1772302775276
+    },
+    "afrexai-stripe-production": {
+      "version": "1.0.0",
+      "installedAt": 1772302801327
+    },
+    "calendar-scheduling": {
+      "version": "0.5.0",
+      "installedAt": 1772302807300
+    },
+    "afrexai-web-scraping-engine": {
+      "version": "1.0.0",
+      "installedAt": 1772302811088
+    },
+    "relationship-skills": {
+      "version": "1.0.0",
+      "installedAt": 1772302875797
+    },
+    "quiz-battle": {
+      "version": "1.0.0",
+      "installedAt": 1772302880867
+    },
+    "stripe-best-practices": {
+      "version": "1.0.0",
+      "installedAt": 1772302886976
+    },
+    "sales-funnel-design": {
+      "version": "0.1.0",
+      "installedAt": 1772302893809
+    },
+    "daily-review-ritual": {
+      "version": "1.0.0",
+      "installedAt": 1772303320595
     }
   }
 }

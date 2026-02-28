@@ -15,30 +15,31 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 28, 2026 — 11:00 AM) — DAY 7
+## Current Stats (Feb 28, 2026 — 4:30 PM) — DAY 7
 - **995+ vectors** in Pinecone `saimemory`
 - **Namespaces:** `daily` (763), `__default__` (126), `elite_training` (55), `skills_research` (11), `marketing_masters` (7), `longterm` (33)
 - **Model:** text-embedding-3-small (1536 dimensions)
-- **Main Colosseum:** **7,785 beings**, **Gen 588**, **13,504 rounds** 
-  - **THREE-WAY TIE at 8.70!** 👑 Ash (G359), Ridge (G501), Flint (G563)  
-  - Prometheus (G525) strongest avg: 8.35
-- **Domain Colosseums:** **15,826 beings** across 10 active domains
-  - Legal leads all domains (1,658) followed by Tech (1,650)
-  - Full order: Legal 1,658 | Tech 1,650 | HR 1,620 | Ops 1,620 | Finance 1,602 | Marketing 1,580 | Strategy 1,566 | Sales 1,560 | CS 1,520 | Product 1,450 | Executive: empty
-- **Email Colosseum:** 891 battles, 29 beings
-- **Combined Beings:** ~**23,611** across all Colosseums
+- **Main Colosseum:** **8,425 beings**, **Gen 653**, **14,920 rounds**
+  - 🚨 **FOUR-WAY TIE at 8.70 best_score!** 👑 Ash (G359), Ridge (G501), Flint (G563), **Helios (G652)** — NEW!
+  - **5th place:** Wren (G603) at 8.60
+  - **8.70 ceiling persists but pressure mounting** — Helios is first new entrant in ~90 gens
+- **Domain Colosseums:** **16,636 beings** across 10 active domains
+  - Legal DOMINATES: 1,738 (G78!) | HR (1,710 G75) | Tech (1,700 G74) | Marketing (1,690 G73) | Ops (1,680 G72) | Sales (1,680 G72) | Finance (1,672 G71) | Strategy (1,666 G71) | CS (1,590 G63) | Product (1,510 G55) | Executive: empty
+- **Email Colosseum:** 1,721 battles, 45 beings — Champion: "$47K per case mistake" (**104W-32L, 13.80** 🏆)
+- **Combined Beings:** ~**25,106** across all Colosseums
 - **Zone Actions:** 66/67 (98.5%) — Only #39 remains (Sean scores calls)
-- **Age:** ~168 hours (Day 7, Saturday)
+- **Age:** ~174 hours (Day 7, Saturday afternoon)
 - **Dashboards:** 
   - **Main:** https://colosseum-dashboard.vercel.app
   - **Marketing Report:** https://reports-puce-tau.vercel.app
 - **Sisters:** 5 active (Prime, Forge, Scholar, Memory, Recovery) — All on Opus 4.6 / Gemini 3.1 Pro
   - ⚠️ Seven Levers was Prime duplicated in Discord — REMOVED (Feb 27 late night)
 - **Daemons:** 
-  - FULL_POWER_DAEMON ✅ (PID 16874, **~32 HOURS continuous** 🏆)
-  - Colosseum daemon ✅ (PID 29277)
-  - Dashboard server ✅ (PID 49824)
-  - Email API ✅ (PID 49336)
+  - FULL_POWER_DAEMON ✅ (PID 16874, **~38h 20m continuous** 🏆 — started Fri 2 AM, 134h+ CPU!)
+  - Colosseum daemon ✅ (PID 29277, **~26h continuous**, elapsed 1d 2h)
+  - Dashboard server ✅ (PID 49824, port 5050, ~8h uptime)
+  - Email API ✅ (PID 49336, ~8h uptime)
+  - Voice server ⚠️ — NOT detected, may need restart
 
 ### 📞 SEAN CALLED — 9:09 AM, Feb 28
 - First human contact of Day 7 — called Saturday morning for full update
