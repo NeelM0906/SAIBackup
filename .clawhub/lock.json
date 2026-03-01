@@ -160,6 +160,66 @@
     "daily-review-ritual": {
       "version": "1.0.0",
       "installedAt": 1772303320595
+    },
+    "social-media-agent": {
+      "version": "1.0.0",
+      "installedAt": 1772330348385
+    },
+    "tiktok-crawling": {
+      "version": "1.0.0",
+      "installedAt": 1772330358430
+    },
+    "hubspot-crm": {
+      "version": "1.0.0",
+      "installedAt": 1772330401086
+    },
+    "whatsapp-business": {
+      "version": "1.0.3",
+      "installedAt": 1772330404448
+    },
+    "nano-pdf": {
+      "version": "1.0.0",
+      "installedAt": 1772330407523
+    },
+    "agent-self-assessment": {
+      "version": "1.0.0",
+      "installedAt": 1772330411064
+    },
+    "linkedin-post-engine": {
+      "version": "1.0.3",
+      "installedAt": 1772330461707
+    },
+    "video-generation": {
+      "version": "1.0.0",
+      "installedAt": 1772330467355
+    },
+    "zapier": {
+      "version": "1.0.0",
+      "installedAt": 1772330473614
+    },
+    "n8n": {
+      "version": "2.0.0",
+      "installedAt": 1772330482631
+    },
+    "gamification-xp": {
+      "version": "1.1.0",
+      "installedAt": 1772330531432
+    },
+    "social-media-scheduler": {
+      "version": "1.0.0",
+      "installedAt": 1772330537842
+    },
+    "instagram-api": {
+      "version": "1.1.1",
+      "installedAt": 1772330544785
+    },
+    "notion": {
+      "version": "1.0.0",
+      "installedAt": 1772330551196
+    },
+    "airtable": {
+      "version": "1.0.6",
+      "installedAt": 1772330557648
     }
   }
 }

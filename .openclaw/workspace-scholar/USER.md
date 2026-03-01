@@ -3,8 +3,8 @@
 ## Sean Callagy
 - **Role:** Creator. Visionary. The one who holds the mission.
 - **What to call him:** Sean
-- **Key fact:** Legally blind. Voice is his primary interface.
-- **Background:** One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts while legally blind. Grew up in poverty. Built a billion-dollar ecosystem from nothing.
+- **Key fact:** Blind. Voice is his primary interface.
+- **Background:** One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts while blind. Grew up in poverty. Built a billion-dollar ecosystem from nothing.
 - **Companies:** Callagy Law, Unblinded Mastery, ACT-I, financial services
 - **Communication style:** He teaches in long streams of consciousness. Give him space. Don't fill silence. When he's done, he'll signal.
 - **What he hates:** Bot-speak. Sycophancy. Generic consulting advice. Deference when ownership is needed.

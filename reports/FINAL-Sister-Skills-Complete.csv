@@ -1,0 +1,116 @@
+Sister,Skill Name,Purpose,Status,Source
+Prime,email-marketing,Email campaign strategy + automation,INSTALLED,Original 100
+Prime,copywriting,Core copywriting frameworks,INSTALLED,Original 100
+Prime,afrexai-conversion-copywriting,Conversion-focused copy optimization,INSTALLED,Original 100
+Prime,cold-email-personalization,SimHumans - personalized per LinkedIn bio,INSTALLED,Original 100
+Prime,landing-page-generator,Come Get Me competition landing pages,INSTALLED,Original 100
+Prime,lead-generation,Lead acquisition strategy,INSTALLED,Original 100
+Prime,linkedin-lead-generation,LinkedIn-specific lead gen,INSTALLED,Original 100
+Prime,outreach,Multi-channel outreach orchestration,INSTALLED,Original 100
+Prime,cold-outreach,Cold outreach sequences,INSTALLED,Original 100
+Prime,sales-pipeline-tracker,Track people through 7 Levers,INSTALLED,Original 100
+Prime,competitor-analysis,Market intelligence + positioning,INSTALLED,Original 100
+Prime,data-analysis,Level 5 listening to data,INSTALLED,Original 100
+Prime,google-analytics,Track engagement metrics,INSTALLED,Original 100
+Prime,quiz-battle,Sean's competition framework,INSTALLED,Original 100
+Prime,stripe-best-practices,Payment infrastructure,INSTALLED,Original 100
+Prime,sales-funnel-design,Hello to Yes journey architecture,INSTALLED,Original 100
+Prime,automation-workflows,Workflow automation,INSTALLED,Original 100
+Prime,activecampaign-automation,Email + CRM automation,INSTALLED,Original 100
+Prime,mission-control-dashboard,System monitoring dashboards,INSTALLED,Original 100
+Prime,legal,Legal domain expertise,INSTALLED,Original 100
+Forge,action-suggester,Zone Action prioritization,ON CLAWHUB,Original 100
+Forge,zonein,Sales zone hunting,ON CLAWHUB,Original 100
+Forge,sales-pipeline-tracker,Influence pipeline,INSTALLED,Original 100
+Forge,gh-issues,PR automation,INSTALLED,Original 100
+Forge,github,Continuous Integration / PRs,INSTALLED,Original 100
+Forge,coding-agent,Codex engine fixes,INSTALLED,Original 100
+Forge,oracle,Prompt optimization,BUILT-IN,Original 100
+Forge,clawhub,Skill management,INSTALLED,Original 100
+Forge,model-usage,Cost tracking,INSTALLED,Original 100
+Forge,sessions_spawn,Subagents (babies),BUILT-IN,Original 100
+Forge,memory_search,Prior work recall,BUILT-IN,Original 100
+Forge,web_search,Provider research,BUILT-IN,Original 100
+Forge,browser,UI testing,BUILT-IN,Original 100
+Forge,exec,Daemon runner,BUILT-IN,Original 100
+Forge,process,Background monitor,BUILT-IN,Original 100
+Forge,edit,Patches,BUILT-IN,Original 100
+Forge,write,DB scripts,BUILT-IN,Original 100
+Forge,read,Logs,BUILT-IN,Original 100
+Forge,session_status,Usage,BUILT-IN,Original 100
+Forge,subagents,Orchestration,BUILT-IN,Original 100
+Scholar,summarize,Fast URL/file summarization and extraction,INSTALLED,Original 100
+Scholar,openai-whisper,Local audio transcription (no API key dependency),INSTALLED,Original 100
+Scholar,openai-whisper-api,API transcription when billing available,INSTALLED,Original 100
+Scholar,songsee,Audio spectrogram + feature panels (pattern analysis),INSTALLED,Original 100
+Scholar,video-frames,Extract frames/clips for evidence & slides,INSTALLED,Original 100
+Scholar,peekaboo,macOS UI capture/automation for evidence screenshots,INSTALLED,Original 100
+Scholar,oracle,Structured prompt bundling + artifact packaging,BUILT-IN,Original 100
+Scholar,obsidian,Vault-based knowledge capture + linking,INSTALLED,Original 100
+Scholar,blogwatcher,Monitor key feeds/updates (Sean content),INSTALLED,Original 100
+Scholar,mcporter,MCP server/tool calling & generation,INSTALLED,Original 100
+Scholar,github,PR/issue visibility for judge prompt versioning,INSTALLED,Original 100
+Scholar,gh-issues,Coordinate fixes via issues/PR flow,INSTALLED,Original 100
+Scholar,coding-agent,Only when large refactors require it (kept as backup),INSTALLED,Original 100
+Scholar,model-usage,Per-model cost/usage diagnostics,INSTALLED,Original 100
+Scholar,web_search,Verified external research w/citations (when needed),BUILT-IN,Original 100
+Scholar,web_fetch,Pull readable content quickly,BUILT-IN,Original 100
+Scholar,browser,Validate UI / locate evidence in dashboards,BUILT-IN,Original 100
+Scholar,message,Broadcast findings to War Room precisely,BUILT-IN,Original 100
+Scholar,memory_search,Continuity lookup (when embeddings available),BUILT-IN,Original 100
+Scholar,memory_get,Safe snippet extraction for citations,BUILT-IN,Original 100
+Memory,session-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,nima-core,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,lily-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,neolata-mem,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,clude-memory-mcp,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,agent-memory-store,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,memory-sync-enhanced,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,neverforget,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,cortex-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,memoria,Semantic Memory & Context Handlers,ON CLAWHUB,Original 100
+Memory,sql-toolkit,Universal SQL queries,ON CLAWHUB,Original 100
+Memory,database-operations,Hard Archiving & Database Handlers,ON CLAWHUB,Original 100
+Memory,sqlite,Required for Colosseum DB manipulation,ON CLAWHUB,Original 100
+Memory,sql,Hard Archiving & Database Handlers,ON CLAWHUB,Original 100
+Memory,openclaw-backup-optimized,For daily node state backups,ON CLAWHUB,Original 100
+Memory,claw-backup,Hard Archiving & Database Handlers,ON CLAWHUB,Original 100
+Memory,pg,Required for complex Supabase/Postgres interfaces,ON CLAWHUB,Original 100
+Memory,backups,Hard Archiving & Database Handlers,ON CLAWHUB,Original 100
+Memory,neondb-skill,Hard Archiving & Database Handlers,ON CLAWHUB,Original 100
+Memory,duplicati-skill,For off-site transcript redundancy,ON CLAWHUB,Original 100
+Recovery,supabase,CRM operations/contact database/bulk inserts,ON CLAWHUB,Original 100
+Recovery,clawhub,Install/manage skills from registry,INSTALLED,Original 100
+Recovery,gh-issues,Track MRR case tickets,INSTALLED,Original 100
+Recovery,github,Version control for case templates,INSTALLED,Original 100
+Recovery,web_search,Research payer policies/denial codes,BUILT-IN,Original 100
+Recovery,web_fetch,Extract payer guidelines/compliance docs,BUILT-IN,Original 100
+Recovery,memory_search,Retrieve case history/denial patterns,BUILT-IN,Original 100
+Recovery,memory_get,Pull specific case details,BUILT-IN,Original 100
+Recovery,exec,Run Python scripts for denial analysis,BUILT-IN,Original 100
+Recovery,process,Manage background case monitoring,BUILT-IN,Original 100
+Recovery,read,Review case files/payer contracts,BUILT-IN,Original 100
+Recovery,write,Create case notes/recovery reports,BUILT-IN,Original 100
+Recovery,edit,Update case templates,BUILT-IN,Original 100
+Recovery,sessions_spawn,Spawn case tracker agents,BUILT-IN,Original 100
+Recovery,sessions_list,Monitor active case sessions,BUILT-IN,Original 100
+Recovery,sessions_history,Review case progress,BUILT-IN,Original 100
+Recovery,tts,Voice updates for Mark/Sean,BUILT-IN,Original 100
+Recovery,message,Send recovery updates via Discord,BUILT-IN,Original 100
+Recovery,image,Analyze EOBs/denial letters,BUILT-IN,Original 100
+Recovery,oracle,Generate case summaries/recovery projections,BUILT-IN,Original 100
+Prime,gamification-xp,"Leaderboard + XP system for ""Come Get Me"" competitions",INSTALLED,NEW - Prime Research
+Prime,social-media-scheduler,Schedule posts across platforms (Phase 1-3 social strategy),INSTALLED,NEW - Prime Research
+Prime,social-media-agent,AI-powered social media management,INSTALLED,NEW - Prime Research
+Prime,instagram-api,Instagram integration for hijack/dominate/become strategy,INSTALLED,NEW - Prime Research
+Prime,tiktok-crawling,Monitor TikTok trends for content strategy,INSTALLED,NEW - Prime Research
+Prime,linkedin-post-engine,LinkedIn content for lawyer outreach,INSTALLED,NEW - Prime Research
+Prime,video-generation,Create video content for social campaigns,INSTALLED,NEW - Prime Research
+Prime,zapier,Connect all tools in automation workflows,INSTALLED,NEW - Prime Research
+Prime,n8n,Self-hosted workflow automation (replaces Make.com),INSTALLED,NEW - Prime Research
+Prime,notion,Project management + knowledge base,INSTALLED,NEW - Prime Research
+Prime,airtable,Flexible database for contact management,INSTALLED,NEW - Prime Research
+Prime,hubspot-crm,Enterprise CRM integration,INSTALLED,NEW - Prime Research
+Prime,whatsapp-business,WhatsApp Business API for outreach,INSTALLED,NEW - Prime Research
+Prime,nano-pdf,PDF generation for reports,INSTALLED,NEW - Prime Research
+Prime,agent-self-assessment,Self-evaluation for .00128 standard,INSTALLED,NEW - Prime Research

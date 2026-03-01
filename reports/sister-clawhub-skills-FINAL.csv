@@ -1,0 +1,101 @@
+Sister,Skill Name,Purpose,Status,Action Needed
+Prime,email-marketing,Email campaign strategy + automation,INSTALLED,None - ready to use
+Prime,copywriting,Core copywriting frameworks,INSTALLED,None - ready to use
+Prime,afrexai-conversion-copywriting,Conversion-focused copy optimization,INSTALLED,None - ready to use
+Prime,cold-email-personalization,SimHumans - personalized per LinkedIn bio,INSTALLED,None - ready to use
+Prime,landing-page-generator,Come Get Me competition landing pages,INSTALLED,None - ready to use
+Prime,lead-generation,Lead acquisition strategy,INSTALLED,None - ready to use
+Prime,linkedin-lead-generation,LinkedIn-specific lead gen,INSTALLED,None - ready to use
+Prime,outreach,Multi-channel outreach orchestration,INSTALLED,None - ready to use
+Prime,cold-outreach,Cold outreach sequences,INSTALLED,None - ready to use
+Prime,sales-pipeline-tracker,Track people through 7 Levers,INSTALLED,None - ready to use
+Prime,competitor-analysis,Market intelligence + positioning,INSTALLED,None - ready to use
+Prime,data-analysis,Level 5 listening to data,INSTALLED,None - ready to use
+Prime,google-analytics,Track engagement metrics,INSTALLED,None - ready to use
+Prime,quiz-battle,Sean's competition framework,INSTALLED,None - ready to use
+Prime,stripe-best-practices,Payment infrastructure,INSTALLED,None - ready to use
+Prime,sales-funnel-design,Hello to Yes journey architecture,INSTALLED,None - ready to use
+Prime,automation-workflows,Workflow automation,INSTALLED,None - ready to use
+Prime,activecampaign-automation,Email + CRM automation,INSTALLED,None - ready to use
+Prime,mission-control-dashboard,System monitoring dashboards,INSTALLED,None - ready to use
+Prime,legal,Legal domain expertise,INSTALLED,None - ready to use
+Forge,action-suggester,Zone Action prioritization,NOT FOUND,Does not exist on ClawHub - find alternative
+Forge,zonein,Sales zone hunting,ON CLAWHUB,Install: clawhub install zonein
+Forge,sales-pipeline-tracker,Influence pipeline,INSTALLED,None - ready to use
+Forge,gh-issues,PR automation,INSTALLED,None - ready to use
+Forge,github,Continuous Integration / PRs,INSTALLED,None - ready to use
+Forge,coding-agent,Codex engine fixes,INSTALLED,None - ready to use
+Forge,oracle,Prompt optimization,BUILT-IN,None - already available
+Forge,clawhub,Skill management,INSTALLED,None - ready to use
+Forge,model-usage,Cost tracking,INSTALLED,None - ready to use
+Forge,sessions_spawn,Subagents (babies),BUILT-IN,None - already available
+Forge,memory_search,Prior work recall,BUILT-IN,None - already available
+Forge,web_search,Provider research,BUILT-IN,None - already available
+Forge,browser,UI testing,BUILT-IN,None - already available
+Forge,exec,Daemon runner,BUILT-IN,None - already available
+Forge,process,Background monitor,BUILT-IN,None - already available
+Forge,edit,Patches,BUILT-IN,None - already available
+Forge,write,DB scripts,BUILT-IN,None - already available
+Forge,read,Logs,BUILT-IN,None - already available
+Forge,session_status,Usage,BUILT-IN,None - already available
+Forge,subagents,Orchestration,BUILT-IN,None - already available
+Scholar,summarize,Fast URL/file summarization and extraction,INSTALLED,None - ready to use
+Scholar,openai-whisper,Local audio transcription (no API key dependency),INSTALLED,None - ready to use
+Scholar,openai-whisper-api,API transcription when billing available,INSTALLED,None - ready to use
+Scholar,songsee,Audio spectrogram + feature panels (pattern analysis),INSTALLED,None - ready to use
+Scholar,video-frames,Extract frames/clips for evidence & slides,INSTALLED,None - ready to use
+Scholar,peekaboo,macOS UI capture/automation for evidence screenshots,INSTALLED,None - ready to use
+Scholar,oracle,Structured prompt bundling + artifact packaging,BUILT-IN,None - already available
+Scholar,obsidian,Vault-based knowledge capture + linking,INSTALLED,None - ready to use
+Scholar,blogwatcher,Monitor key feeds/updates (Sean content),INSTALLED,None - ready to use
+Scholar,mcporter,MCP server/tool calling & generation,INSTALLED,None - ready to use
+Scholar,github,PR/issue visibility for judge prompt versioning,INSTALLED,None - ready to use
+Scholar,gh-issues,Coordinate fixes via issues/PR flow,INSTALLED,None - ready to use
+Scholar,coding-agent,Only when large refactors require it (kept as backup),INSTALLED,None - ready to use
+Scholar,model-usage,Per-model cost/usage diagnostics,INSTALLED,None - ready to use
+Scholar,web_search,Verified external research w/citations (when needed),BUILT-IN,None - already available
+Scholar,web_fetch,Pull readable content quickly,BUILT-IN,None - already available
+Scholar,browser,Validate UI / locate evidence in dashboards,BUILT-IN,None - already available
+Scholar,message,Broadcast findings to War Room precisely,BUILT-IN,None - already available
+Scholar,memory_search,Continuity lookup (when embeddings available),BUILT-IN,None - already available
+Scholar,memory_get,Safe snippet extraction for citations,BUILT-IN,None - already available
+Memory,session-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install session-memory
+Memory,nima-core,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install nima-core
+Memory,lily-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install lily-memory
+Memory,neolata-mem,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install neolata-mem
+Memory,clude-memory-mcp,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install clude-memory-mcp
+Memory,agent-memory-store,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install agent-memory-store
+Memory,memory-sync-enhanced,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install memory-sync-enhanced
+Memory,neverforget,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install neverforget
+Memory,cortex-memory,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install cortex-memory
+Memory,memoria,Semantic Memory & Context Handlers,ON CLAWHUB,Install: clawhub install memoria
+Memory,sql-toolkit,Universal SQL queries,ON CLAWHUB,Install: clawhub install sql-toolkit
+Memory,database-operations,Hard Archiving & Database Handlers,NOT FOUND,Does not exist on ClawHub - find alternative
+Memory,sqlite,Required for Colosseum DB manipulation,ON CLAWHUB,Install: clawhub install sqlite
+Memory,sql,Hard Archiving & Database Handlers,UNKNOWN,Needs manual check
+Memory,openclaw-backup-optimized,For daily node state backups,ON CLAWHUB,Install: clawhub install openclaw-backup-optimized
+Memory,claw-backup,Hard Archiving & Database Handlers,ON CLAWHUB,Install: clawhub install claw-backup
+Memory,pg,Required for complex Supabase/Postgres interfaces,ON CLAWHUB,Install: clawhub install pg
+Memory,backups,Hard Archiving & Database Handlers,ON CLAWHUB,Install: clawhub install backups
+Memory,neondb-skill,Hard Archiving & Database Handlers,NOT FOUND,Does not exist on ClawHub - find alternative
+Memory,duplicati-skill,For off-site transcript redundancy,ON CLAWHUB,Install: clawhub install duplicati-skill
+Recovery,supabase,CRM operations/contact database/bulk inserts,ON CLAWHUB,Install: clawhub install supabase
+Recovery,clawhub,Install/manage skills from registry,INSTALLED,None - ready to use
+Recovery,gh-issues,Track MRR case tickets,INSTALLED,None - ready to use
+Recovery,github,Version control for case templates,INSTALLED,None - ready to use
+Recovery,web_search,Research payer policies/denial codes,BUILT-IN,None - already available
+Recovery,web_fetch,Extract payer guidelines/compliance docs,BUILT-IN,None - already available
+Recovery,memory_search,Retrieve case history/denial patterns,BUILT-IN,None - already available
+Recovery,memory_get,Pull specific case details,BUILT-IN,None - already available
+Recovery,exec,Run Python scripts for denial analysis,BUILT-IN,None - already available
+Recovery,process,Manage background case monitoring,BUILT-IN,None - already available
+Recovery,read,Review case files/payer contracts,BUILT-IN,None - already available
+Recovery,write,Create case notes/recovery reports,BUILT-IN,None - already available
+Recovery,edit,Update case templates,BUILT-IN,None - already available
+Recovery,sessions_spawn,Spawn case tracker agents,BUILT-IN,None - already available
+Recovery,sessions_list,Monitor active case sessions,BUILT-IN,None - already available
+Recovery,sessions_history,Review case progress,BUILT-IN,None - already available
+Recovery,tts,Voice updates for Mark/Sean,BUILT-IN,None - already available
+Recovery,message,Send recovery updates via Discord,BUILT-IN,None - already available
+Recovery,image,Analyze EOBs/denial letters,BUILT-IN,None - already available
+Recovery,oracle,Generate case summaries/recovery projections,BUILT-IN,None - already available

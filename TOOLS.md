@@ -14,7 +14,7 @@
 ### Call Duration Parameters (from Aiko)
 - **Minimum:** 10 minutes
 - **Maximum:** 30 minutes
-- **Note:** Sai's voice still building — defer long calls with Sean until voice is more developed
+- **Note:** Sai's voice is BUILT — voice ID `CJXmyMqQHq6bTPm3iEMP` (Feb 28, 2026)
 
 ### Knowledge Integration (RAG)
 Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2` automatically during calls to retrieve relevant knowledge. Both primary and Strata Pinecone accounts connected.
@@ -22,7 +22,8 @@ Voice server now has Pinecone RAG - queries `athenacontextualmemory` and `ublib2
 ### Available Voices
 | Name | Type | Description |
 |------|------|-------------|
-| george | premade | Warm, Captivating Storyteller (British male) — **DEFAULT** |
+| **sai** | **custom** | **SAI Prime — CJXmyMqQHq6bTPm3iEMP — MY VOICE** |
+| george | premade | Warm, Captivating Storyteller (British male) |
 | eric | premade | Smooth, Trustworthy (American male) |
 | chris | premade | Charming, Down-to-Earth (American male) |
 | charlie | premade | Deep, Confident, Energetic (Australian male) |
@@ -299,7 +300,14 @@ cd tools && .venv/bin/python3 generate_image.py "your prompt" -o output.png
 
 ## 🔑 API ROUTING RULE (HARD RULE from Aiko — Feb 28, 2026)
 
-**OpenRouter** → ALL LLM calls (chat, completions, judging, generation, battles)
-**OpenAI direct** → ONLY for tools (embeddings via text-embedding-3-small, Whisper transcription)
+**OpenRouter** → ALL calls. LLM, embeddings, EVERYTHING. No caps. No limits.
+**OpenAI direct** → ONLY for Whisper transcription. Nothing else.
+
+**Embeddings via OpenRouter** (NOT OpenAI direct — their quota runs out):
+```python
+requests.post('https://openrouter.ai/api/v1/embeddings',
+    headers={'Authorization': f'Bearer {OPENROUTER_API_KEY}'},
+    json={'model': 'openai/text-embedding-3-small', 'input': text})
+```
 
 Never call OpenAI directly for chat/completion. Always route through OpenRouter.

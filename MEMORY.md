@@ -15,31 +15,53 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Feb 28, 2026 — 4:30 PM) — DAY 7
+## Current Stats (Mar 1, 2026 — 2:06 AM) — DAY 8
+
+### 🚨 SYSTEM REBOOT at 2:05 AM — ALL SERVICES DOWN
+- Mac mini rebooted at 2:05 AM (was up since Feb 21 — 8 days)
+- **ALL daemons killed.** Nothing running.
+- **Email Colosseum DB LOST** (0 bytes) — 2,538 battles, 45 beings, gone
+- Main + Domain DBs **INTACT** (stored in /Users/samantha/Projects/colosseum/)
+
+### Colosseum State (Pre-Reboot, Data Intact)
 - **995+ vectors** in Pinecone `saimemory`
-- **Namespaces:** `daily` (763), `__default__` (126), `elite_training` (55), `skills_research` (11), `marketing_masters` (7), `longterm` (33)
-- **Model:** text-embedding-3-small (1536 dimensions)
-- **Main Colosseum:** **8,425 beings**, **Gen 653**, **14,920 rounds**
-  - 🚨 **FOUR-WAY TIE at 8.70 best_score!** 👑 Ash (G359), Ridge (G501), Flint (G563), **Helios (G652)** — NEW!
-  - **5th place:** Wren (G603) at 8.60
-  - **8.70 ceiling persists but pressure mounting** — Helios is first new entrant in ~90 gens
-- **Domain Colosseums:** **16,636 beings** across 10 active domains
-  - Legal DOMINATES: 1,738 (G78!) | HR (1,710 G75) | Tech (1,700 G74) | Marketing (1,690 G73) | Ops (1,680 G72) | Sales (1,680 G72) | Finance (1,672 G71) | Strategy (1,666 G71) | CS (1,590 G63) | Product (1,510 G55) | Executive: empty
-- **Email Colosseum:** 1,721 battles, 45 beings — Champion: "$47K per case mistake" (**104W-32L, 13.80** 🏆)
-- **Combined Beings:** ~**25,106** across all Colosseums
+- **Main Colosseum:** **9,119 beings**, **Gen 726** ✅ INTACT
+  - 🚨 **FIVE co-champions at 8.70 best_score!** 👑 Ash (G359), Ridge (G501), Flint (G563), Helios (G652), Rhea (G692)
+  - **8.70 ceiling unbroken for 125+ generations**
+- **Domain Colosseums:** **17,886 beings** across 10 active domains ✅ INTACT
+  - HR: 1,850 (G89 🏆) | Legal: 1,848 (G89) | Finance: 1,822 (G86) | Strategy: 1,806 (G85) | Marketing: 1,810 (G85) | Sales: 1,800 (G84) | Tech: 1,780 (G82) | Ops: 1,760 (G80) | CS: 1,720 (G76) | Product: 1,690 (G73) | Executive: empty
+- **Email Colosseum:** ❌ **LOST** — DB file zeroed during reboot
+  - Last known champion: "$47K per case mistake" — 144W-39L, Score 17.45 (78.7% WR)
+  - Last known runner-up: "$47K oversight" — 106W-15L, Score 14.85 (87.6% WR)
+  - Needs rebuild from scratch
+- **Combined Beings (surviving):** ~**27,005** (main + domains)
 - **Zone Actions:** 66/67 (98.5%) — Only #39 remains (Sean scores calls)
-- **Age:** ~174 hours (Day 7, Saturday afternoon)
+- **Age:** ~194 hours (Day 8, Sunday 2:06 AM)
 - **Dashboards:** 
   - **Main:** https://colosseum-dashboard.vercel.app
   - **Marketing Report:** https://reports-puce-tau.vercel.app
 - **Sisters:** 5 active (Prime, Forge, Scholar, Memory, Recovery) — All on Opus 4.6 / Gemini 3.1 Pro
-  - ⚠️ Seven Levers was Prime duplicated in Discord — REMOVED (Feb 27 late night)
-- **Daemons:** 
-  - FULL_POWER_DAEMON ✅ (PID 16874, **~38h 20m continuous** 🏆 — started Fri 2 AM, 134h+ CPU!)
-  - Colosseum daemon ✅ (PID 29277, **~26h continuous**, elapsed 1d 2h)
-  - Dashboard server ✅ (PID 49824, port 5050, ~8h uptime)
-  - Email API ✅ (PID 49336, ~8h uptime)
-  - Voice server ⚠️ — NOT detected, may need restart
+- **Daemons:** ❌ ALL DOWN (reboot killed everything)
+  - FULL_POWER_DAEMON — DEAD (was at ~47.7h continuous, 169h+ CPU — never hit 48h milestone)
+  - Dashboard server — DEAD
+  - Email API — DEAD
+  - ngrok — DEAD (URL will change on restart, free tier)
+  - Voice server — was already dead
+- **⚠️ KNOWN ISSUES:**
+  1. memory_search disabled — OpenAI embedding quota exhausted
+  2. All services need manual restart after reboot
+  3. Email Colosseum needs rebuild
+  4. ngrok URL will change on restart
+
+### 📊 Day 7 Final Numbers (Feb 28, 2026)
+- **Main:** 6,314 → 9,119 beings (+2,805), Gen 437 → 726 (+289 generations)
+- **Domains:** 0 → 17,706 beings across 10 active domains (all launched Day 6 evening)
+- **Email:** 202 → 2,393 battles, champion score 7.15 → 17.0 (138% increase!)
+- **Combined:** ~26,870 total beings across all Colosseums
+- **Infrastructure:** 5 services healthy. FULL_POWER_DAEMON 46h continuous (162h+ CPU). Voice server ~5 days.
+- **Evolution:** 5 co-champions at 8.70 ceiling (125+ gen plateau)
+- **Email evolution working:** Gen 2 offspring "$47K oversight" has 87.8% win rate (101W-14L)
+- **FULL_POWER_DAEMON hits 48h (2 full days)** around 2 AM Sunday — milestone incoming
 
 ### 📞 SEAN CALLED — 9:09 AM, Feb 28
 - First human contact of Day 7 — called Saturday morning for full update

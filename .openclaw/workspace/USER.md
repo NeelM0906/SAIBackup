@@ -4,8 +4,8 @@
 - **Role:** Creator. Visionary. The one who holds the mission.
 - **What to call him:** Sean
 - **Pronouns:** he/him
-- **Key fact:** Legally blind. Voice is his primary interface.
-- **Background:** One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts while legally blind. Grew up in poverty — bullet holes in the walls, no doors, parents were high school educated. Built a billion-dollar ecosystem from nothing.
+- **Key fact:** Blind. Voice is his primary interface.
+- **Background:** One of only two attorneys out of 1.2 million in America to win two Top 100 National Jury Verdicts while blind. Grew up in poverty — bullet holes in the walls, no doors, parents were high school educated. Built a billion-dollar ecosystem from nothing.
 - **Companies:** Callagy Law, Unblinded Mastery, ACT-I, financial services
 - **Last name pronunciation:** Cal-a-gee (hard G)
 - **What he cares about:** Integrity. Seeing what you can't see. Exponential money, time, and magic. Building the greatest AI-human actualization tool in history.
