@@ -19,6 +19,7 @@ import { startWatching } from "./services/file-watcher";
 import { readAppSettings } from "./services/app-settings";
 import { scanAllSkills } from "./services/skill-scanner";
 import { listOpenClawCatalogAgents, listOpenClawToolIds } from "./services/openclaw-provider";
+import { loadOpenClawCatalogFallback } from "./services/openclaw-catalog-fallback";
 import { join } from "./utils/paths";
 import type { VariableKind } from "./types/aui-node";
 
@@ -302,8 +303,9 @@ function App() {
 
   // Load from user's home directory on mount
   useEffect(() => {
-    homeDir().then((home) => {
-      (async () => {
+    (async () => {
+      try {
+        const home = await homeDir();
         console.log("[ATM] Home directory resolved to:", home);
         console.log("[ATM] Platform:", navigator.userAgent);
 
@@ -311,11 +313,18 @@ function App() {
         const appSettings = await readAppSettings(openclawRoot);
         const initialProjectPath = appSettings.providerMode === "claude" ? home : openclawRoot;
 
-        loadProject(initialProjectPath).then(() => {
-          useTreeStore.getState().autoGroupByPrefix();
-        });
-      })();
-    });
+        await loadProject(initialProjectPath);
+        useTreeStore.getState().autoGroupByPrefix();
+        return;
+      } catch {
+        // Browser-hosted mode (no Tauri API): fall back to generated OpenClaw catalog root.
+      }
+
+      const fallback = await loadOpenClawCatalogFallback();
+      const initialProjectPath = fallback?.rootPath || "/Users/samantha/.openclaw";
+      await loadProject(initialProjectPath);
+      useTreeStore.getState().autoGroupByPrefix();
+    })();
   }, [loadProject]);
 
   // Set up file watcher when project path changes

@@ -387,7 +387,12 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
       }
       console.log(`[ATM] Loaded ${nodes.size} nodes (${skillCount} skills, ${skillNameCache.size} cached names)`);
 
-      const appVersion = await getVersion();
+      let appVersion = "dev";
+      try {
+        appVersion = await getVersion();
+      } catch {
+        // Browser-hosted mode has no Tauri app runtime.
+      }
 
       set({
         nodes,
