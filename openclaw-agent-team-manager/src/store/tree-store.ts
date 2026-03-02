@@ -8,7 +8,7 @@ import { parseSettingsFile } from "@/services/settings-parser";
 import { writeNodeFile } from "@/services/file-writer";
 import { join, normalizePath, getFileName, generateNodeId, titleCase } from "@/utils/paths";
 import { detectTeam } from "@/utils/grouping";
-import { isWindows } from "@/utils/platform";
+import { hasTauriRuntime, isWindows } from "@/utils/platform";
 import { readAppSettings, type ProviderMode } from "@/services/app-settings";
 import {
   buildOpenClawEntityNodes,
@@ -568,6 +568,12 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
       skillNameCache: Object.keys(snc).length > 0 ? snc : undefined,
     };
 
+    // Browser-hosted mode has no Tauri filesystem bridge. Keep metadata in-memory only.
+    if (!hasTauriRuntime()) {
+      set({ metadata: updated });
+      return;
+    }
+
     try {
       const auiDir = join(projectPath, ".aui");
       if (!(await exists(auiDir))) {
@@ -586,6 +592,7 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
   async loadTreeMetadata(
     projectPath: string,
   ): Promise<TreeMetadata | null> {
+    if (!hasTauriRuntime()) return null;
     try {
       const metaPath = join(projectPath, ".aui", "tree.json");
       if (!(await exists(metaPath))) return null;
