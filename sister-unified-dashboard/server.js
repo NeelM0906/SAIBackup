@@ -20,6 +20,7 @@ import {
   getHealth,
   getOverview,
   getSisterProfile,
+  getSisterWorkboardDetail,
   getSisters,
   getWorkboard
 } from './src/services.js';
@@ -125,6 +126,18 @@ async function handleRequest(req, res) {
   if (url.pathname === '/api/workboard' && method === 'GET') {
     const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
     return json(res, 200, getWorkboard(days));
+  }
+
+  const workboardDetailMatch = url.pathname.match(/^\/api\/workboard\/([^/]+)$/);
+  if (workboardDetailMatch && method === 'GET') {
+    const sisterId = decodeURIComponent(workboardDetailMatch[1]);
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    const limit = toInt(url.searchParams.get('limit'), 120);
+    const detail = getSisterWorkboardDetail(sisterId, days, limit);
+    if (!detail) {
+      return jsonError(res, 404, 'SISTER_NOT_FOUND', `Sister not found: ${sisterId}`);
+    }
+    return json(res, 200, { ok: true, detail });
   }
 
   if (url.pathname === '/api/refresh' && method === 'POST') {

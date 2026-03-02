@@ -346,6 +346,99 @@ function buildRuntimeFallbackWorkItem(sisterId, sisterStatus, db) {
   };
 }
 
+function assignmentQueryStatements(db, perSisterLimit) {
+  const boundedLimit = Math.max(1, Math.min(400, Number(perSisterLimit) || 5));
+
+  return {
+    boundedLimit,
+    assignmentsStmt: db.prepare(
+      `
+        SELECT id, title, description, owner_sister_id, priority, status, created_at, updated_at, completed_at
+        FROM assignments
+        WHERE owner_sister_id = ?
+          AND COALESCE(archived_at, '') = ''
+        ORDER BY updated_at DESC
+        LIMIT ?
+      `
+    ),
+    assignmentEventCountStmt: db.prepare('SELECT COUNT(*) AS c FROM assignment_events WHERE assignment_id = ?'),
+    lastStatusChangeStmt: db.prepare(
+      `
+        SELECT from_status, to_status, note, metadata_json, created_at
+        FROM assignment_events
+        WHERE assignment_id = ? AND event_type = 'status_changed'
+        ORDER BY created_at DESC
+        LIMIT 1
+      `
+    ),
+    lastBlockedStatusStmt: db.prepare(
+      `
+        SELECT from_status, to_status, note, metadata_json, created_at
+        FROM assignment_events
+        WHERE assignment_id = ? AND event_type = 'status_changed' AND to_status = 'blocked'
+        ORDER BY created_at DESC
+        LIMIT 1
+      `
+    )
+  };
+}
+
+function mapAssignmentToWorkItem({
+  assignment,
+  sister,
+  assignmentEventCountStmt,
+  lastStatusChangeStmt,
+  lastBlockedStatusStmt
+}) {
+  const eventCount = Number(assignmentEventCountStmt.get(assignment.id)?.c || 0);
+  const lastStatus = lastStatusChangeStmt.get(assignment.id);
+  const lastBlocked = lastBlockedStatusStmt.get(assignment.id);
+
+  const waitingFromNote = extractWaitingTarget(lastBlocked?.note || null);
+  const waitingFromDescription = extractWaitingTarget(assignment.description || null);
+  const waitingFromMeta = extractWaitingTarget(safeJsonParse(lastBlocked?.metadata_json)?.waiting_for || null);
+  const waitingFor = waitingFromMeta || waitingFromNote || waitingFromDescription || null;
+
+  let progress = buildProgress({
+    status: assignment.status,
+    updatedAt: assignment.updated_at,
+    eventCount,
+    sisterStatus: sister.status,
+    lastActiveStatus: lastBlocked?.from_status || lastStatus?.from_status || null,
+    waitingFor
+  });
+
+  if (assignment.status === 'completed') {
+    progress = {
+      percent: 100,
+      note: 'completed',
+      source: 'derived'
+    };
+  } else if (assignment.status === 'cancelled') {
+    progress = {
+      percent: null,
+      note: 'cancelled',
+      source: 'derived'
+    };
+  }
+
+  return {
+    assignment_id: assignment.id,
+    title: assignment.title,
+    summary: assignment.description || null,
+    status: assignment.status,
+    priority: assignment.priority,
+    created_at: assignment.created_at,
+    updated_at: assignment.updated_at,
+    completed_at: assignment.completed_at || null,
+    progress_percent: progress.percent,
+    progress_note: progress.note,
+    progress_source: progress.source,
+    waiting_for: waitingFor,
+    runtime: false
+  };
+}
+
 export function ensureIngested(force = false) {
   const now = Date.now();
   if (!force && now - lastIngestMs < INGEST_MIN_INTERVAL_MS) {
@@ -553,10 +646,9 @@ export function getWorkboard(days = LOOKBACK_DAYS_DEFAULT) {
   ensureIngested(false);
   const db = getDb();
   const sisters = getSisters(days).items;
-
-  const assignmentsStmt = db.prepare(
+  const activeAssignmentsStmt = db.prepare(
     `
-      SELECT id, title, description, owner_sister_id, priority, status, updated_at
+      SELECT id, title, description, owner_sister_id, priority, status, created_at, updated_at, completed_at
       FROM assignments
       WHERE owner_sister_id = ?
         AND COALESCE(archived_at, '') = ''
@@ -565,69 +657,23 @@ export function getWorkboard(days = LOOKBACK_DAYS_DEFAULT) {
       LIMIT 5
     `
   );
-
-  const assignmentEventCountStmt = db.prepare(
-    'SELECT COUNT(*) AS c FROM assignment_events WHERE assignment_id = ?'
-  );
-
-  const lastStatusChangeStmt = db.prepare(
-    `
-      SELECT from_status, to_status, note, metadata_json, created_at
-      FROM assignment_events
-      WHERE assignment_id = ? AND event_type = 'status_changed'
-      ORDER BY created_at DESC
-      LIMIT 1
-    `
-  );
-
-  const lastBlockedStatusStmt = db.prepare(
-    `
-      SELECT from_status, to_status, note, metadata_json, created_at
-      FROM assignment_events
-      WHERE assignment_id = ? AND event_type = 'status_changed' AND to_status = 'blocked'
-      ORDER BY created_at DESC
-      LIMIT 1
-    `
-  );
+  const { assignmentEventCountStmt, lastStatusChangeStmt, lastBlockedStatusStmt } = assignmentQueryStatements(db, 40);
+  const activeStatuses = new Set(['in_progress', 'rework', 'blocked', 'inbox']);
 
   const items = sisters.map((sister) => {
-    const rows = assignmentsStmt.all(sister.id);
+    const rows = activeAssignmentsStmt.all(sister.id);
 
-    const workItems = rows.map((assignment) => {
-      const eventCount = Number(assignmentEventCountStmt.get(assignment.id)?.c || 0);
-      const lastStatus = lastStatusChangeStmt.get(assignment.id);
-      const lastBlocked = lastBlockedStatusStmt.get(assignment.id);
-
-      const waitingFromNote = extractWaitingTarget(lastBlocked?.note || null);
-      const waitingFromDescription = extractWaitingTarget(assignment.description || null);
-      const waitingFromMeta = extractWaitingTarget(
-        safeJsonParse(lastBlocked?.metadata_json)?.waiting_for || null
+    const workItems = rows
+      .filter((assignment) => activeStatuses.has(assignment.status))
+      .map((assignment) =>
+        mapAssignmentToWorkItem({
+          assignment,
+          sister,
+          assignmentEventCountStmt,
+          lastStatusChangeStmt,
+          lastBlockedStatusStmt
+        })
       );
-      const waitingFor = waitingFromMeta || waitingFromNote || waitingFromDescription || null;
-
-      const progress = buildProgress({
-        status: assignment.status,
-        updatedAt: assignment.updated_at,
-        eventCount,
-        sisterStatus: sister.status,
-        lastActiveStatus: lastBlocked?.from_status || lastStatus?.from_status || null,
-        waitingFor
-      });
-
-      return {
-        assignment_id: assignment.id,
-        title: assignment.title,
-        summary: assignment.description || null,
-        status: assignment.status,
-        priority: assignment.priority,
-        updated_at: assignment.updated_at,
-        progress_percent: progress.percent,
-        progress_note: progress.note,
-        progress_source: progress.source,
-        waiting_for: waitingFor,
-        runtime: false
-      };
-    });
 
     if (!workItems.length) {
       const runtimeFallback = buildRuntimeFallbackWorkItem(sister.id, sister.status, db);
@@ -648,6 +694,56 @@ export function getWorkboard(days = LOOKBACK_DAYS_DEFAULT) {
   return {
     window_days: Math.max(days, 1),
     items
+  };
+}
+
+export function getSisterWorkboardDetail(sisterId, days = LOOKBACK_DAYS_DEFAULT, limit = 120) {
+  ensureIngested(false);
+  const db = getDb();
+  const sisters = getSisters(days).items;
+  const sister = sisters.find((item) => item.id === sisterId);
+  if (!sister) return null;
+
+  const { boundedLimit, assignmentsStmt, assignmentEventCountStmt, lastStatusChangeStmt, lastBlockedStatusStmt } =
+    assignmentQueryStatements(db, limit);
+  const activeStatuses = new Set(['in_progress', 'rework', 'blocked', 'inbox']);
+
+  const rows = assignmentsStmt.all(sister.id, boundedLimit);
+  const mapped = rows.map((assignment) =>
+    mapAssignmentToWorkItem({
+      assignment,
+      sister,
+      assignmentEventCountStmt,
+      lastStatusChangeStmt,
+      lastBlockedStatusStmt
+    })
+  );
+
+  const activeItems = mapped.filter((item) => activeStatuses.has(item.status));
+  const previousItems = mapped.filter((item) => !activeStatuses.has(item.status));
+
+  if (!activeItems.length) {
+    const runtimeFallback = buildRuntimeFallbackWorkItem(sister.id, sister.status, db);
+    if (runtimeFallback) {
+      activeItems.push(runtimeFallback);
+    }
+  }
+
+  return {
+    window_days: Math.max(days, 1),
+    limit: boundedLimit,
+    sister: {
+      id: sister.id,
+      display_name: sister.display_name,
+      status: sister.status,
+      current_model: sister.current_model || sister.model_primary || null
+    },
+    active_items: activeItems,
+    previous_items: previousItems,
+    counts: {
+      active: activeItems.length,
+      previous: previousItems.length
+    }
   };
 }
 

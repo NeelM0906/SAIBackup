@@ -37,7 +37,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2>Active Workboard</h2>
-          <small>Top 5 work items per sister. Heuristic progress is marked and to be improved.</small>
+          <small>Top 5 work items per sister. Click a sister card to view active and previous task history.</small>
         </div>
         <div id="workboardGrid" class="workboard-grid">
           <article class="workboard-card">Loading workboard...</article>
@@ -189,6 +189,30 @@
           <section>
             <h4>Relevant Information</h4>
             <pre id="modalRelevantInfo">{}</pre>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="workboardModal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalWorkSisterName">Sister Workboard</h3>
+            <small id="modalWorkSisterMeta"></small>
+          </div>
+          <button id="closeWorkModalBtn" type="button">Close</button>
+        </div>
+
+        <div class="modal-body">
+          <section>
+            <h4>Active Tasks</h4>
+            <div id="modalActiveWorkItems" class="detail-list"></div>
+          </section>
+
+          <section>
+            <h4>Previously Worked</h4>
+            <div id="modalPreviousWorkItems" class="detail-list"></div>
           </section>
         </div>
       </div>

@@ -13,7 +13,8 @@ const state = {
   sisters: [],
   selectedAssignmentId: null,
   logsLimit: LOGS_DEFAULT_LIMIT,
-  profileCache: new Map()
+  profileCache: new Map(),
+  workboardDetailCache: new Map()
 };
 
 const els = {
@@ -47,7 +48,13 @@ const els = {
   modalPersonalitySource: document.getElementById('modalPersonalitySource'),
   modalTools: document.getElementById('modalTools'),
   modalStatus: document.getElementById('modalStatus'),
-  modalRelevantInfo: document.getElementById('modalRelevantInfo')
+  modalRelevantInfo: document.getElementById('modalRelevantInfo'),
+  workboardModal: document.getElementById('workboardModal'),
+  closeWorkModalBtn: document.getElementById('closeWorkModalBtn'),
+  modalWorkSisterName: document.getElementById('modalWorkSisterName'),
+  modalWorkSisterMeta: document.getElementById('modalWorkSisterMeta'),
+  modalActiveWorkItems: document.getElementById('modalActiveWorkItems'),
+  modalPreviousWorkItems: document.getElementById('modalPreviousWorkItems')
 };
 
 function n(value) {
@@ -201,7 +208,7 @@ function renderWorkboard(payload) {
             : '<article class="work-item"><div class="sub">No active work items.</div></article>';
 
           return `
-            <article class="workboard-card">
+            <article class="workboard-card" data-workboard-sister-id="${esc(sister.sister_id)}">
               <h3>${esc(sister.sister_name)} <span class="status ${esc(sister.sister_status)}">${esc(sister.sister_status)}</span></h3>
               <div class="work-items">${list}</div>
             </article>
@@ -289,14 +296,16 @@ function renderAssignmentEvents(payload) {
     : '<tr><td colspan="5">No assignment events found.</td></tr>';
 }
 
-function openModal() {
-  els.modal.classList.add('open');
-  els.modal.setAttribute('aria-hidden', 'false');
+function openModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.classList.add('open');
+  modalEl.setAttribute('aria-hidden', 'false');
 }
 
-function closeModal() {
-  els.modal.classList.remove('open');
-  els.modal.setAttribute('aria-hidden', 'true');
+function closeModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.classList.remove('open');
+  modalEl.setAttribute('aria-hidden', 'true');
 }
 
 async function openSisterModal(sisterId) {
@@ -315,7 +324,57 @@ async function openSisterModal(sisterId) {
   els.modalStatus.innerHTML = `<span class="status ${esc(profile.current_status || 'offline')}">${esc(profile.current_status || 'offline')}</span>`;
   els.modalRelevantInfo.textContent = safeJson(profile.relevant_information || {}, '{}');
 
-  openModal();
+  openModal(els.modal);
+}
+
+function renderWorkDetailItems(items) {
+  if (!Array.isArray(items) || !items.length) {
+    return '<article class="work-item"><div class="sub">No tasks found.</div></article>';
+  }
+
+  return items
+    .map((item) => {
+      const progressNum = Number(item.progress_percent);
+      const hasProgress = item.progress_percent !== null && item.progress_percent !== undefined && !Number.isNaN(progressNum);
+      const progressPct = Math.max(0, Math.min(100, hasProgress ? progressNum : 0));
+      const timingMeta = item.completed_at
+        ? `Completed: ${esc(shortTs(item.completed_at))}`
+        : `Updated: ${esc(shortTs(item.updated_at))}`;
+
+      return `
+        <article class="work-item">
+          <div class="title">${esc(item.title || 'Untitled')}</div>
+          <div class="sub">
+            <span class="status ${assignmentStatusClass(item.status)}">${esc(item.status || '-')}</span>
+            ${item.priority ? ` • ${esc(item.priority)}` : ''}
+          </div>
+          <div class="sub">${esc(item.summary || '-')}</div>
+          <div class="meta">${timingMeta}${item.assignment_id ? ` • ${esc(item.assignment_id)}` : ''}</div>
+          ${hasProgress ? `<div class="progress"><span style="width:${progressPct}%"></span></div>` : ''}
+          <div class="note">
+            ${hasProgress ? `${Math.round(progressPct)}%` : 'No progress bar (inactive)'}
+            ${item.progress_note ? ` • ${esc(item.progress_note)}` : ''}
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+}
+
+async function openWorkboardModal(sisterId) {
+  let detail = state.workboardDetailCache.get(sisterId);
+  if (!detail) {
+    const payload = await fetchJson(`/api/workboard/${encodeURIComponent(sisterId)}?days=${DAYS}&limit=200`);
+    detail = payload.detail;
+    state.workboardDetailCache.set(sisterId, detail);
+  }
+
+  els.modalWorkSisterName.textContent = `${detail.sister.display_name || detail.sister.id} Workboard`;
+  els.modalWorkSisterMeta.textContent = `${detail.sister.id} • ${detail.sister.status || '-'} • Active: ${n(detail.counts?.active || 0)} • Previous: ${n(detail.counts?.previous || 0)}`;
+  els.modalActiveWorkItems.innerHTML = renderWorkDetailItems(detail.active_items || []);
+  els.modalPreviousWorkItems.innerHTML = renderWorkDetailItems(detail.previous_items || []);
+
+  openModal(els.workboardModal);
 }
 
 async function refreshOverview() {
@@ -329,6 +388,7 @@ async function refreshSisters() {
 
 async function refreshWorkboard() {
   renderWorkboard(await fetchJson(`/api/workboard?days=${DAYS}`));
+  state.workboardDetailCache.clear();
 }
 
 async function refreshEvents() {
@@ -472,9 +532,22 @@ els.sisterGrid.addEventListener('click', (event) => {
   });
 });
 
-els.closeModalBtn.addEventListener('click', closeModal);
+els.workboardGrid.addEventListener('click', (event) => {
+  const card = event.target.closest('[data-workboard-sister-id]');
+  if (!card) return;
+  openWorkboardModal(card.getAttribute('data-workboard-sister-id')).catch((error) => {
+    els.assignmentFormError.textContent = error.message;
+  });
+});
+
+els.closeModalBtn.addEventListener('click', () => closeModal(els.modal));
 els.modal.addEventListener('click', (event) => {
-  if (event.target === els.modal) closeModal();
+  if (event.target === els.modal) closeModal(els.modal);
+});
+
+els.closeWorkModalBtn.addEventListener('click', () => closeModal(els.workboardModal));
+els.workboardModal.addEventListener('click', (event) => {
+  if (event.target === els.workboardModal) closeModal(els.workboardModal);
 });
 
 els.refreshBtn.addEventListener('click', async () => {
