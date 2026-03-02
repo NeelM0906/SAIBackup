@@ -476,6 +476,17 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
   async syncFromDisk(changedPaths: string[]) {
     const { nodes, providerMode, projectPath } = get();
     if (providerMode === "openclaw") {
+      const shouldReload = changedPaths.some((path) => {
+        const p = normalizePath(path);
+        return (
+          p.endsWith("/openclaw.json") ||
+          p.includes("/agents/") ||
+          p.includes("/workspace/skills/") ||
+          p.includes("/workspace/sisters/") ||
+          p.endsWith("/workspace/colosseum-dashboard/data/main_colosseum.json")
+        );
+      });
+      if (!shouldReload) return;
       if (projectPath) {
         await get().loadProject(projectPath);
       }

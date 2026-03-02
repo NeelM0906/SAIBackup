@@ -1,6 +1,15 @@
 import { watch, exists } from "@tauri-apps/plugin-fs";
 import { joinPath, normalizePath } from "@/utils/paths";
 
+function shouldIgnoreOpenClawPath(path: string): boolean {
+  const p = normalizePath(path);
+  if (p.includes("/workspace/openclaw-agent-team-manager/")) return true;
+  if (p.includes("/workspace/_references/")) return true;
+  if (p.includes("/node_modules/")) return true;
+  if (p.includes("/.git/")) return true;
+  return false;
+}
+
 /**
  * Watch the .claude/ directory for changes with debouncing.
  * Returns a cleanup function that stops watching.
@@ -16,7 +25,9 @@ export async function startWatching(
   const watchTargets = openclawMode
     ? [
         joinPath(root, "agents"),
-        joinPath(root, "workspace"),
+        joinPath(root, "workspace", "skills"),
+        joinPath(root, "workspace", "sisters"),
+        joinPath(root, "workspace", "colosseum-dashboard", "data"),
         openclawConfig,
       ]
     : [joinPath(root, ".claude")];
@@ -32,7 +43,10 @@ export async function startWatching(
     const unwatch = await watch(
       target,
       (event) => {
-        const eventPaths = event.paths.map(normalizePath);
+        const eventPaths = event.paths
+          .map(normalizePath)
+          .filter((path) => (openclawMode ? !shouldIgnoreOpenClawPath(path) : true));
+        if (eventPaths.length === 0) return;
         pendingPaths.push(...eventPaths);
 
         if (debounceTimer !== null) {

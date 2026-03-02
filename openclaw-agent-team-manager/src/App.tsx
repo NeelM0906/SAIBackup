@@ -37,6 +37,7 @@ function App() {
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
   const updateNode = useTreeStore((s) => s.updateNode);
   const deleteNodeFromDisk = useTreeStore((s) => s.deleteNodeFromDisk);
+  const selectNode = useUiStore((s) => s.selectNode);
   const unwatchRef = useRef<(() => void) | null>(null);
 
   const deleteNodeName = deleteDialogNodeId
@@ -93,6 +94,10 @@ function App() {
           { name: "manager_being_name", value: managerName, type: "text" as VariableKind },
         ];
         updateNode(createdNodeId, { variables: nextVars, lastModified: Date.now() });
+      }
+
+      if (createdNodeId) {
+        selectNode(createdNodeId);
       }
 
       toast(`Created ${name}`, "success");

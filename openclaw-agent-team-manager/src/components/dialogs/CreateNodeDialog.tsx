@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useUiStore } from "@/store/ui-store";
 import { useTreeStore } from "@/store/tree-store";
 import { scanAllSkills, type SkillInfo } from "@/services/skill-scanner";
+import { listOpenClawCatalogAgents, type OpenClawCatalogAgent } from "@/services/openclaw-provider";
 
 type CreateKind = "agent" | "skill" | "group" | "pipeline";
 
@@ -43,6 +44,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
 
   // Filesystem-scanned skills (all skills in the system)
   const [fsSkills, setFsSkills] = useState<SkillInfo[]>([]);
+  const [catalogManagers, setCatalogManagers] = useState<OpenClawCatalogAgent[]>([]);
 
   // Build list of possible parent nodes
   const parentOptions = useMemo(() => {
@@ -63,15 +65,20 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   }, [nodes]);
 
   const sisterManagerOptions = useMemo(() => {
-    const items: Array<{ id: string; name: string }> = [];
+    const byId = new Map<string, { id: string; name: string }>();
     for (const [id, node] of nodes) {
-      if (node.kind !== "agent") continue;
       const isSister = node.tags?.includes("sister") || node.team === "openclaw-sisters";
-      if (!isSister) continue;
-      items.push({ id, name: node.name });
+      if (node.kind === "agent" && isSister) {
+        byId.set(id, { id, name: node.name });
+      }
     }
-    return items.sort((a, b) => a.name.localeCompare(b.name));
-  }, [nodes]);
+    for (const manager of catalogManagers) {
+      if (!byId.has(manager.id)) {
+        byId.set(manager.id, { id: manager.id, name: manager.name });
+      }
+    }
+    return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, [nodes, catalogManagers]);
 
   // Build list of available skills for agent/group assignment display
   const availableSkills = useMemo(() => {
@@ -107,6 +114,15 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
     scanAllSkills(projectPath, providerMode).then((skills) => {
       if (!cancelled) setFsSkills(skills);
     });
+    if (providerMode === "openclaw") {
+      listOpenClawCatalogAgents(projectPath).then((items) => {
+        if (!cancelled) setCatalogManagers(items);
+      }).catch(() => {
+        if (!cancelled) setCatalogManagers([]);
+      });
+    } else {
+      setCatalogManagers([]);
+    }
     return () => { cancelled = true; };
   }, [open, projectPath, providerMode]);
 
