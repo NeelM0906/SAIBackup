@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-02T20:51:05.109Z",
+  "generatedAt": "2026-03-02T20:52:15.391Z",
   "rootPath": "/Users/samantha/.openclaw",
   "sisters": [
     {
@@ -599,7 +599,7 @@
       "id": "telegram",
       "name": "Telegram",
       "enabled": true,
-      "accountCount": 0,
+      "accountCount": 4,
       "groupPolicy": "allowlist",
       "streaming": "off"
     },
@@ -607,7 +607,7 @@
       "id": "discord",
       "name": "Discord",
       "enabled": true,
-      "accountCount": 0,
+      "accountCount": 6,
       "groupPolicy": "allowlist",
       "streaming": "off"
     }
@@ -615,48 +615,48 @@
   "bindings": [
     {
       "agentId": "forge",
-      "channel": null,
-      "accountId": null
+      "channel": "telegram",
+      "accountId": "forge"
     },
     {
       "agentId": "scholar",
-      "channel": null,
-      "accountId": null
+      "channel": "telegram",
+      "accountId": "scholar"
     },
     {
       "agentId": "recovery",
-      "channel": null,
-      "accountId": null
+      "channel": "telegram",
+      "accountId": "recovery"
     },
     {
       "agentId": "main",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "default"
     },
     {
       "agentId": "forge",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "forge"
     },
     {
       "agentId": "scholar",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "scholar"
     },
     {
       "agentId": "sevenlevers",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "sevenlevers"
     },
     {
       "agentId": "recovery",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "recovery"
     },
     {
       "agentId": "memory",
-      "channel": null,
-      "accountId": null
+      "channel": "discord",
+      "accountId": "memory"
     }
   ],
   "gateway": {

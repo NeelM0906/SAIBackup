@@ -57,7 +57,7 @@ function extractChannels(config) {
       id: String(id),
       name: titleCase(id),
       enabled: Boolean(channel?.enabled),
-      accountCount: Array.isArray(channel?.accounts) ? channel.accounts.length : 0,
+      accountCount: channel?.accounts && typeof channel.accounts === "object" ? Object.keys(channel.accounts).length : 0,
       groupPolicy: redacted?.groupPolicy ?? null,
       streaming: redacted?.streaming ?? null,
     };
@@ -68,8 +68,8 @@ function extractBindings(config) {
   const bindings = Array.isArray(config?.bindings) ? config.bindings : [];
   return bindings.map((binding) => ({
     agentId: binding?.agentId || null,
-    channel: binding?.channel || null,
-    accountId: binding?.accountId || null,
+    channel: binding?.match?.channel || binding?.channel || null,
+    accountId: binding?.match?.accountId || binding?.accountId || null,
   }));
 }
 
