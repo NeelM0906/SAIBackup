@@ -12,6 +12,7 @@ import {
   LOOKBACK_DAYS_DEFAULT,
   ONLINE_WINDOW_SECONDS,
   OPENCLAW_CONFIG_PATH,
+  SAI_ONLINE_LINKS,
   SNAPSHOT_FALLBACK_PATH
 } from './config.js';
 import { getDb } from './db.js';
@@ -123,8 +124,12 @@ function safeSqliteCount(dbPath, query) {
 function getBeingsSummary() {
   let totalBeings = 0;
   const domainCounts = {};
-  let domainsOnline = 0;
+  let colosseumDomainsOnline = 0;
   const onlineDomains = [];
+  const onlineDashboards = (SAI_ONLINE_LINKS || []).map((item) => ({
+    name: String(item?.name || '').trim(),
+    url: String(item?.url || '').trim()
+  }));
 
   totalBeings += safeSqliteCount(COLOSSEUM_MAIN_DB, 'SELECT COUNT(*) FROM beings');
 
@@ -133,7 +138,7 @@ function getBeingsSummary() {
     const count = safeSqliteCount(dbPath, 'SELECT COUNT(*) FROM beings');
     domainCounts[domain] = count;
     if (count > 0) {
-      domainsOnline += 1;
+      colosseumDomainsOnline += 1;
       onlineDomains.push({
         name: domain,
         beings_count: count,
@@ -154,9 +159,12 @@ function getBeingsSummary() {
 
   return {
     total_beings: totalBeings,
-    domains_online: domainsOnline,
+    domains_online: onlineDashboards.length || colosseumDomainsOnline,
+    colosseum_domains_online: colosseumDomainsOnline,
     domain_counts: domainCounts,
-    online_domains: onlineDomains
+    online_domains: onlineDomains,
+    online_dashboards_count: onlineDashboards.length,
+    online_dashboards: onlineDashboards
   };
 }
 

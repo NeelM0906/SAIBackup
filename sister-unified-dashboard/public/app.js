@@ -124,7 +124,7 @@ function renderOverview(data) {
     { label: 'Total Beings', value: n(data?.beings?.total_beings || 0) },
     {
       label: 'Domains Online',
-      value: n(data?.beings?.domains_online || 0),
+      value: n((data?.beings?.online_dashboards_count ?? data?.beings?.domains_online) || 0),
       key: 'domains_online',
       clickable: true
     },
@@ -390,24 +390,28 @@ async function openWorkboardModal(sisterId) {
 }
 
 function renderDomainLinks() {
-  const domains = state.overview?.beings?.online_domains || [];
-  els.domainsModalCount.textContent = `Online domains: ${n(domains.length)}`;
+  const links = state.overview?.beings?.online_dashboards || state.overview?.beings?.online_domains || [];
+  els.domainsModalCount.textContent = `Online links: ${n(links.length)}`;
 
-  els.domainsList.innerHTML = domains.length
-    ? domains
+  els.domainsList.innerHTML = links.length
+    ? links
         .map(
-          (domain) => `
+          (item) => `
             <article class="work-item">
-              <div class="title">${esc(domain.name)}</div>
-              <div class="sub">Beings: ${n(domain.beings_count || 0)}</div>
-              <div class="meta"><a href="${esc(domain.url)}" target="_blank" rel="noreferrer noopener">${esc(
-                domain.url
+              <div class="title">${esc(item.name || 'Untitled')}</div>
+              ${
+                item.beings_count !== undefined && item.beings_count !== null
+                  ? `<div class="sub">Beings: ${n(item.beings_count || 0)}</div>`
+                  : ''
+              }
+              <div class="meta"><a href="${esc(item.url)}" target="_blank" rel="noreferrer noopener">${esc(
+                item.url
               )}</a></div>
             </article>
           `
         )
         .join('')
-    : '<article class="work-item"><div class="sub">No online domains found.</div></article>';
+    : '<article class="work-item"><div class="sub">No online links found.</div></article>';
 }
 
 function openDomainsModal() {
