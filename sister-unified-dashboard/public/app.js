@@ -14,7 +14,8 @@ const state = {
   selectedAssignmentId: null,
   logsLimit: LOGS_DEFAULT_LIMIT,
   profileCache: new Map(),
-  workboardDetailCache: new Map()
+  workboardDetailCache: new Map(),
+  overview: null
 };
 
 const els = {
@@ -54,7 +55,11 @@ const els = {
   modalWorkSisterName: document.getElementById('modalWorkSisterName'),
   modalWorkSisterMeta: document.getElementById('modalWorkSisterMeta'),
   modalActiveWorkItems: document.getElementById('modalActiveWorkItems'),
-  modalPreviousWorkItems: document.getElementById('modalPreviousWorkItems')
+  modalPreviousWorkItems: document.getElementById('modalPreviousWorkItems'),
+  domainsModal: document.getElementById('domainsModal'),
+  closeDomainsModalBtn: document.getElementById('closeDomainsModalBtn'),
+  domainsModalCount: document.getElementById('domainsModalCount'),
+  domainsList: document.getElementById('domainsList')
 };
 
 function n(value) {
@@ -107,24 +112,31 @@ async function fetchJson(path, options) {
 }
 
 function renderOverview(data) {
+  state.overview = data;
+
   const cards = [
-    ['Total Sisters', n(data.total_sisters)],
-    ['Active', n(data.active_sisters)],
-    ['Idle', n(data.idle_sisters)],
-    ['Offline', n(data.offline_sisters)],
-    [`Events (${DAYS}d)`, n(data.events)],
-    [`Sessions (${DAYS}d)`, n(data.sessions)],
-    ['Total Beings', n(data?.beings?.total_beings || 0)],
-    ['Domains Online', n(data?.beings?.domains_online || 0)],
-    ['Last Ingest', data?.ingest?.ingested_at ? shortTs(data.ingest.ingested_at) : '-']
+    { label: 'Total Sisters', value: n(data.total_sisters) },
+    { label: 'Active', value: n(data.active_sisters) },
+    { label: 'Idle', value: n(data.idle_sisters) },
+    { label: 'Offline', value: n(data.offline_sisters) },
+    { label: `Events (${DAYS}d)`, value: n(data.events) },
+    { label: `Sessions (${DAYS}d)`, value: n(data.sessions) },
+    { label: 'Total Beings', value: n(data?.beings?.total_beings || 0) },
+    {
+      label: 'Domains Online',
+      value: n(data?.beings?.domains_online || 0),
+      key: 'domains_online',
+      clickable: true
+    },
+    { label: 'Last Ingest', value: data?.ingest?.ingested_at ? shortTs(data.ingest.ingested_at) : '-' }
   ];
 
   els.overviewMetrics.innerHTML = cards
     .map(
-      ([label, value]) => `
-      <article class="metric">
-        <div class="label">${label}</div>
-        <div class="value">${value}</div>
+      (card) => `
+      <article class="metric ${card.clickable ? 'clickable' : ''}" ${card.key ? `data-metric-key="${esc(card.key)}"` : ''}>
+        <div class="label">${esc(card.label)}${card.clickable ? ' (click to view)' : ''}</div>
+        <div class="value">${esc(card.value)}</div>
       </article>
     `
     )
@@ -377,6 +389,32 @@ async function openWorkboardModal(sisterId) {
   openModal(els.workboardModal);
 }
 
+function renderDomainLinks() {
+  const domains = state.overview?.beings?.online_domains || [];
+  els.domainsModalCount.textContent = `Online domains: ${n(domains.length)}`;
+
+  els.domainsList.innerHTML = domains.length
+    ? domains
+        .map(
+          (domain) => `
+            <article class="work-item">
+              <div class="title">${esc(domain.name)}</div>
+              <div class="sub">Beings: ${n(domain.beings_count || 0)}</div>
+              <div class="meta"><a href="${esc(domain.url)}" target="_blank" rel="noreferrer noopener">${esc(
+                domain.url
+              )}</a></div>
+            </article>
+          `
+        )
+        .join('')
+    : '<article class="work-item"><div class="sub">No online domains found.</div></article>';
+}
+
+function openDomainsModal() {
+  renderDomainLinks();
+  openModal(els.domainsModal);
+}
+
 async function refreshOverview() {
   renderOverview(await fetchJson(`/api/overview?days=${DAYS}`));
 }
@@ -540,6 +578,12 @@ els.workboardGrid.addEventListener('click', (event) => {
   });
 });
 
+els.overviewMetrics.addEventListener('click', (event) => {
+  const card = event.target.closest('[data-metric-key="domains_online"]');
+  if (!card) return;
+  openDomainsModal();
+});
+
 els.closeModalBtn.addEventListener('click', () => closeModal(els.modal));
 els.modal.addEventListener('click', (event) => {
   if (event.target === els.modal) closeModal(els.modal);
@@ -548,6 +592,11 @@ els.modal.addEventListener('click', (event) => {
 els.closeWorkModalBtn.addEventListener('click', () => closeModal(els.workboardModal));
 els.workboardModal.addEventListener('click', (event) => {
   if (event.target === els.workboardModal) closeModal(els.workboardModal);
+});
+
+els.closeDomainsModalBtn.addEventListener('click', () => closeModal(els.domainsModal));
+els.domainsModal.addEventListener('click', (event) => {
+  if (event.target === els.domainsModal) closeModal(els.domainsModal);
 });
 
 els.refreshBtn.addEventListener('click', async () => {

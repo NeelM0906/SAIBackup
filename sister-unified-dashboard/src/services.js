@@ -6,6 +6,7 @@ import {
   COLOSSEUM_DOMAIN_LIST,
   COLOSSEUM_DOMAINS_ROOT,
   COLOSSEUM_MAIN_DB,
+  COLOSSEUM_API_BASE,
   IDLE_WINDOW_SECONDS,
   INGEST_MIN_INTERVAL_MS,
   LOOKBACK_DAYS_DEFAULT,
@@ -123,6 +124,7 @@ function getBeingsSummary() {
   let totalBeings = 0;
   const domainCounts = {};
   let domainsOnline = 0;
+  const onlineDomains = [];
 
   totalBeings += safeSqliteCount(COLOSSEUM_MAIN_DB, 'SELECT COUNT(*) FROM beings');
 
@@ -130,7 +132,14 @@ function getBeingsSummary() {
     const dbPath = path.join(COLOSSEUM_DOMAINS_ROOT, domain, 'colosseum.db');
     const count = safeSqliteCount(dbPath, 'SELECT COUNT(*) FROM beings');
     domainCounts[domain] = count;
-    if (count > 0) domainsOnline += 1;
+    if (count > 0) {
+      domainsOnline += 1;
+      onlineDomains.push({
+        name: domain,
+        beings_count: count,
+        url: `${COLOSSEUM_API_BASE.replace(/\/$/, '')}/domain/${encodeURIComponent(domain)}/beings`
+      });
+    }
     totalBeings += count;
   }
 
@@ -146,7 +155,8 @@ function getBeingsSummary() {
   return {
     total_beings: totalBeings,
     domains_online: domainsOnline,
-    domain_counts: domainCounts
+    domain_counts: domainCounts,
+    online_domains: onlineDomains
   };
 }
 

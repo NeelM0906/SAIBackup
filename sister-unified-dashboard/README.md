@@ -11,6 +11,7 @@ Standalone Node.js dashboard for SAI Prime + all sister beings.
 - Sister beings 3-column grid + modal profile view (IDENTITY.md priority)
 - Monitor logs default to 10 with `Load More (+50)`
 - Active workboard with top-5 items per sister and grounded heuristic progress
+- Clickable `Domains Online` metric with online-domain URL list
 - Static frontend (HTML/CSS/JS) with polling every few seconds
 
 ## Run
@@ -21,6 +22,9 @@ npm start
 
 Open: `http://127.0.0.1:5077`
 
+Optional env vars:
+- `COLOSSEUM_API_BASE` (default: `http://127.0.0.1:5050/api`) used for domain URL links
+
 ## API
 - `GET /api/health`
 - `GET /api/overview?days=7`
@@ -28,6 +32,7 @@ Open: `http://127.0.0.1:5077`
 - `GET /api/sisters/:id/profile?days=7`
 - `GET /api/events?days=7&limit=100&sister_id=<id>`
 - `GET /api/workboard?days=7`
+- `GET /api/workboard/:sisterId?days=7&limit=120`
 - `POST /api/refresh`
 - `GET /api/assignments?days=7&limit=100&status=&owner_sister_id=`
 - `POST /api/assignments`

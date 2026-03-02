@@ -98,6 +98,14 @@ button:disabled {
   background: rgba(9, 16, 27, 0.55);
 }
 
+.metric.clickable {
+  cursor: pointer;
+}
+
+.metric.clickable:hover {
+  border-color: var(--accent);
+}
+
 .metric .label {
   color: var(--muted);
   font-size: 0.77rem;
@@ -381,6 +389,11 @@ small {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.modal-body a {
+  color: #8bc5ff;
+  text-decoration: underline;
 }
 
 .detail-list {
