@@ -193,6 +193,123 @@ function runMigrations(database) {
         CREATE INDEX IF NOT EXISTS idx_audit_ledger_entity_time
           ON audit_ledger(entity_type, entity_id, created_at);
       `
+    },
+    {
+      version: 3,
+      name: 'phase_2_2_chat_groups_sessions',
+      sql: `
+        CREATE TABLE IF NOT EXISTS chat_groups (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          dispatch_mode_default TEXT NOT NULL DEFAULT 'parallel',
+          is_system INTEGER NOT NULL DEFAULT 0,
+          created_by TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          CHECK(dispatch_mode_default IN ('parallel', 'ordered'))
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_group_members (
+          id TEXT PRIMARY KEY,
+          group_id TEXT NOT NULL,
+          sister_id TEXT NOT NULL,
+          position INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          UNIQUE(group_id, sister_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_sessions (
+          id TEXT PRIMARY KEY,
+          scope_type TEXT NOT NULL,
+          group_id TEXT,
+          title TEXT,
+          dispatch_mode_default TEXT NOT NULL DEFAULT 'parallel',
+          monitor_mode TEXT NOT NULL DEFAULT 'monitor_only',
+          compaction_mode TEXT NOT NULL DEFAULT 'safeguard',
+          compaction_threshold_tokens INTEGER NOT NULL DEFAULT 9000,
+          compacted_summary TEXT,
+          compacted_at TEXT,
+          message_count INTEGER NOT NULL DEFAULT 0,
+          token_estimate INTEGER NOT NULL DEFAULT 0,
+          created_by TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'active',
+          last_message_at TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          expires_at TEXT NOT NULL,
+          CHECK(scope_type IN ('all_sisters', 'group')),
+          CHECK(dispatch_mode_default IN ('parallel', 'ordered')),
+          CHECK(monitor_mode IN ('monitor_only')),
+          CHECK(compaction_mode IN ('safeguard', 'off')),
+          CHECK(status IN ('active', 'archived'))
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_messages (
+          id TEXT PRIMARY KEY,
+          session_id TEXT NOT NULL,
+          role TEXT NOT NULL,
+          actor TEXT NOT NULL,
+          content TEXT NOT NULL,
+          mentions_json TEXT,
+          dispatch_mode TEXT,
+          meta_json TEXT,
+          token_estimate INTEGER NOT NULL DEFAULT 0,
+          is_compacted INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL,
+          expires_at TEXT NOT NULL,
+          CHECK(role IN ('operator', 'system', 'assistant'))
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_dispatches (
+          id TEXT PRIMARY KEY,
+          session_id TEXT NOT NULL,
+          message_id TEXT NOT NULL,
+          sister_id TEXT NOT NULL,
+          dispatch_mode TEXT NOT NULL,
+          sequence_index INTEGER,
+          status TEXT NOT NULL DEFAULT 'monitor_only',
+          note TEXT,
+          metadata_json TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          expires_at TEXT NOT NULL,
+          CHECK(dispatch_mode IN ('parallel', 'ordered')),
+          CHECK(status IN ('queued', 'monitor_only', 'sent', 'acked', 'failed'))
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_compactions (
+          id TEXT PRIMARY KEY,
+          session_id TEXT NOT NULL,
+          summary TEXT NOT NULL,
+          source_message_count INTEGER NOT NULL DEFAULT 0,
+          tokens_before INTEGER NOT NULL DEFAULT 0,
+          tokens_after INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_chat_groups_name
+          ON chat_groups(name);
+        CREATE INDEX IF NOT EXISTS idx_chat_group_members_group
+          ON chat_group_members(group_id, position);
+        CREATE INDEX IF NOT EXISTS idx_chat_sessions_scope_updated
+          ON chat_sessions(scope_type, group_id, updated_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_sessions_expires
+          ON chat_sessions(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_messages_session_created
+          ON chat_messages(session_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_messages_session_compacted
+          ON chat_messages(session_id, is_compacted, created_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_dispatches_session_created
+          ON chat_dispatches(session_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_dispatches_message
+          ON chat_dispatches(message_id);
+        CREATE INDEX IF NOT EXISTS idx_chat_dispatches_expires
+          ON chat_dispatches(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_chat_compactions_session_created
+          ON chat_compactions(session_id, created_at);
+      `
     }
   ];
 

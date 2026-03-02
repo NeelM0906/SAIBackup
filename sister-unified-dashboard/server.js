@@ -15,6 +15,19 @@ import {
   updateAssignment
 } from './src/repositories/assignments.js';
 import {
+  createChatGroup,
+  createChatMessage,
+  createChatSession,
+  getChatBootstrap,
+  getChatSession,
+  listChatDispatches,
+  listChatGroups,
+  listChatMessages,
+  listChatSessions,
+  pruneChatRetention,
+  updateChatGroupMembers
+} from './src/repositories/chat.js';
+import {
   ensureIngested,
   getEvents,
   getHealth,
@@ -188,6 +201,113 @@ async function handleRequest(req, res) {
 
   if (url.pathname === '/api/refresh' && method === 'POST') {
     return json(res, 200, ensureIngested(true));
+  }
+
+  if (url.pathname === '/api/chat/bootstrap' && method === 'GET') {
+    const limit = toInt(url.searchParams.get('limit'), 120);
+    return json(res, 200, { ok: true, ...getChatBootstrap(limit) });
+  }
+
+  if (url.pathname === '/api/chat/cleanup' && method === 'POST') {
+    return json(res, 200, pruneChatRetention());
+  }
+
+  if (url.pathname === '/api/chat/groups' && method === 'GET') {
+    return json(res, 200, { ok: true, ...listChatGroups() });
+  }
+
+  if (url.pathname === '/api/chat/groups' && method === 'POST') {
+    ensureIngested(false);
+    const body = await parseJsonBody(req);
+    const actor = String(body.actor || 'operator').trim() || 'operator';
+    const item = createChatGroup(body, actor);
+    return json(res, 201, { ok: true, item });
+  }
+
+  const chatGroupMatch = url.pathname.match(/^\/api\/chat\/groups\/([^/]+)$/);
+  if (chatGroupMatch && method === 'PUT') {
+    ensureIngested(false);
+    const groupId = decodeURIComponent(chatGroupMatch[1]);
+    const body = await parseJsonBody(req);
+    const actor = String(body.actor || 'operator').trim() || 'operator';
+    const item = updateChatGroupMembers(groupId, body, actor);
+    return json(res, 200, { ok: true, item });
+  }
+
+  if (url.pathname === '/api/chat/sessions' && method === 'GET') {
+    const scopeType = url.searchParams.get('scope_type') || null;
+    const groupId = url.searchParams.get('group_id') || null;
+    const status = url.searchParams.get('status') || 'active';
+    const limit = toInt(url.searchParams.get('limit'), 120);
+    return json(
+      res,
+      200,
+      {
+        ok: true,
+        ...listChatSessions({
+          scopeType,
+          groupId,
+          status,
+          limit
+        })
+      }
+    );
+  }
+
+  if (url.pathname === '/api/chat/sessions' && method === 'POST') {
+    ensureIngested(false);
+    const body = await parseJsonBody(req);
+    const actor = String(body.actor || 'operator').trim() || 'operator';
+    const item = createChatSession(body, actor);
+    return json(res, 201, { ok: true, item });
+  }
+
+  const chatSessionMatch = url.pathname.match(/^\/api\/chat\/sessions\/([^/]+)$/);
+  if (chatSessionMatch && method === 'GET') {
+    const sessionId = decodeURIComponent(chatSessionMatch[1]);
+    const item = getChatSession(sessionId);
+    if (!item) {
+      return jsonError(res, 404, 'CHAT_SESSION_NOT_FOUND', `Chat session not found: ${sessionId}`);
+    }
+    return json(res, 200, { ok: true, item });
+  }
+
+  const chatMessagesMatch = url.pathname.match(/^\/api\/chat\/sessions\/([^/]+)\/messages$/);
+  if (chatMessagesMatch && method === 'GET') {
+    const sessionId = decodeURIComponent(chatMessagesMatch[1]);
+    const limit = toInt(url.searchParams.get('limit'), 160);
+    const includeCompacted = url.searchParams.get('include_compacted') !== '0';
+    return json(
+      res,
+      200,
+      {
+        ok: true,
+        ...listChatMessages(sessionId, { limit, includeCompacted })
+      }
+    );
+  }
+
+  if (chatMessagesMatch && method === 'POST') {
+    ensureIngested(false);
+    const sessionId = decodeURIComponent(chatMessagesMatch[1]);
+    const body = await parseJsonBody(req);
+    const actor = String(body.actor || 'operator').trim() || 'operator';
+    const payload = createChatMessage(sessionId, body, actor);
+    return json(res, 201, payload);
+  }
+
+  const chatDispatchesMatch = url.pathname.match(/^\/api\/chat\/sessions\/([^/]+)\/dispatches$/);
+  if (chatDispatchesMatch && method === 'GET') {
+    const sessionId = decodeURIComponent(chatDispatchesMatch[1]);
+    const limit = toInt(url.searchParams.get('limit'), 200);
+    return json(
+      res,
+      200,
+      {
+        ok: true,
+        ...listChatDispatches(sessionId, { limit })
+      }
+    );
   }
 
   if (url.pathname === '/api/assignments' && method === 'GET') {
