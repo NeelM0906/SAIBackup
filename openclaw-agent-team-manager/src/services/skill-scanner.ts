@@ -2,6 +2,7 @@ import { readDir, readTextFile, exists } from "@tauri-apps/plugin-fs";
 import matter from "gray-matter";
 import { join, titleCase, generateNodeId } from "@/utils/paths";
 import type { ProviderMode } from "./app-settings";
+import { loadOpenClawCatalogFallback } from "./openclaw-catalog-fallback";
 import { resolveOpenClawRoot } from "./openclaw-provider";
 
 export interface SkillInfo {
@@ -84,7 +85,15 @@ async function scanOpenClawSkills(projectPath: string): Promise<SkillInfo[]> {
   const items: SkillInfo[] = [];
   const seenPaths = new Set<string>();
   const openclawRoot = await resolveOpenClawRoot(projectPath);
-  if (!openclawRoot) return items;
+  if (!openclawRoot) {
+    const fallback = await loadOpenClawCatalogFallback();
+    return (fallback?.skills || []).map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      sourcePath: item.sourcePath,
+    }));
+  }
 
   await scanSkillDirectory(join(openclawRoot, "skills"), items, seenPaths);
   await scanSkillDirectory(join(openclawRoot, "workspace", "skills"), items, seenPaths);
@@ -107,7 +116,16 @@ async function scanOpenClawSkills(projectPath: string): Promise<SkillInfo[]> {
     }
   }
 
-  return items.sort((a, b) => a.name.localeCompare(b.name));
+  const sorted = items.sort((a, b) => a.name.localeCompare(b.name));
+  if (sorted.length > 0) return sorted;
+
+  const fallback = await loadOpenClawCatalogFallback();
+  return (fallback?.skills || []).map((item) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    sourcePath: item.sourcePath,
+  }));
 }
 
 export async function scanAllSkills(

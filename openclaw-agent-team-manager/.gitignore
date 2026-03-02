@@ -8,6 +8,7 @@ node_modules/
 # ==============================
 dist/
 src-tauri/target/
+public/openclaw-catalog.json
 
 # ==============================
 # Local user config (API keys, settings, tree metadata)

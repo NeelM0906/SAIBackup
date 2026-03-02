@@ -2,6 +2,7 @@ import { exists, readDir, readTextFile } from "@tauri-apps/plugin-fs";
 import type { AuiNode } from "@/types/aui-node";
 import type { AgentConfig } from "@/types/agent";
 import { generateNodeId, join, titleCase } from "@/utils/paths";
+import { loadOpenClawCatalogFallback } from "./openclaw-catalog-fallback";
 import type { ProviderMode } from "./app-settings";
 
 const SISTER_IDENTITY_FILES = ["IDENTITY.md", "SOUL.md", "AGENTS.md"] as const;
@@ -95,13 +96,28 @@ function extractIdentityName(content: string, fallback: string): string {
   const lines = String(content || "").split("\n").map((line) => line.trim()).filter(Boolean);
   const heading = lines.find((line) => line.startsWith("#"));
   if (heading) {
-    return heading.replace(/^#+\s*/, "").trim() || fallback;
+    const raw = heading.replace(/^#+\s*/, "").trim();
+    const cleaned = raw
+      .replace(/^identity\.md\s*[-:–—]\s*/i, "")
+      .replace(/^identity\s*[-:–—]\s*/i, "")
+      .trim();
+    if (/^who am i\??$/i.test(cleaned)) return fallback;
+    return cleaned || fallback;
   }
   return fallback;
 }
 
+function isRealToolName(name: string): boolean {
+  const value = String(name || "").trim();
+  if (!value) return false;
+  if (value.startsWith(".")) return false;
+  const lowered = value.toLowerCase();
+  if (lowered === "__pycache__" || lowered === "node_modules" || lowered === "dist" || lowered === "build") return false;
+  return true;
+}
+
 async function listChildDirectories(root: string): Promise<string[]> {
-  if (!root || !(await exists(root))) return [];
+  if (!root || !(await safeExists(root))) return [];
   try {
     const entries = await readDir(root);
     return entries.filter((entry) => entry.isDirectory && !!entry.name).map((entry) => entry.name);
@@ -121,7 +137,7 @@ export async function resolveOpenClawRoot(projectPath: string): Promise<string |
     const normalized = normalizeFsPath(root);
     if (!normalized || checked.has(normalized)) return false;
     checked.add(normalized);
-    return exists(join(normalized, "openclaw.json"));
+    return safeExists(join(normalized, "openclaw.json"));
   };
 
   for (const candidate of candidates) {
@@ -144,10 +160,21 @@ export async function resolveOpenClawRoot(projectPath: string): Promise<string |
 
 async function resolveOpenClawContext(projectPath: string): Promise<OpenClawContext | null> {
   const rootPath = await resolveOpenClawRoot(projectPath);
-  if (!rootPath) return null;
+  if (!rootPath) {
+    const fallback = await loadOpenClawCatalogFallback();
+    if (fallback?.rootPath) {
+      return { rootPath: fallback.rootPath, config: null };
+    }
+    return null;
+  }
   const configPath = join(rootPath, "openclaw.json");
-  if (!(await exists(configPath))) return null;
-  const raw = await readTextFile(configPath);
+  if (!(await safeExists(configPath))) return { rootPath, config: null };
+  let raw = "";
+  try {
+    raw = await readTextFile(configPath);
+  } catch {
+    return { rootPath, config: null };
+  }
   return {
     rootPath,
     config: safeJsonParse<OpenClawConfig>(raw),
@@ -173,8 +200,13 @@ function toAgentConfig(agent: OpenClawAgentItem, defaults?: OpenClawAgentDefault
 async function readIdentityForWorkspace(workspacePath: string): Promise<{ sourcePath: string; content: string } | null> {
   for (const file of SISTER_IDENTITY_FILES) {
     const fullPath = join(workspacePath, file);
-    if (!(await exists(fullPath))) continue;
-    const content = await readTextFile(fullPath);
+    if (!(await safeExists(fullPath))) continue;
+    let content = "";
+    try {
+      content = await readTextFile(fullPath);
+    } catch {
+      continue;
+    }
     return { sourcePath: fullPath, content };
   }
   return null;
@@ -200,13 +232,13 @@ function syntheticNodeBase(idSeed: string): Pick<AuiNode, "id" | "lastModified" 
 
 async function collectWorkspaceToolIds(workspacePath: string): Promise<string[]> {
   const toolsDir = join(workspacePath, "tools");
-  if (!(await exists(toolsDir))) return [];
+  if (!(await safeExists(toolsDir))) return [];
   const items = new Set<string>();
   try {
     const entries = await readDir(toolsDir);
     for (const entry of entries) {
       const name = String(entry.name || "").trim();
-      if (!name) continue;
+      if (!isRealToolName(name)) continue;
       if (entry.isDirectory) {
         items.add(name);
         continue;
@@ -225,7 +257,19 @@ async function discoverSisters(projectPath: string): Promise<DiscoveredSister[]>
   const context = await resolveOpenClawContext(projectPath);
   const rootPath = context?.rootPath;
   const config = context?.config;
-  if (!rootPath) return [];
+  if (!rootPath) {
+    const fallback = await loadOpenClawCatalogFallback();
+    return (fallback?.sisters || []).map((row) => ({
+      key: row.key || normalizeFsPath(row.workspace),
+      id: row.id || row.name,
+      name: row.name || titleCase(String(row.id || "sister")),
+      workspace: row.workspace,
+      sourcePath: row.sourcePath || row.workspace,
+      promptBody: row.promptBody || "",
+      model: row.model,
+      tools: row.tools,
+    }));
+  }
   const defaults = config?.agents?.defaults;
   const list = (config?.agents?.list || []).filter((item) => item?.id);
   const byKey = new Map<string, DiscoveredSister>();
@@ -294,6 +338,24 @@ async function discoverSisters(projectPath: string): Promise<DiscoveredSister[]>
     }
   }
 
+  if (byKey.size === 0) {
+    const fallback = await loadOpenClawCatalogFallback();
+    for (const row of fallback?.sisters || []) {
+      const key = row.key || normalizeFsPath(row.workspace) || row.id;
+      if (!key || byKey.has(key)) continue;
+      byKey.set(key, {
+        key,
+        id: row.id || row.name,
+        name: row.name || titleCase(String(row.id || "sister")),
+        workspace: row.workspace,
+        sourcePath: row.sourcePath || row.workspace,
+        promptBody: row.promptBody || "",
+        model: row.model,
+        tools: row.tools,
+      });
+    }
+  }
+
   return Array.from(byKey.values()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -311,7 +373,9 @@ function inferWorkspaceEntityType(dirName: string): string {
 }
 
 export async function detectProviderMode(projectPath: string): Promise<ProviderMode> {
-  return (await resolveOpenClawRoot(projectPath)) ? "openclaw" : "claude";
+  if (await resolveOpenClawRoot(projectPath)) return "openclaw";
+  const fallback = await loadOpenClawCatalogFallback();
+  return fallback ? "openclaw" : "claude";
 }
 
 export async function buildOpenClawSisterNodes(projectPath: string): Promise<AuiNode[]> {
@@ -426,7 +490,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     tags: ["openclaw", "workspace-catalog", "entity-type:workspace-catalog"],
   });
 
-  if (await exists(workspaceRoot)) {
+  if (await safeExists(workspaceRoot)) {
     try {
       const entries = await readDir(workspaceRoot);
       const dirs = entries
@@ -485,7 +549,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
 
   const snapshotPath = join(workspaceRoot, "colosseum-dashboard", "data", "main_colosseum.json");
   let beingsPrompt = `Snapshot path: ${snapshotPath}\nstatus: unavailable`;
-  if (await exists(snapshotPath)) {
+  if (await safeExists(snapshotPath)) {
     try {
       const raw = await readTextFile(snapshotPath);
       const parsed = safeJsonParse<{ stats?: Record<string, unknown>; generated_at?: string }>(raw);
@@ -566,12 +630,12 @@ export async function listOpenClawToolIds(projectPath: string): Promise<string[]
     join(rootPath, "tools"),
   ];
   for (const root of explicitToolRoots) {
-    if (!(await exists(root))) continue;
+    if (!(await safeExists(root))) continue;
     try {
       const entries = await readDir(root);
       for (const entry of entries) {
         const name = String(entry.name || "").trim();
-        if (!name) continue;
+        if (!isRealToolName(name)) continue;
         if (entry.isDirectory) {
           set.add(name);
         } else if (entry.isFile && /\.(py|js|ts|sh)$/i.test(name)) {
@@ -588,5 +652,21 @@ export async function listOpenClawToolIds(projectPath: string): Promise<string[]
     collectTools(sister.tools);
   }
 
+  if (set.size === 0) {
+    const fallback = await loadOpenClawCatalogFallback();
+    for (const tool of fallback?.tools || []) {
+      const value = String(tool || "").trim();
+      if (value) set.add(value);
+    }
+  }
+
   return Array.from(set).sort((a, b) => a.localeCompare(b));
+}
+
+async function safeExists(path: string): Promise<boolean> {
+  try {
+    return await exists(path);
+  } catch {
+    return false;
+  }
 }

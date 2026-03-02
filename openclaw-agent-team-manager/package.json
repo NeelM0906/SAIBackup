@@ -4,7 +4,9 @@
   "version": "0.7.2",
   "type": "module",
   "scripts": {
+    "predev": "node ./scripts/generate-openclaw-catalog.mjs",
     "dev": "vite",
+    "prebuild": "node ./scripts/generate-openclaw-catalog.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
