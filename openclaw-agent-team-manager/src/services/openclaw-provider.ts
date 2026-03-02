@@ -47,9 +47,50 @@ interface OpenClawConfig {
       workspace?: string;
       model?: { primary?: string };
       tools?: { alsoAllow?: string[] };
+      heartbeat?: { every?: number | string };
+      maxConcurrent?: number;
+      subagents?: { maxConcurrent?: number };
+      compaction?: Record<string, unknown>;
+      memorySearch?: Record<string, unknown>;
+      contextPruning?: Record<string, unknown>;
     };
     list?: OpenClawAgentItem[];
   };
+  channels?: Record<string, {
+    enabled?: boolean;
+    dmPolicy?: string;
+    botToken?: string;
+    groups?: Record<string, unknown>;
+    groupPolicy?: string;
+    streaming?: string;
+    allowBots?: boolean;
+    guilds?: Record<string, unknown>;
+    threadBindings?: Record<string, unknown>;
+    status?: string;
+    accounts?: Record<string, {
+      name?: string;
+      enabled?: boolean;
+      dmPolicy?: string;
+      botToken?: string;
+      token?: string;
+      groups?: Record<string, unknown>;
+      guilds?: Record<string, unknown>;
+      groupPolicy?: string;
+      streaming?: string;
+      voice?: { enabled?: boolean; tts?: { provider?: string; elevenlabs?: { voiceId?: string; modelId?: string } } };
+    }>;
+  }>;
+  bindings?: Array<{ agentId?: string; match?: { channel?: string; accountId?: string } }>;
+  messages?: {
+    ackReactionScope?: string;
+    tts?: { auto?: string; provider?: string; elevenlabs?: { voiceId?: string; modelId?: string } };
+  };
+  gateway?: { mode?: string; bind?: string; customBindHost?: string; auth?: { mode?: string; token?: string } };
+  plugins?: { entries?: Record<string, { enabled?: boolean; config?: Record<string, unknown> }> };
+  skills?: { entries?: Record<string, Record<string, unknown>> };
+  session?: { agentToAgent?: { maxPingPongTurns?: number } };
+  commands?: { native?: string; nativeSkills?: string; restart?: boolean; ownerDisplay?: string };
+  tools?: { agentToAgent?: { enabled?: boolean; allow?: string[] } };
 }
 
 type OpenClawAgentDefaults = NonNullable<NonNullable<OpenClawConfig["agents"]>["defaults"]>;
@@ -216,6 +257,52 @@ function summarySlice(text: string, max = 8000): string {
   const normalized = String(text || "").trim();
   if (!normalized) return "";
   return normalized.slice(0, max);
+}
+
+function redactValue(key: string, value: unknown): unknown {
+  const normalizedKey = String(key || "").replace(/[\s_-]/g, "").toLowerCase();
+  const isSensitive = /(token|apikey|authtoken|secret|sid|password)/i.test(normalizedKey);
+  if (!isSensitive) return value;
+  if (value === null || value === undefined || String(value).trim() === "") return "-";
+  return "***";
+}
+
+function redactForPrompt(value: unknown, key = ""): unknown {
+  if (Array.isArray(value)) return value.map((item) => redactForPrompt(item, key));
+  if (value && typeof value === "object") {
+    const output: Record<string, unknown> = {};
+    for (const [entryKey, entryValue] of Object.entries(value as Record<string, unknown>)) {
+      output[entryKey] = redactForPrompt(entryValue, entryKey);
+    }
+    return output;
+  }
+  return redactValue(key, value);
+}
+
+function stringifyPromptValue(value: unknown): string {
+  if (value === null || value === undefined || value === "") return "-";
+  if (Array.isArray(value)) {
+    const items = value.map((item) => String(item || "").trim()).filter(Boolean);
+    return items.join(", ") || "-";
+  }
+  if (typeof value === "object") {
+    const asJson = JSON.stringify(value);
+    return asJson && asJson !== "{}" ? summarySlice(asJson, 320) : "-";
+  }
+  return String(value);
+}
+
+function hasSensitiveKeyValue(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false;
+  if (Array.isArray(value)) return value.some((item) => hasSensitiveKeyValue(item));
+  for (const [key, nested] of Object.entries(value as Record<string, unknown>)) {
+    const normalizedKey = String(key || "").replace(/[\s_-]/g, "").toLowerCase();
+    if (/(token|apikey|authtoken|secret|sid|password)/i.test(normalizedKey)) {
+      if (nested !== null && nested !== undefined && String(nested).trim() !== "") return true;
+    }
+    if (hasSensitiveKeyValue(nested)) return true;
+  }
+  return false;
 }
 
 function syntheticNodeBase(idSeed: string): Pick<AuiNode, "id" | "lastModified" | "validationErrors" | "assignedSkills" | "variables" | "launchPrompt" | "pipelineSteps"> {
@@ -578,6 +665,290 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     config: null,
     promptBody: beingsPrompt,
     tags: ["openclaw", "beings", "snapshot", "entity-type:beings-snapshot"],
+  });
+
+  const channelsId = generateNodeId("openclaw:entities:channels");
+  const bindingsId = generateNodeId("openclaw:entities:bindings");
+  const messagesTtsId = generateNodeId("openclaw:entities:messages-tts");
+  const gatewayId = generateNodeId("openclaw:entities:gateway");
+  const pluginsId = generateNodeId("openclaw:entities:plugins");
+  const skillsConfigId = generateNodeId("openclaw:entities:skills-config");
+  const sessionCommandsId = generateNodeId("openclaw:entities:session-commands");
+  const agentToAgentToolsId = generateNodeId("openclaw:entities:agent-to-agent");
+  const agentDefaultsExtendedId = generateNodeId("openclaw:entities:agent-defaults-extended");
+
+  const channels = config?.channels || {};
+  const channelNames = Object.keys(channels).sort((a, b) => a.localeCompare(b));
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:channels"),
+    id: channelsId,
+    name: "Channels",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: `channels_total: ${channelNames.length}`,
+    tags: ["openclaw", "entities", "entity-type:channels"],
+  });
+
+  for (const channelName of channelNames) {
+    const channel = channels[channelName] || {};
+    const accountEntries = Object.entries(channel.accounts || {}).sort(([a], [b]) => a.localeCompare(b));
+    const channelId = generateNodeId(`openclaw:entities:channels:${channelName}`);
+    const channelLines = [
+      `enabled: ${stringifyPromptValue(channel.enabled)}`,
+      `group_policy: ${stringifyPromptValue(channel.groupPolicy)}`,
+      `streaming: ${stringifyPromptValue(channel.streaming)}`,
+      `dm_policy: ${stringifyPromptValue(channel.dmPolicy)}`,
+      `accounts: ${accountEntries.length}`,
+    ];
+    if (channel.botToken !== undefined) {
+      channelLines.push(`bot_token: ${stringifyPromptValue(redactValue("botToken", channel.botToken))}`);
+    }
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:entities:channel:${channelName}`),
+      id: channelId,
+      name: `Channel: ${titleCase(channelName)}`,
+      kind: "context",
+      parentId: channelsId,
+      team: null,
+      sourcePath: join(rootPath, "openclaw.json"),
+      config: null,
+      promptBody: channelLines.join("\n"),
+      tags: ["openclaw", "entities", "entity-type:channel", `channel:${channelName}`],
+    });
+
+    for (const [accountId, account] of accountEntries) {
+      const voiceId = account?.voice?.tts?.elevenlabs?.voiceId;
+      const accountLines = [
+        `name: ${stringifyPromptValue(account?.name)}`,
+        `enabled: ${stringifyPromptValue(account?.enabled)}`,
+        `group_policy: ${stringifyPromptValue(account?.groupPolicy)}`,
+        `groups: ${Object.keys(account?.groups || {}).length}`,
+        `guilds: ${Object.keys(account?.guilds || {}).length}`,
+      ];
+      if (account?.dmPolicy !== undefined) accountLines.push(`dm_policy: ${stringifyPromptValue(account.dmPolicy)}`);
+      if (account?.streaming !== undefined) accountLines.push(`streaming: ${stringifyPromptValue(account.streaming)}`);
+      if (voiceId !== undefined) accountLines.push(`voice_tts_voice_id: ${stringifyPromptValue(voiceId)}`);
+      if (account?.botToken !== undefined) {
+        accountLines.push(`bot_token: ${stringifyPromptValue(redactValue("botToken", account.botToken))}`);
+      }
+      if (account?.token !== undefined) {
+        accountLines.push(`token: ${stringifyPromptValue(redactValue("token", account.token))}`);
+      }
+      nodes.push({
+        ...syntheticNodeBase(`openclaw:entities:channel-account:${channelName}:${accountId}`),
+        id: generateNodeId(`openclaw:entities:channel-account:${channelName}:${accountId}`),
+        name: `Account: ${accountId}`,
+        kind: "context",
+        parentId: channelId,
+        team: null,
+        sourcePath: join(rootPath, "openclaw.json"),
+        config: null,
+        promptBody: accountLines.join("\n"),
+        tags: ["openclaw", "entities", "entity-type:channel-account", `channel:${channelName}`, `account:${accountId}`],
+      });
+    }
+  }
+
+  const bindings = Array.isArray(config?.bindings) ? config.bindings : [];
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:bindings"),
+    id: bindingsId,
+    name: "Channel Bindings",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: `bindings_total: ${bindings.length}`,
+    tags: ["openclaw", "entities", "entity-type:bindings"],
+  });
+
+  for (let index = 0; index < bindings.length; index++) {
+    const binding = bindings[index];
+    const bindingAgentId = stringifyPromptValue(binding?.agentId);
+    const bindingChannel = stringifyPromptValue(binding?.match?.channel);
+    const bindingAccountId = stringifyPromptValue(binding?.match?.accountId);
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:entities:binding:${index}`),
+      id: generateNodeId(`openclaw:entities:binding:${index}`),
+      name: `Binding ${index + 1}`,
+      kind: "context",
+      parentId: bindingsId,
+      team: null,
+      sourcePath: join(rootPath, "openclaw.json"),
+      config: null,
+      promptBody: [
+        `agent_id: ${bindingAgentId}`,
+        `channel: ${bindingChannel}`,
+        `account_id: ${bindingAccountId}`,
+        `routing: ${bindingAgentId} -> ${bindingChannel}/${bindingAccountId}`,
+      ].join("\n"),
+      tags: ["openclaw", "entities", "entity-type:binding"],
+    });
+  }
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:messages-tts"),
+    id: messagesTtsId,
+    name: "Messages & TTS",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `ack_reaction_scope: ${stringifyPromptValue(config?.messages?.ackReactionScope)}`,
+      `tts_auto: ${stringifyPromptValue(config?.messages?.tts?.auto)}`,
+      `tts_provider: ${stringifyPromptValue(config?.messages?.tts?.provider)}`,
+      `tts_elevenlabs_voice_id: ${stringifyPromptValue(config?.messages?.tts?.elevenlabs?.voiceId)}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:messages-tts"],
+  });
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:gateway"),
+    id: gatewayId,
+    name: "Gateway",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `mode: ${stringifyPromptValue(config?.gateway?.mode)}`,
+      `bind: ${stringifyPromptValue(config?.gateway?.bind)}`,
+      `custom_bind_host: ${stringifyPromptValue(config?.gateway?.customBindHost)}`,
+      `auth_mode: ${stringifyPromptValue(config?.gateway?.auth?.mode)}`,
+      `auth_token: ${stringifyPromptValue(redactValue("authToken", config?.gateway?.auth?.token))}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:gateway"],
+  });
+
+  const plugins = config?.plugins?.entries || {};
+  const pluginNames = Object.keys(plugins).sort((a, b) => a.localeCompare(b));
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:plugins"),
+    id: pluginsId,
+    name: "Plugins",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: `plugins_total: ${pluginNames.length}`,
+    tags: ["openclaw", "entities", "entity-type:plugins"],
+  });
+
+  for (const pluginName of pluginNames) {
+    const plugin = plugins[pluginName];
+    const redactedConfig = redactForPrompt(plugin?.config || {});
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:entities:plugin:${pluginName}`),
+      id: generateNodeId(`openclaw:entities:plugin:${pluginName}`),
+      name: `Plugin: ${pluginName}`,
+      kind: "context",
+      parentId: pluginsId,
+      team: null,
+      sourcePath: join(rootPath, "openclaw.json"),
+      config: null,
+      promptBody: [
+        `enabled: ${stringifyPromptValue(plugin?.enabled)}`,
+        `config_summary: ${stringifyPromptValue(redactedConfig)}`,
+      ].join("\n"),
+      tags: ["openclaw", "entities", "entity-type:plugin", `plugin:${pluginName}`],
+    });
+  }
+
+  const skillsConfigEntries = config?.skills?.entries || {};
+  const skillsNames = Object.keys(skillsConfigEntries).sort((a, b) => a.localeCompare(b));
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:skills-config"),
+    id: skillsConfigId,
+    name: "Skills Config",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: `skills_total: ${skillsNames.length}`,
+    tags: ["openclaw", "entities", "entity-type:skills-config"],
+  });
+
+  for (const skillName of skillsNames) {
+    const skillConfig = skillsConfigEntries[skillName];
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:entities:skill-config:${skillName}`),
+      id: generateNodeId(`openclaw:entities:skill-config:${skillName}`),
+      name: `Skill Config: ${skillName}`,
+      kind: "context",
+      parentId: skillsConfigId,
+      team: null,
+      sourcePath: join(rootPath, "openclaw.json"),
+      config: null,
+      promptBody: [
+        `skill_name: ${skillName}`,
+        `has_api_key: ${String(hasSensitiveKeyValue(skillConfig))}`,
+      ].join("\n"),
+      tags: ["openclaw", "entities", "entity-type:skill-config", `skill:${skillName}`],
+    });
+  }
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:session-commands"),
+    id: sessionCommandsId,
+    name: "Session & Commands",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `session_agent_to_agent_max_ping_pong_turns: ${stringifyPromptValue(config?.session?.agentToAgent?.maxPingPongTurns)}`,
+      `commands_native: ${stringifyPromptValue(config?.commands?.native)}`,
+      `commands_native_skills: ${stringifyPromptValue(config?.commands?.nativeSkills)}`,
+      `commands_restart: ${stringifyPromptValue(config?.commands?.restart)}`,
+      `commands_owner_display: ${stringifyPromptValue(config?.commands?.ownerDisplay)}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:session-commands"],
+  });
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:agent-to-agent"),
+    id: agentToAgentToolsId,
+    name: "Agent-to-Agent Tools",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `enabled: ${stringifyPromptValue(config?.tools?.agentToAgent?.enabled)}`,
+      `allow: ${stringifyPromptValue(config?.tools?.agentToAgent?.allow)}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:agent-to-agent"],
+  });
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:agent-defaults-extended"),
+    id: agentDefaultsExtendedId,
+    name: "Agent Defaults Extended",
+    kind: "context",
+    parentId: runtimeConfigId,
+    team: null,
+    sourcePath: join(rootPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `heartbeat_every: ${stringifyPromptValue(defaults?.heartbeat?.every)}`,
+      `max_concurrent: ${stringifyPromptValue(defaults?.maxConcurrent)}`,
+      `subagents_max_concurrent: ${stringifyPromptValue(defaults?.subagents?.maxConcurrent)}`,
+      `compaction: ${stringifyPromptValue(redactForPrompt(defaults?.compaction || {}))}`,
+      `memory_search: ${stringifyPromptValue(redactForPrompt(defaults?.memorySearch || {}))}`,
+      `context_pruning: ${stringifyPromptValue(redactForPrompt(defaults?.contextPruning || {}))}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:agent-defaults-extended"],
   });
 
   return nodes;

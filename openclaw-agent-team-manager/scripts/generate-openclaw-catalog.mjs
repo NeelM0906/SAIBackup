@@ -28,6 +28,151 @@ function titleCase(value) {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const SENSITIVE_KEY_PARTS = ["token", "apikey", "api_key", "authtoken", "secret", "sid", "password", "bottoken"];
+
+function isSensitiveKey(key) {
+  const value = String(key || "").toLowerCase();
+  return SENSITIVE_KEY_PARTS.some((part) => value.includes(part));
+}
+
+function redactKeys(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => redactKeys(item));
+  }
+  if (!obj || typeof obj !== "object") {
+    return obj;
+  }
+  const redacted = {};
+  for (const [key, value] of Object.entries(obj)) {
+    redacted[key] = isSensitiveKey(key) ? "***" : redactKeys(value);
+  }
+  return redacted;
+}
+
+function extractChannels(config) {
+  const channels = config?.channels && typeof config.channels === "object" ? config.channels : {};
+  return Object.entries(channels).map(([id, channel]) => {
+    const redacted = redactKeys(channel || {});
+    return {
+      id: String(id),
+      name: titleCase(id),
+      enabled: Boolean(channel?.enabled),
+      accountCount: Array.isArray(channel?.accounts) ? channel.accounts.length : 0,
+      groupPolicy: redacted?.groupPolicy ?? null,
+      streaming: redacted?.streaming ?? null,
+    };
+  });
+}
+
+function extractBindings(config) {
+  const bindings = Array.isArray(config?.bindings) ? config.bindings : [];
+  return bindings.map((binding) => ({
+    agentId: binding?.agentId || null,
+    channel: binding?.channel || null,
+    accountId: binding?.accountId || null,
+  }));
+}
+
+function extractGateway(config) {
+  const gateway = redactKeys(config?.gateway || {});
+  return {
+    mode: gateway?.mode || null,
+    bind: gateway?.bind || null,
+    customBindHost: gateway?.customBindHost || null,
+    authMode: gateway?.auth?.mode || null,
+  };
+}
+
+function extractPlugins(config) {
+  const entries = config?.plugins?.entries && typeof config.plugins.entries === "object"
+    ? config.plugins.entries
+    : {};
+  return Object.entries(entries).map(([id, plugin]) => {
+    const redacted = redactKeys(plugin || {});
+    return {
+      id: String(id),
+      name: titleCase(id),
+      enabled: Boolean(redacted?.enabled),
+    };
+  });
+}
+
+function extractMessagesConfig(config) {
+  const redacted = redactKeys(config?.messages || {});
+  return {
+    ackReactionScope: redacted?.ackReactionScope || null,
+    ttsAuto: redacted?.tts?.auto || null,
+    ttsProvider: redacted?.tts?.provider || null,
+    ttsVoiceId: redacted?.tts?.elevenlabs?.voiceId || null,
+    ttsModelId: redacted?.tts?.elevenlabs?.modelId || null,
+  };
+}
+
+function extractSessionConfig(config) {
+  const redacted = redactKeys(config?.session || {});
+  return { maxPingPongTurns: redacted?.agentToAgent?.maxPingPongTurns ?? null };
+}
+
+function extractCommandsConfig(config) {
+  const redacted = redactKeys(config?.commands || {});
+  return {
+    native: redacted?.native || null,
+    nativeSkills: redacted?.nativeSkills || null,
+    restart: redacted?.restart ?? null,
+    ownerDisplay: redacted?.ownerDisplay || null,
+  };
+}
+
+function extractAgentDefaults(config) {
+  const redacted = redactKeys(config?.agents?.defaults || {});
+  return {
+    heartbeat: redacted?.heartbeat?.every || null,
+    maxConcurrent: redacted?.maxConcurrent ?? null,
+    subagentsMaxConcurrent: redacted?.subagents?.maxConcurrent ?? null,
+    compactionMode: redacted?.compaction?.mode || null,
+    memorySearchEnabled: redacted?.memorySearch?.enabled ?? null,
+    contextPruningMode: redacted?.contextPruning?.mode || null,
+    contextPruningTtl: redacted?.contextPruning?.ttl || null,
+  };
+}
+
+function hasApiKeyValue(value) {
+  if (Array.isArray(value)) {
+    return value.some((item) => hasApiKeyValue(item));
+  }
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  for (const [key, item] of Object.entries(value)) {
+    const keyText = String(key || "").toLowerCase();
+    if ((keyText.includes("apikey") || keyText.includes("api_key")) && Boolean(item)) {
+      return true;
+    }
+    if (hasApiKeyValue(item)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function extractSkillsConfig(config) {
+  const entries = config?.skills?.entries && typeof config.skills.entries === "object"
+    ? config.skills.entries
+    : {};
+  return Object.entries(entries).map(([id, entry]) => ({
+    id: String(id),
+    hasApiKey: hasApiKeyValue(entry),
+  }));
+}
+
+function extractAgentToAgent(config) {
+  const redacted = redactKeys(config?.tools?.agentToAgent || {});
+  return {
+    enabled: redacted?.enabled ?? false,
+    allowList: Array.isArray(redacted?.allow) ? redacted.allow : [],
+  };
+}
+
 async function safeExists(target) {
   try {
     await fs.access(target);
@@ -254,6 +399,43 @@ async function main() {
     sisters: [],
     skills: [],
     tools: [],
+    channels: [],
+    bindings: [],
+    gateway: {
+      mode: null,
+      bind: null,
+      customBindHost: null,
+      authMode: null,
+    },
+    plugins: [],
+    messagesConfig: {
+      ackReactionScope: null,
+      ttsAuto: null,
+      ttsProvider: null,
+      ttsVoiceId: null,
+      ttsModelId: null,
+    },
+    sessionConfig: { maxPingPongTurns: null },
+    commandsConfig: {
+      native: null,
+      nativeSkills: null,
+      restart: null,
+      ownerDisplay: null,
+    },
+    agentDefaults: {
+      heartbeat: null,
+      maxConcurrent: null,
+      subagentsMaxConcurrent: null,
+      compactionMode: null,
+      memorySearchEnabled: null,
+      contextPruningMode: null,
+      contextPruningTtl: null,
+    },
+    skillsConfig: [],
+    agentToAgent: {
+      enabled: false,
+      allowList: [],
+    },
   };
 
   if (!(await safeExists(rootPath))) {
@@ -282,6 +464,16 @@ async function main() {
     sisters,
     skills,
     tools,
+    channels: extractChannels(config),
+    bindings: extractBindings(config),
+    gateway: extractGateway(config),
+    plugins: extractPlugins(config),
+    messagesConfig: extractMessagesConfig(config),
+    sessionConfig: extractSessionConfig(config),
+    commandsConfig: extractCommandsConfig(config),
+    agentDefaults: extractAgentDefaults(config),
+    skillsConfig: extractSkillsConfig(config),
+    agentToAgent: extractAgentToAgent(config),
   };
 
   await fs.mkdir(path.dirname(outPath), { recursive: true });
@@ -295,6 +487,43 @@ main().catch(async () => {
     sisters: [],
     skills: [],
     tools: [],
+    channels: [],
+    bindings: [],
+    gateway: {
+      mode: null,
+      bind: null,
+      customBindHost: null,
+      authMode: null,
+    },
+    plugins: [],
+    messagesConfig: {
+      ackReactionScope: null,
+      ttsAuto: null,
+      ttsProvider: null,
+      ttsVoiceId: null,
+      ttsModelId: null,
+    },
+    sessionConfig: { maxPingPongTurns: null },
+    commandsConfig: {
+      native: null,
+      nativeSkills: null,
+      restart: null,
+      ownerDisplay: null,
+    },
+    agentDefaults: {
+      heartbeat: null,
+      maxConcurrent: null,
+      subagentsMaxConcurrent: null,
+      compactionMode: null,
+      memorySearchEnabled: null,
+      contextPruningMode: null,
+      contextPruningTtl: null,
+    },
+    skillsConfig: [],
+    agentToAgent: {
+      enabled: false,
+      allowList: [],
+    },
   };
   await fs.mkdir(path.dirname(outPath), { recursive: true });
   await fs.writeFile(outPath, JSON.stringify(fallback, null, 2));
