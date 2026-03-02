@@ -12,7 +12,7 @@ Standalone Node.js dashboard for SAI Prime + all sister beings.
 - Monitor logs default to 10 with `Load More (+50)`
 - Active workboard with top-5 items per sister and grounded heuristic progress
 - Dedicated subagents monitor with filterable run list and per-run activity modal
-- Sister Mission Chat with `@sister_id` mentions, monitor-only dispatch tracking, and isolated group sessions
+- Dedicated Mission Chat workspace (click-to-open, Discord-style) with `@sister_id` mentions, monitor-only dispatch tracking, and isolated group sessions
 - Clickable `Domains Online` metric with online-domain URL list
 - `Domains Online` click-through now uses curated production links (dashboards/apps)
 - Static frontend (HTML/CSS/JS) with polling every few seconds

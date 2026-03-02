@@ -13,6 +13,7 @@
         <p>Unified monitor for sister beings, assignments, activity logs, and active workboard</p>
       </div>
       <div class="topbar-actions">
+        <button id="openMissionChatBtn" type="button">Open Mission Chat</button>
         <button id="refreshBtn" type="button">Force Refresh</button>
         <small id="lastUpdated">Last updated: --</small>
       </div>
@@ -82,113 +83,6 @@
               <tr><td colspan="9">Loading subagent runs...</td></tr>
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Sister Mission Chat</h2>
-          <small id="chatSettingsLabel">Monitor-only • Retention: 7d • Compaction: safeguard</small>
-        </div>
-
-        <div class="chat-layout">
-          <div class="chat-main">
-            <div class="chat-controls">
-              <label for="chatSessionSelect">Session</label>
-              <select id="chatSessionSelect">
-                <option value="">No session selected</option>
-              </select>
-              <button id="chatNewAllSessionBtn" type="button">New All-Sisters Session</button>
-            </div>
-
-            <div class="chat-controls">
-              <label for="chatGroupSessionSelect">Group Context</label>
-              <select id="chatGroupSessionSelect">
-                <option value="">Select group</option>
-              </select>
-              <button id="chatNewGroupSessionBtn" type="button">New Group Session</button>
-            </div>
-
-            <div class="chat-controls">
-              <label for="chatDispatchMode">Dispatch Mode</label>
-              <select id="chatDispatchMode">
-                <option value="parallel">parallel (default)</option>
-                <option value="ordered">ordered</option>
-              </select>
-              <small id="chatSessionMeta">No active session.</small>
-            </div>
-
-            <div class="mention-row">
-              <small>Mentions:</small>
-              <div id="chatMentionChips" class="chip-row"></div>
-            </div>
-
-            <div id="chatMessages" class="chat-messages">
-              <article class="chat-message"><small>Create/select a session to start.</small></article>
-            </div>
-
-            <form id="chatComposer" class="chat-composer">
-              <textarea
-                id="chatInput"
-                rows="4"
-                placeholder="Type message. Use @sister_id for targeted dispatch, or no mention to route by session scope."
-              ></textarea>
-              <div class="chat-actions">
-                <small id="chatFormError" class="error"></small>
-                <button id="chatSendBtn" type="submit">Send (Monitor-Only)</button>
-              </div>
-            </form>
-          </div>
-
-          <aside class="chat-side">
-            <section class="chat-side-section">
-              <h3>Group Manager</h3>
-              <div id="chatGroupList" class="detail-list">
-                <article class="work-item"><div class="sub">No groups yet.</div></article>
-              </div>
-            </section>
-
-            <section class="chat-side-section">
-              <h3>Create / Edit Group</h3>
-              <form id="chatGroupForm" class="group-form">
-                <input id="chatGroupId" type="hidden" />
-                <input id="chatGroupName" maxlength="80" placeholder="Group name" required />
-                <input id="chatGroupDescription" maxlength="220" placeholder="Description (optional)" />
-                <label for="chatGroupDispatchMode">Default dispatch</label>
-                <select id="chatGroupDispatchMode">
-                  <option value="parallel">parallel</option>
-                  <option value="ordered">ordered</option>
-                </select>
-                <label for="chatGroupMembers">Sister members</label>
-                <select id="chatGroupMembers" multiple size="7"></select>
-                <div class="chat-actions">
-                  <small id="chatGroupFormError" class="error"></small>
-                  <button id="chatGroupSaveBtn" type="submit">Save Group</button>
-                  <button id="chatGroupResetBtn" type="button">Reset</button>
-                </div>
-              </form>
-            </section>
-
-            <section class="chat-side-section">
-              <h3>Dispatch Activity</h3>
-              <div class="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Sister</th>
-                      <th>Status</th>
-                      <th>Mode</th>
-                      <th>Seq</th>
-                    </tr>
-                  </thead>
-                  <tbody id="chatDispatchTable">
-                    <tr><td colspan="5">No session selected.</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </aside>
         </div>
       </section>
 
@@ -418,6 +312,149 @@
                 </tbody>
               </table>
             </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="chatWorkspace" class="chat-workspace" aria-hidden="true">
+      <div class="chat-shell">
+        <header class="chat-shell-header">
+          <div>
+            <h2>Mission Chat</h2>
+            <small id="chatSettingsLabel">monitor-only • retention: 7d • compaction: safeguard</small>
+          </div>
+          <div class="chat-shell-actions">
+            <button id="chatManageGroupsBtn" type="button">Manage Groups</button>
+            <button id="closeMissionChatBtn" type="button">Back to Dashboard</button>
+          </div>
+        </header>
+
+        <section class="chat-shell-body">
+          <aside class="chat-context-rail">
+            <div class="chat-context-head">
+              <h3>Contexts</h3>
+              <button id="chatNewGroupBtn" type="button">+ Group</button>
+            </div>
+            <div id="chatContextRail" class="chat-context-list">
+              <button type="button" class="context-item active">All Sisters</button>
+            </div>
+          </aside>
+
+          <aside class="chat-sessions-pane">
+            <div class="chat-context-head">
+              <h3 id="chatScopeTitle">All Sisters</h3>
+              <button id="chatNewSessionBtn" type="button">+ Session</button>
+            </div>
+            <small id="chatScopeMeta">Select context to view sessions</small>
+            <div id="chatSessionList" class="chat-session-list">
+              <button type="button" class="session-item active">No session selected</button>
+            </div>
+          </aside>
+
+          <main class="chat-main-pane">
+            <div class="chat-main-toolbar">
+              <small id="chatSessionMeta">No active session.</small>
+              <div class="chat-mode-row">
+                <label for="chatDispatchMode">Dispatch</label>
+                <select id="chatDispatchMode">
+                  <option value="parallel">parallel (default)</option>
+                  <option value="ordered">ordered</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mention-row">
+              <small>Mentions</small>
+              <div id="chatMentionChips" class="chip-row"></div>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+              <article class="chat-message"><small>Create/select a session to start.</small></article>
+            </div>
+
+            <form id="chatComposer" class="chat-composer">
+              <textarea
+                id="chatInput"
+                rows="4"
+                placeholder="Type message. Use @sister_id for targeted dispatch, or no mention to route by session scope."
+              ></textarea>
+              <div class="chat-actions">
+                <small id="chatFormError" class="error"></small>
+                <button id="chatSendBtn" type="submit">Send (Monitor-Only)</button>
+              </div>
+            </form>
+          </main>
+
+          <aside class="chat-inspector">
+            <section class="chat-side-section">
+              <h3>Scope Members</h3>
+              <div id="chatScopeMembers" class="detail-list">
+                <article class="work-item"><div class="sub">No members.</div></article>
+              </div>
+            </section>
+
+            <section class="chat-side-section">
+              <h3>Dispatch Activity</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Sister</th>
+                      <th>Status</th>
+                      <th>Mode</th>
+                      <th>Seq</th>
+                    </tr>
+                  </thead>
+                  <tbody id="chatDispatchTable">
+                    <tr><td colspan="5">No session selected.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </aside>
+        </section>
+      </div>
+    </div>
+
+    <div id="chatGroupDrawer" class="chat-group-drawer" aria-hidden="true">
+      <div class="chat-group-drawer-card">
+        <div class="modal-header">
+          <div>
+            <h3>Group Manager</h3>
+            <small>Create/edit sister groups and isolate context per group session.</small>
+          </div>
+          <button id="closeChatGroupDrawerBtn" type="button">Close</button>
+        </div>
+
+        <div class="chat-group-drawer-body">
+          <section class="chat-side-section">
+            <h4>Groups</h4>
+            <div id="chatGroupList" class="detail-list">
+              <article class="work-item"><div class="sub">No groups yet.</div></article>
+            </div>
+          </section>
+
+          <section class="chat-side-section">
+            <h4>Create / Edit Group</h4>
+            <form id="chatGroupForm" class="group-form">
+              <input id="chatGroupId" type="hidden" />
+              <input id="chatGroupName" maxlength="80" placeholder="Group name" required />
+              <input id="chatGroupDescription" maxlength="220" placeholder="Description (optional)" />
+              <label for="chatGroupDispatchMode">Default dispatch</label>
+              <select id="chatGroupDispatchMode">
+                <option value="parallel">parallel</option>
+                <option value="ordered">ordered</option>
+              </select>
+              <label for="chatGroupMembers">Sister members</label>
+              <select id="chatGroupMembers" multiple size="8"></select>
+              <div class="chat-actions">
+                <small id="chatGroupFormError" class="error"></small>
+                <button id="chatGroupSaveBtn" type="submit">Save Group</button>
+                <button id="chatGroupResetBtn" type="button">Reset</button>
+              </div>
+            </form>
           </section>
         </div>
       </div>

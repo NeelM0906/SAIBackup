@@ -25,7 +25,9 @@ const state = {
     groups: [],
     sessions: [],
     settings: null,
-    selectedSessionId: null
+    selectedSessionId: null,
+    selectedContextType: 'all_sisters',
+    selectedContextGroupId: null
   }
 };
 
@@ -38,11 +40,20 @@ const els = {
   subagentSisterFilter: document.getElementById('subagentSisterFilter'),
   subagentRequesterFilter: document.getElementById('subagentRequesterFilter'),
   subagentCountLabel: document.getElementById('subagentCountLabel'),
+  openMissionChatBtn: document.getElementById('openMissionChatBtn'),
+  chatWorkspace: document.getElementById('chatWorkspace'),
+  closeMissionChatBtn: document.getElementById('closeMissionChatBtn'),
+  chatManageGroupsBtn: document.getElementById('chatManageGroupsBtn'),
+  chatNewGroupBtn: document.getElementById('chatNewGroupBtn'),
+  chatGroupDrawer: document.getElementById('chatGroupDrawer'),
+  closeChatGroupDrawerBtn: document.getElementById('closeChatGroupDrawerBtn'),
+  chatContextRail: document.getElementById('chatContextRail'),
+  chatScopeTitle: document.getElementById('chatScopeTitle'),
+  chatScopeMeta: document.getElementById('chatScopeMeta'),
+  chatSessionList: document.getElementById('chatSessionList'),
+  chatNewSessionBtn: document.getElementById('chatNewSessionBtn'),
+  chatScopeMembers: document.getElementById('chatScopeMembers'),
   chatSettingsLabel: document.getElementById('chatSettingsLabel'),
-  chatSessionSelect: document.getElementById('chatSessionSelect'),
-  chatNewAllSessionBtn: document.getElementById('chatNewAllSessionBtn'),
-  chatGroupSessionSelect: document.getElementById('chatGroupSessionSelect'),
-  chatNewGroupSessionBtn: document.getElementById('chatNewGroupSessionBtn'),
   chatDispatchMode: document.getElementById('chatDispatchMode'),
   chatSessionMeta: document.getElementById('chatSessionMeta'),
   chatMentionChips: document.getElementById('chatMentionChips'),
@@ -590,39 +601,83 @@ function renderChatMentionChips() {
   els.chatMentionChips.innerHTML = chips || '<small>No sisters available.</small>';
 }
 
-function sessionLabel(session) {
-  if (!session) return 'Unknown session';
-  const scope = session.scope_type === 'group' ? `Group: ${session.group_id}` : 'All sisters';
-  const title = session.title ? ` • ${session.title}` : '';
-  return `${scope}${title}`;
+function chatContextMatchesSession(session, contextType, contextGroupId) {
+  if (!session) return false;
+  if (contextType === 'group') {
+    return session.scope_type === 'group' && session.group_id === contextGroupId;
+  }
+  return session.scope_type === 'all_sisters';
 }
 
-function renderChatSessionSelectors() {
-  const sessions = state.chat.sessions || [];
-  const current = state.chat.selectedSessionId;
-  const options = ['<option value="">No session selected</option>']
-    .concat(
-      sessions.map(
-        (session) =>
-          `<option value="${esc(session.id)}">${esc(sessionLabel(session))} • ${esc(
-            shortTs(session.updated_at)
-          )}</option>`
-      )
-    )
-    .join('');
-  els.chatSessionSelect.innerHTML = options;
+function chatSessionsForCurrentContext() {
+  const contextType = state.chat.selectedContextType || 'all_sisters';
+  const contextGroupId = state.chat.selectedContextGroupId || null;
+  return (state.chat.sessions || [])
+    .filter((session) => chatContextMatchesSession(session, contextType, contextGroupId))
+    .sort((a, b) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
+}
 
-  if (current && sessions.some((item) => item.id === current)) {
-    els.chatSessionSelect.value = current;
-  } else {
-    state.chat.selectedSessionId = sessions[0]?.id || null;
-    els.chatSessionSelect.value = state.chat.selectedSessionId || '';
+function currentContextLabel() {
+  if (state.chat.selectedContextType === 'group') {
+    const group = (state.chat.groups || []).find((item) => item.id === state.chat.selectedContextGroupId);
+    return group?.name || 'Group';
+  }
+  return 'All Sisters';
+}
+
+function ensureChatContextAndSessionSelection() {
+  if (state.chat.selectedContextType === 'group') {
+    const groupExists = (state.chat.groups || []).some((item) => item.id === state.chat.selectedContextGroupId);
+    if (!groupExists) {
+      state.chat.selectedContextType = 'all_sisters';
+      state.chat.selectedContextGroupId = null;
+    }
   }
 
-  const groupOptions = ['<option value="">Select group</option>']
-    .concat((state.chat.groups || []).map((group) => `<option value="${esc(group.id)}">${esc(group.name)}</option>`))
+  const visibleSessions = chatSessionsForCurrentContext();
+  if (!visibleSessions.some((session) => session.id === state.chat.selectedSessionId)) {
+    state.chat.selectedSessionId = visibleSessions[0]?.id || null;
+  }
+}
+
+function renderChatContextRail() {
+  const groups = state.chat.groups || [];
+  const sessions = state.chat.sessions || [];
+
+  const allCount = sessions.filter((session) => session.scope_type === 'all_sisters').length;
+  const allActive = state.chat.selectedContextType === 'all_sisters';
+  const allCard = `
+    <button
+      type="button"
+      class="context-item ${allActive ? 'active' : ''}"
+      data-chat-context-type="all_sisters"
+    >
+      <span>All Sisters</span>
+      <small>${n(allCount)}</small>
+    </button>
+  `;
+
+  const groupCards = groups
+    .map((group) => {
+      const sessionCount = sessions.filter(
+        (session) => session.scope_type === 'group' && session.group_id === group.id
+      ).length;
+      const active = state.chat.selectedContextType === 'group' && state.chat.selectedContextGroupId === group.id;
+      return `
+        <button
+          type="button"
+          class="context-item ${active ? 'active' : ''}"
+          data-chat-context-type="group"
+          data-chat-group-id="${esc(group.id)}"
+        >
+          <span>${esc(group.name)}</span>
+          <small>${n(sessionCount)}</small>
+        </button>
+      `;
+    })
     .join('');
-  els.chatGroupSessionSelect.innerHTML = groupOptions;
+
+  els.chatContextRail.innerHTML = allCard + (groupCards || '');
 }
 
 function renderChatGroupList() {
@@ -655,10 +710,67 @@ function renderChatGroupList() {
     : '<article class="work-item"><div class="sub">No groups configured yet.</div></article>';
 }
 
+function renderChatSessionList() {
+  const contextType = state.chat.selectedContextType || 'all_sisters';
+  const contextLabel = currentContextLabel();
+  const sessions = chatSessionsForCurrentContext();
+
+  els.chatScopeTitle.textContent = contextLabel;
+  els.chatScopeMeta.textContent = `${contextType === 'group' ? 'Group scope' : 'All sister scope'} • ${n(
+    sessions.length
+  )} sessions`;
+
+  els.chatSessionList.innerHTML = sessions.length
+    ? sessions
+        .map((session) => {
+          const active = session.id === state.chat.selectedSessionId;
+          return `
+            <button
+              type="button"
+              class="session-item ${active ? 'active' : ''}"
+              data-chat-session-id="${esc(session.id)}"
+            >
+              <strong>${esc(session.title || 'Session')}</strong>
+              <small>${esc(shortTs(session.updated_at))} • ${n(session.message_count || 0)} msgs</small>
+            </button>
+          `;
+        })
+        .join('')
+    : '<article class="work-item"><div class="sub">No sessions in this context. Create one.</div></article>';
+}
+
+function renderChatScopeMembers() {
+  const selectedSession = (state.chat.sessions || []).find((item) => item.id === state.chat.selectedSessionId) || null;
+  const recipients = selectedSession?.recipients || [];
+  const sisterMap = new Map((state.chat.sisters || []).map((item) => [item.id, item.display_name || item.id]));
+
+  const members = recipients.length
+    ? recipients.map((id) => ({ id, name: sisterMap.get(id) || id }))
+    : state.chat.selectedContextType === 'all_sisters'
+      ? (state.chat.sisters || []).map((item) => ({ id: item.id, name: item.display_name || item.id }))
+      : (((state.chat.groups || []).find((item) => item.id === state.chat.selectedContextGroupId)?.members || []).map(
+          (member) => ({ id: member.sister_id, name: member.display_name || member.sister_id })
+        ));
+
+  els.chatScopeMembers.innerHTML = members.length
+    ? members
+        .map(
+          (member) => `
+            <article class="work-item">
+              <div class="title">${esc(member.name)}</div>
+              <div class="sub">${esc(member.id)}</div>
+            </article>
+          `
+        )
+        .join('')
+    : '<article class="work-item"><div class="sub">No members in current scope.</div></article>';
+}
+
 function renderChatSessionMeta() {
   const session = (state.chat.sessions || []).find((item) => item.id === state.chat.selectedSessionId);
   if (!session) {
     els.chatSessionMeta.textContent = 'No active session.';
+    renderChatScopeMembers();
     return;
   }
 
@@ -666,6 +778,7 @@ function renderChatSessionMeta() {
     session.message_count || 0
   )} • tokens: ${n(session.token_estimate || 0)} • expires: ${shortTs(session.expires_at)}`;
   els.chatDispatchMode.value = session.dispatch_mode_default || 'parallel';
+  renderChatScopeMembers();
 }
 
 function renderChatMessages(payload) {
@@ -740,6 +853,18 @@ function loadGroupIntoForm(groupId) {
   });
 }
 
+function setChatContext(scopeType, groupId = null) {
+  state.chat.selectedContextType = scopeType === 'group' ? 'group' : 'all_sisters';
+  state.chat.selectedContextGroupId = scopeType === 'group' ? groupId : null;
+  ensureChatContextAndSessionSelection();
+  renderChatContextRail();
+  renderChatSessionList();
+  renderChatSessionMeta();
+  refreshChatSessionData().catch((error) => {
+    els.chatFormError.textContent = error.message;
+  });
+}
+
 async function refreshChatBootstrap() {
   const payload = await fetchJson('/api/chat/bootstrap?limit=120');
   state.chat.sisters = payload.sisters || [];
@@ -747,11 +872,13 @@ async function refreshChatBootstrap() {
   state.chat.sessions = payload.sessions || [];
   state.chat.settings = payload.settings || null;
 
+  ensureChatContextAndSessionSelection();
   renderChatSettings();
   renderChatGroupMemberOptions();
   renderChatMentionChips();
+  renderChatContextRail();
+  renderChatSessionList();
   renderChatGroupList();
-  renderChatSessionSelectors();
   renderChatSessionMeta();
 }
 
@@ -774,6 +901,8 @@ async function refreshChatSessionData() {
     state.chat.sessions = (state.chat.sessions || []).map((item) => (item.id === session.id ? session : item));
   }
 
+  ensureChatContextAndSessionSelection();
+  renderChatSessionList();
   renderChatSessionMeta();
   renderChatMessages(messages);
   renderChatDispatches(dispatches);
@@ -799,12 +928,15 @@ async function createChatSession(scopeType, groupId = null) {
     body: JSON.stringify(payload)
   });
 
+  state.chat.selectedContextType = scopeType === 'group' ? 'group' : 'all_sisters';
+  state.chat.selectedContextGroupId = scopeType === 'group' ? groupId : null;
   state.chat.selectedSessionId = created.item?.id || null;
   await refreshChatBootstrap();
   await refreshChatSessionData();
 }
 
 async function saveChatGroupFromForm() {
+  const editingGroupId = els.chatGroupId.value || null;
   const payload = {
     name: els.chatGroupName.value,
     description: els.chatGroupDescription.value,
@@ -813,7 +945,8 @@ async function saveChatGroupFromForm() {
     actor: 'operator'
   };
 
-  const groupId = els.chatGroupId.value;
+  const groupId = editingGroupId;
+  let savedGroupId = groupId;
   if (groupId) {
     await fetchJson(`/api/chat/groups/${encodeURIComponent(groupId)}`, {
       method: 'PUT',
@@ -821,15 +954,19 @@ async function saveChatGroupFromForm() {
       body: JSON.stringify(payload)
     });
   } else {
-    await fetchJson('/api/chat/groups', {
+    const created = await fetchJson('/api/chat/groups', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+    savedGroupId = created?.item?.id || null;
   }
 
   resetChatGroupForm();
   await refreshChatBootstrap();
+  if (savedGroupId) {
+    setChatContext('group', savedGroupId);
+  }
 }
 
 async function sendChatMessage() {
@@ -1016,27 +1153,71 @@ els.subagentRequesterFilter.addEventListener('change', () => {
   refreshSubagents().catch(() => {});
 });
 
-els.chatSessionSelect.addEventListener('change', () => {
-  state.chat.selectedSessionId = els.chatSessionSelect.value || null;
+els.openMissionChatBtn.addEventListener('click', () => {
+  els.chatWorkspace.classList.add('open');
+  els.chatWorkspace.setAttribute('aria-hidden', 'false');
+  refreshChatBootstrap()
+    .then(() => refreshChatSessionData())
+    .catch((error) => {
+      els.chatFormError.textContent = error.message;
+    });
+});
+
+els.closeMissionChatBtn.addEventListener('click', () => {
+  els.chatWorkspace.classList.remove('open');
+  els.chatWorkspace.setAttribute('aria-hidden', 'true');
+});
+
+els.chatManageGroupsBtn.addEventListener('click', () => {
+  els.chatGroupDrawer.classList.add('open');
+  els.chatGroupDrawer.setAttribute('aria-hidden', 'false');
+});
+
+els.chatNewGroupBtn.addEventListener('click', () => {
+  resetChatGroupForm();
+  els.chatGroupDrawer.classList.add('open');
+  els.chatGroupDrawer.setAttribute('aria-hidden', 'false');
+});
+
+els.closeChatGroupDrawerBtn.addEventListener('click', () => {
+  els.chatGroupDrawer.classList.remove('open');
+  els.chatGroupDrawer.setAttribute('aria-hidden', 'true');
+});
+
+els.chatGroupDrawer.addEventListener('click', (event) => {
+  if (event.target === els.chatGroupDrawer) {
+    els.chatGroupDrawer.classList.remove('open');
+    els.chatGroupDrawer.setAttribute('aria-hidden', 'true');
+  }
+});
+
+els.chatContextRail.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-chat-context-type]');
+  if (!button) return;
+  const scopeType = button.getAttribute('data-chat-context-type');
+  const groupId = button.getAttribute('data-chat-group-id');
+  setChatContext(scopeType, groupId);
+});
+
+els.chatSessionList.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-chat-session-id]');
+  if (!button) return;
+  state.chat.selectedSessionId = button.getAttribute('data-chat-session-id');
+  renderChatSessionList();
   refreshChatSessionData().catch((error) => {
     els.chatFormError.textContent = error.message;
   });
 });
 
-els.chatNewAllSessionBtn.addEventListener('click', () => {
-  createChatSession('all_sisters').catch((error) => {
-    els.chatFormError.textContent = error.message;
-  });
-});
-
-els.chatNewGroupSessionBtn.addEventListener('click', () => {
-  const groupId = els.chatGroupSessionSelect.value;
-  if (!groupId) {
-    els.chatFormError.textContent = 'Select a group first.';
+els.chatNewSessionBtn.addEventListener('click', () => {
+  const scopeType = state.chat.selectedContextType || 'all_sisters';
+  const groupId = scopeType === 'group' ? state.chat.selectedContextGroupId : null;
+  if (scopeType === 'group' && !groupId) {
+    els.chatFormError.textContent = 'Select a group context first.';
     return;
   }
 
-  createChatSession('group', groupId).catch((error) => {
+  createChatSession(scopeType, groupId).catch((error) => {
     els.chatFormError.textContent = error.message;
   });
 });
@@ -1084,13 +1265,22 @@ els.chatGroupList.addEventListener('click', (event) => {
 
   if (action === 'edit-group') {
     loadGroupIntoForm(groupId);
+    els.chatGroupDrawer.classList.add('open');
+    els.chatGroupDrawer.setAttribute('aria-hidden', 'false');
     return;
   }
 
   if (action === 'open-group-session') {
-    createChatSession('group', groupId).catch((error) => {
-      els.chatFormError.textContent = error.message;
-    });
+    setChatContext('group', groupId);
+    els.chatGroupDrawer.classList.remove('open');
+    els.chatGroupDrawer.setAttribute('aria-hidden', 'true');
+
+    const hasSessions = chatSessionsForCurrentContext().length > 0;
+    if (!hasSessions) {
+      createChatSession('group', groupId).catch((error) => {
+        els.chatFormError.textContent = error.message;
+      });
+    }
   }
 });
 
