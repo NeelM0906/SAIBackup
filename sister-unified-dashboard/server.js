@@ -19,6 +19,9 @@ import {
   getEvents,
   getHealth,
   getOverview,
+  getSubagent,
+  getSubagentActivity,
+  getSubagents,
   getSisterProfile,
   getSisterWorkboardDetail,
   getSisters,
@@ -126,6 +129,49 @@ async function handleRequest(req, res) {
   if (url.pathname === '/api/workboard' && method === 'GET') {
     const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
     return json(res, 200, getWorkboard(days));
+  }
+
+  if (url.pathname === '/api/subagents' && method === 'GET') {
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    const limit = toInt(url.searchParams.get('limit'), 120);
+    const status = url.searchParams.get('status') || null;
+    const requester = url.searchParams.get('requester') || null;
+    const sisterId = url.searchParams.get('sister_id') || null;
+
+    return json(
+      res,
+      200,
+      getSubagents({
+        days,
+        limit,
+        status,
+        requester,
+        sisterId
+      })
+    );
+  }
+
+  const subagentActivityMatch = url.pathname.match(/^\/api\/subagents\/([^/]+)\/activity$/);
+  if (subagentActivityMatch && method === 'GET') {
+    const runId = decodeURIComponent(subagentActivityMatch[1]);
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    const limit = toInt(url.searchParams.get('limit'), 120);
+    const activity = getSubagentActivity(runId, { days, limit });
+    if (!activity) {
+      return jsonError(res, 404, 'SUBAGENT_NOT_FOUND', `Subagent run not found: ${runId}`);
+    }
+    return json(res, 200, { ok: true, ...activity });
+  }
+
+  const subagentMatch = url.pathname.match(/^\/api\/subagents\/([^/]+)$/);
+  if (subagentMatch && method === 'GET') {
+    const runId = decodeURIComponent(subagentMatch[1]);
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    const run = getSubagent(runId, days);
+    if (!run) {
+      return jsonError(res, 404, 'SUBAGENT_NOT_FOUND', `Subagent run not found: ${runId}`);
+    }
+    return json(res, 200, { ok: true, run });
   }
 
   const workboardDetailMatch = url.pathname.match(/^\/api\/workboard\/([^/]+)$/);

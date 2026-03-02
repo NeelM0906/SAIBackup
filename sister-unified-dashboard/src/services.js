@@ -13,6 +13,7 @@ import {
   ONLINE_WINDOW_SECONDS,
   OPENCLAW_CONFIG_PATH,
   SAI_ONLINE_LINKS,
+  SUBAGENT_RUNS_PATH,
   SNAPSHOT_FALLBACK_PATH
 } from './config.js';
 import { getDb } from './db.js';
@@ -48,6 +49,202 @@ function safeJsonParse(value) {
   } catch {
     return null;
   }
+}
+
+function readJsonFile(filePath) {
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function toIsoFromAny(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return new Date(value).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  }
+  const parsed = parseIso(value);
+  if (!parsed) return null;
+  return parsed.toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
+function toMsFromAny(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  const parsed = parseIso(value);
+  return parsed ? parsed.getTime() : null;
+}
+
+function normalizeRunId(value) {
+  const text = String(value || '').trim();
+  return text || null;
+}
+
+function parseSubagentSessionKey(sessionKey) {
+  const clean = String(sessionKey || '').trim();
+  const matched = clean.match(/^agent:([^:]+):subagent:([a-z0-9\-]+)$/i);
+  if (!matched) {
+    return {
+      raw: clean || null,
+      sister_id: null,
+      child_session_id: null
+    };
+  }
+
+  return {
+    raw: clean,
+    sister_id: matched[1],
+    child_session_id: matched[2]
+  };
+}
+
+function parseRequesterAgent(sessionKey) {
+  const clean = String(sessionKey || '').trim();
+  const matched = clean.match(/^agent:([^:]+)/i);
+  return matched ? matched[1] : null;
+}
+
+function normalizeSubagentStatus(run) {
+  if (!run) return 'unknown';
+  const endedAtMs = toMsFromAny(run.endedAt);
+  if (!endedAtMs) return 'running';
+
+  const reason = String(run.endedReason || '').toLowerCase();
+  const outcomeStatus = String(run.outcome?.status || '').toLowerCase();
+  const outcomeError = String(run.outcome?.error || '').toLowerCase();
+
+  if (reason.includes('killed') || outcomeError.includes('killed')) return 'killed';
+  if (outcomeStatus === 'timeout' || reason.includes('timeout')) return 'timeout';
+  if (outcomeStatus === 'ok') return 'completed';
+  if (outcomeStatus === 'error' || reason.includes('error')) return 'error';
+  return 'completed';
+}
+
+function loadSubagentRuns() {
+  const raw = readJsonFile(SUBAGENT_RUNS_PATH);
+  const record = raw && typeof raw === 'object' ? raw : {};
+  const runs = record.runs && typeof record.runs === 'object' ? record.runs : {};
+  const entries = [];
+
+  for (const [runIdRaw, runRaw] of Object.entries(runs)) {
+    if (!runRaw || typeof runRaw !== 'object') continue;
+    const runId = normalizeRunId(runRaw.runId || runIdRaw);
+    if (!runId) continue;
+    entries.push({ runId, ...runRaw });
+  }
+
+  return entries;
+}
+
+function buildSubagentRunItem(run, db, windowIso) {
+  const child = parseSubagentSessionKey(run.childSessionKey);
+  const requesterSessionKey = String(run.requesterSessionKey || '').trim() || null;
+  const requesterDisplayKey = String(run.requesterDisplayKey || '').trim() || null;
+
+  let lastEvent = null;
+  let windowEvents = 0;
+  if (child.sister_id && child.child_session_id) {
+    lastEvent = db
+      .prepare(
+        `
+          SELECT ts, event_type, role, tool_name, summary
+          FROM events
+          WHERE sister_id = ? AND session_id = ?
+          ORDER BY ts DESC
+          LIMIT 1
+        `
+      )
+      .get(child.sister_id, child.child_session_id);
+
+    windowEvents = Number(
+      db
+        .prepare(
+          `
+            SELECT COUNT(*) AS c
+            FROM events
+            WHERE sister_id = ? AND session_id = ? AND ts >= ?
+          `
+        )
+        .get(child.sister_id, child.child_session_id, windowIso)?.c || 0
+    );
+  }
+
+  const createdAtMs = toMsFromAny(run.createdAt) || toMsFromAny(run.startedAt) || Date.now();
+  const startedAtMs = toMsFromAny(run.startedAt) || createdAtMs;
+  const endedAtMs = toMsFromAny(run.endedAt);
+  const runtimeSeconds = Math.max(0, Math.round(((endedAtMs || Date.now()) - startedAtMs) / 1000));
+
+  return {
+    run_id: normalizeRunId(run.runId) || normalizeRunId(run.id),
+    requester_session_key: requesterSessionKey,
+    requester_display_key: requesterDisplayKey,
+    requester_agent_id: parseRequesterAgent(requesterSessionKey),
+    sister_id: child.sister_id,
+    child_session_key: child.raw,
+    child_session_id: child.child_session_id,
+    label: String(run.label || '').trim() || null,
+    task: String(run.task || '').trim() || null,
+    status: normalizeSubagentStatus(run),
+    spawn_mode: run.spawnMode === 'session' ? 'session' : 'run',
+    cleanup: String(run.cleanup || '').trim() || null,
+    expects_completion_message: Boolean(run.expectsCompletionMessage),
+    created_at: toIsoFromAny(run.createdAt),
+    started_at: toIsoFromAny(run.startedAt),
+    ended_at: toIsoFromAny(run.endedAt),
+    cleanup_completed_at: toIsoFromAny(run.cleanupCompletedAt),
+    archive_at: toIsoFromAny(run.archiveAtMs),
+    run_timeout_seconds: Number(run.runTimeoutSeconds || 0),
+    model: String(run.model || '').trim() || null,
+    outcome: run.outcome || null,
+    runtime_seconds: runtimeSeconds,
+    activity: {
+      last_event_at: lastEvent?.ts || null,
+      last_event_type: lastEvent?.event_type || null,
+      last_event_summary: lastEvent?.summary || null,
+      events_window: windowEvents
+    }
+  };
+}
+
+function lifecycleEventsForRun(runItem) {
+  const events = [];
+
+  if (runItem.created_at) {
+    events.push({
+      ts: runItem.created_at,
+      source: 'registry',
+      event_type: 'spawned',
+      summary: runItem.task || runItem.label || 'Subagent spawned'
+    });
+  }
+  if (runItem.started_at && runItem.started_at !== runItem.created_at) {
+    events.push({
+      ts: runItem.started_at,
+      source: 'registry',
+      event_type: 'started',
+      summary: `${runItem.sister_id || 'unknown'} started subagent run`
+    });
+  }
+  if (runItem.ended_at) {
+    events.push({
+      ts: runItem.ended_at,
+      source: 'registry',
+      event_type: `ended:${runItem.status}`,
+      summary: runItem.outcome?.error || runItem.status
+    });
+  }
+  if (runItem.cleanup_completed_at) {
+    events.push({
+      ts: runItem.cleanup_completed_at,
+      source: 'registry',
+      event_type: 'cleanup_completed',
+      summary: 'Cleanup flow completed'
+    });
+  }
+
+  return events;
 }
 
 function loadOpenClawConfig() {
@@ -657,6 +854,122 @@ export function getEvents({ days = LOOKBACK_DAYS_DEFAULT, limit = 100, sisterId 
     limit: boundedLimit,
     has_more: hasMore,
     items
+  };
+}
+
+export function getSubagents({ days = LOOKBACK_DAYS_DEFAULT, limit = 120, status = null, requester = null, sisterId = null } = {}) {
+  ensureIngested(false);
+  const db = getDb();
+  const windowDays = Math.max(days, 1);
+  const windowMs = windowDays * 24 * 60 * 60 * 1000;
+  const windowStartMs = Date.now() - windowMs;
+  const windowIso = new Date(windowStartMs).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const boundedLimit = Math.min(Math.max(Number(limit) || 120, 1), 500);
+
+  const rawRuns = loadSubagentRuns();
+  const mapped = rawRuns.map((run) => buildSubagentRunItem(run, db, windowIso));
+  const requestedStatus = String(status || '').trim().toLowerCase() || null;
+  const requesterNeedle = String(requester || '').trim().toLowerCase() || null;
+  const sisterNeedle = String(sisterId || '').trim().toLowerCase() || null;
+
+  const filtered = mapped.filter((item) => {
+    const createdMs = toMsFromAny(item.created_at) || 0;
+    if (createdMs && createdMs < windowStartMs) return false;
+
+    if (requestedStatus && item.status !== requestedStatus) return false;
+
+    if (requesterNeedle) {
+      const requesterValue = `${item.requester_session_key || ''} ${item.requester_display_key || ''}`.toLowerCase();
+      if (!requesterValue.includes(requesterNeedle)) return false;
+    }
+
+    if (sisterNeedle && String(item.sister_id || '').toLowerCase() !== sisterNeedle) return false;
+
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    const aMs = toMsFromAny(a.created_at) || 0;
+    const bMs = toMsFromAny(b.created_at) || 0;
+    return bMs - aMs;
+  });
+
+  const hasMore = filtered.length > boundedLimit;
+  const items = filtered.slice(0, boundedLimit);
+  const allStatuses = ['running', 'completed', 'error', 'killed', 'timeout', 'unknown'];
+  const requesters = Array.from(
+    new Set(items.map((item) => item.requester_session_key).filter((value) => Boolean(value)))
+  );
+  const sisters = Array.from(
+    new Set(items.map((item) => item.sister_id).filter((value) => Boolean(value)))
+  );
+
+  return {
+    window_days: windowDays,
+    limit: boundedLimit,
+    has_more: hasMore,
+    items,
+    filters: {
+      statuses: allStatuses,
+      requesters,
+      sisters
+    }
+  };
+}
+
+export function getSubagent(runId, days = LOOKBACK_DAYS_DEFAULT) {
+  const normalizedRunId = normalizeRunId(runId);
+  if (!normalizedRunId) return null;
+
+  const list = getSubagents({ days, limit: 500 }).items;
+  return list.find((item) => item.run_id === normalizedRunId) || null;
+}
+
+export function getSubagentActivity(runId, { days = LOOKBACK_DAYS_DEFAULT, limit = 120 } = {}) {
+  ensureIngested(false);
+  const db = getDb();
+  const item = getSubagent(runId, days);
+  if (!item) return null;
+
+  const windowDays = Math.max(days, 1);
+  const boundedLimit = Math.min(Math.max(Number(limit) || 120, 1), 500);
+  const windowIso = windowStartIso(windowDays);
+
+  const lifecycleEvents = lifecycleEventsForRun(item);
+  const sessionEvents = item.sister_id && item.child_session_id
+    ? db
+        .prepare(
+          `
+            SELECT ts, event_type, role, tool_name, summary
+            FROM events
+            WHERE sister_id = ? AND session_id = ? AND ts >= ?
+            ORDER BY ts DESC
+            LIMIT ?
+          `
+        )
+        .all(item.sister_id, item.child_session_id, windowIso, boundedLimit)
+        .map((row) => ({
+          ts: row.ts,
+          source: 'session',
+          event_type: row.event_type,
+          role: row.role || null,
+          tool_name: row.tool_name || null,
+          summary: row.summary || null
+        }))
+    : [];
+
+  const merged = lifecycleEvents.concat(sessionEvents).filter((entry) => parseIso(entry.ts));
+  merged.sort((a, b) => {
+    const aMs = parseIso(a.ts)?.getTime() || 0;
+    const bMs = parseIso(b.ts)?.getTime() || 0;
+    return bMs - aMs;
+  });
+
+  return {
+    window_days: windowDays,
+    limit: boundedLimit,
+    run: item,
+    items: merged.slice(0, boundedLimit)
   };
 }
 
