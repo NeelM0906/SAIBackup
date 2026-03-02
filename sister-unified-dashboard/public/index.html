@@ -46,6 +46,7 @@
           <button class="rail-btn active" type="button" data-view="overview">Overview</button>
           <button class="rail-btn" type="button" data-view="fleet">Fleet</button>
           <button class="rail-btn" type="button" data-view="tasks">Task Board</button>
+          <button class="rail-btn" type="button" data-view="runs">Runs</button>
           <button class="rail-btn" type="button" data-view="chat">Mission Chat</button>
           <button class="rail-btn" type="button" data-view="audit">Audit Logs</button>
           <button id="openDomainsFromRailBtn" class="rail-btn" type="button">Domains</button>
@@ -67,6 +68,26 @@
               </div>
               <div id="sisterGrid" class="sister-grid">
                 <article class="sister-card">Loading sister beings...</article>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Active Sister Operations</h2>
+                <small>Who is currently working, what they are doing, and progress.</small>
+              </div>
+              <div id="fleetActivityBoard" class="workboard-grid">
+                <article class="workboard-card">Loading active operations...</article>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Task Ownership Snapshot</h2>
+                <small>Top owners by active load and completion in this retention window.</small>
+              </div>
+              <div id="fleetOwnerSnapshot" class="detail-list">
+                <article class="work-item"><div class="sub">Loading ownership snapshot...</div></article>
               </div>
             </section>
 
@@ -228,6 +249,33 @@
             </div>
           </section>
 
+          <section id="view-runs" class="view-panel">
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Mission Run Pipeline</h2>
+                <small>Subagent runs linked to likely parent tasks by sister, key, and timing heuristics.</small>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Spawned</th>
+                      <th>Run</th>
+                      <th>Sister</th>
+                      <th>Parent Task</th>
+                      <th>Status</th>
+                      <th>Runtime</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="runsPipelineTable">
+                    <tr><td colspan="7">Loading run pipeline...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </section>
+
           <section id="view-chat" class="view-panel">
             <div id="chatWorkspace" class="chat-workspace" aria-hidden="false">
               <div class="chat-shell">
@@ -341,6 +389,9 @@
                     <option value="">All</option>
                   </select>
                   <button id="logsLoadMoreBtn" type="button">Load More (+50)</button>
+                  <button id="exportLogsBtn" class="link-btn" type="button">Export Logs JSON</button>
+                  <button id="exportTasksBtn" class="link-btn" type="button">Export Tasks JSON</button>
+                  <button id="exportRunsBtn" class="link-btn" type="button">Export Runs JSON</button>
                   <small id="logsCountLabel">Showing 0</small>
                 </div>
               </div>
@@ -362,6 +413,29 @@
                 </table>
               </div>
             </section>
+
+            <section class="panel">
+              <div class="panel-head">
+                <h2>Unified Activity Timeline</h2>
+                <small>Combined stream of logs, task updates, run lifecycle, and chat session updates.</small>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Source</th>
+                      <th>Entity</th>
+                      <th>Status</th>
+                      <th>Summary</th>
+                    </tr>
+                  </thead>
+                  <tbody id="timelineTable">
+                    <tr><td colspan="5">Loading timeline...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </section>
         </main>
 
@@ -374,6 +448,8 @@
             <article class="work-item"><div class="sub">Awaiting selection...</div></article>
           </div>
           <div class="mission-context-actions">
+            <button id="missionInterveneBtn" class="link-btn" type="button">Intervene In Chat</button>
+            <button id="missionOpenTasksBtn" class="link-btn" type="button">Open Task Board</button>
             <button id="missionOpenDomainsBtn" class="link-btn" type="button">Open Domains</button>
             <button id="missionOpenGroupsBtn" class="link-btn" type="button">Open Group Manager</button>
           </div>

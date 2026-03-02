@@ -5,12 +5,19 @@ const POLL_WORKBOARD_MS = 8000;
 const POLL_SUBAGENTS_MS = 12000;
 const POLL_EVENTS_MS = 8000;
 const POLL_ASSIGNMENTS_MS = 8000;
+const POLL_ASSIGNMENTS_CATALOG_MS = 14000;
 const POLL_CHAT_MS = 8000;
+const POLL_BACKOFF_MAX_MS = 180000;
+const POLL_JITTER_FRACTION = 0.2;
+const POLL_STALE_MULTIPLIER = 5;
+const POLL_FALLBACK_STALE_MS = 75000;
 const LOGS_DEFAULT_LIMIT = 10;
 const LOGS_LOAD_MORE_STEP = 50;
 const SUBAGENTS_LIMIT = 200;
 const ASSIGNMENTS_DEFAULT_LIMIT = 300;
 const ASSIGNMENTS_LOAD_MORE_STEP = 200;
+const ASSIGNMENTS_CATALOG_LIMIT = 1200;
+const TIMELINE_LIMIT = 220;
 
 const ASSIGNMENT_STATUSES = ['inbox', 'in_progress', 'blocked', 'completed', 'rework', 'cancelled'];
 
@@ -21,16 +28,23 @@ const state = {
   assignmentsLimit: ASSIGNMENTS_DEFAULT_LIMIT,
   activeView: 'overview',
   assignmentCounts: {},
+  assignmentItems: [],
+  assignmentCatalog: [],
   subagents: [],
+  workboardItems: [],
+  eventsItems: [],
+  timelineItems: [],
   poll: {
     lastSuccessAt: 0,
-    errorStreak: 0
+    errorStreak: 0,
+    streams: {}
   },
   context: {
     type: 'none',
     title: 'No selection',
     status: 'Click a sister, task, run, or chat session to populate this panel.',
-    lines: ['Awaiting selection...']
+    lines: ['Awaiting selection...'],
+    entity: null
   },
   profileCache: new Map(),
   workboardDetailCache: new Map(),
@@ -63,10 +77,13 @@ const els = {
   viewOverview: document.getElementById('view-overview'),
   viewFleet: document.getElementById('view-fleet'),
   viewTasks: document.getElementById('view-tasks'),
+  viewRuns: document.getElementById('view-runs'),
   viewChat: document.getElementById('view-chat'),
   viewAudit: document.getElementById('view-audit'),
   overviewMetrics: document.getElementById('overviewMetrics'),
   sisterGrid: document.getElementById('sisterGrid'),
+  fleetActivityBoard: document.getElementById('fleetActivityBoard'),
+  fleetOwnerSnapshot: document.getElementById('fleetOwnerSnapshot'),
   openWorkboardBtn: document.getElementById('openWorkboardBtn'),
   workboardWorkspace: document.getElementById('workboardWorkspace'),
   closeWorkboardBtn: document.getElementById('closeWorkboardBtn'),
@@ -77,6 +94,7 @@ const els = {
   subagentSisterFilter: document.getElementById('subagentSisterFilter'),
   subagentRequesterFilter: document.getElementById('subagentRequesterFilter'),
   subagentCountLabel: document.getElementById('subagentCountLabel'),
+  runsPipelineTable: document.getElementById('runsPipelineTable'),
   openMissionChatBtn: document.getElementById('openMissionChatBtn'),
   chatWorkspace: document.getElementById('chatWorkspace'),
   closeMissionChatBtn: document.getElementById('closeMissionChatBtn'),
@@ -110,6 +128,10 @@ const els = {
   chatGroupResetBtn: document.getElementById('chatGroupResetBtn'),
   chatDispatchTable: document.getElementById('chatDispatchTable'),
   eventsTable: document.getElementById('eventsTable'),
+  timelineTable: document.getElementById('timelineTable'),
+  exportLogsBtn: document.getElementById('exportLogsBtn'),
+  exportTasksBtn: document.getElementById('exportTasksBtn'),
+  exportRunsBtn: document.getElementById('exportRunsBtn'),
   sisterFilter: document.getElementById('sisterFilter'),
   logsLoadMoreBtn: document.getElementById('logsLoadMoreBtn'),
   logsCountLabel: document.getElementById('logsCountLabel'),
@@ -157,7 +179,9 @@ const els = {
   modalSubagentName: document.getElementById('modalSubagentName'),
   modalSubagentMeta: document.getElementById('modalSubagentMeta'),
   modalSubagentDetails: document.getElementById('modalSubagentDetails'),
-  modalSubagentActivity: document.getElementById('modalSubagentActivity')
+  modalSubagentActivity: document.getElementById('modalSubagentActivity'),
+  missionInterveneBtn: document.getElementById('missionInterveneBtn'),
+  missionOpenTasksBtn: document.getElementById('missionOpenTasksBtn')
 };
 
 function n(value) {
@@ -228,7 +252,7 @@ async function fetchJson(path, options) {
   return payload;
 }
 
-const VIEW_IDS = ['overview', 'fleet', 'tasks', 'chat', 'audit'];
+const VIEW_IDS = ['overview', 'fleet', 'tasks', 'runs', 'chat', 'audit'];
 
 function viewElementById(viewId) {
   switch (viewId) {
@@ -236,6 +260,8 @@ function viewElementById(viewId) {
       return els.viewFleet;
     case 'tasks':
       return els.viewTasks;
+    case 'runs':
+      return els.viewRuns;
     case 'chat':
       return els.viewChat;
     case 'audit':
@@ -245,12 +271,13 @@ function viewElementById(viewId) {
   }
 }
 
-function setMissionContext({ type, title, status, lines }) {
+function setMissionContext({ type, title, status, lines, entity }) {
   state.context = {
     type: type || 'none',
     title: title || 'No selection',
     status: status || 'No details',
-    lines: Array.isArray(lines) && lines.length ? lines : ['No context available.']
+    lines: Array.isArray(lines) && lines.length ? lines : ['No context available.'],
+    entity: entity || null
   };
   renderMissionContext();
 }
@@ -279,13 +306,103 @@ function setActiveView(viewId) {
   });
 }
 
-function markPollSuccess() {
-  state.poll.lastSuccessAt = Date.now();
+function staleTargetsForStream(streamKey) {
+  switch (streamKey) {
+    case 'overview':
+      return [els.overviewMetrics];
+    case 'sisters':
+      return [els.sisterGrid];
+    case 'workboard':
+      return [els.workboardGrid, els.fleetActivityBoard];
+    case 'subagents':
+      return [els.subagentsTable, els.runsPipelineTable];
+    case 'events':
+      return [els.eventsTable];
+    case 'assignments':
+      return [els.assignmentsTable];
+    case 'assignmentsCatalog':
+      return [els.fleetOwnerSnapshot, els.runsPipelineTable];
+    case 'chatBootstrap':
+      return [els.chatContextRail, els.chatSessionList];
+    case 'chatSession':
+      return [els.chatMessages, els.chatDispatchTable];
+    default:
+      return [];
+  }
+}
+
+function applyStaleIndicator(streamKey, isStale, ageMs = 0) {
+  const ageLabel = Number.isFinite(ageMs) && ageMs > 0 ? `${Math.floor(ageMs / 1000)}s` : '-';
+  staleTargetsForStream(streamKey).forEach((el) => {
+    if (!el) return;
+    el.setAttribute('data-stale', isStale ? 'true' : 'false');
+    if (isStale) {
+      el.setAttribute('title', `Stale data (${ageLabel} since last successful poll)`);
+    } else {
+      el.removeAttribute('title');
+    }
+  });
+}
+
+function streamStaleAfterMs(stream) {
+  return Math.max(POLL_FALLBACK_STALE_MS, Number(stream?.staleAfterMs || 0) || stream.baseMs * POLL_STALE_MULTIPLIER);
+}
+
+function isStreamStale(stream, now = Date.now()) {
+  if (!stream?.lastSuccessAt) return true;
+  return now - stream.lastSuccessAt > streamStaleAfterMs(stream);
+}
+
+function collectPollSnapshot() {
+  const streams = Object.values(state.poll.streams || {});
+  if (!streams.length) {
+    return { total: 0, stale: 0, retrying: 0, degraded: 0, label: 'initializing' };
+  }
+
+  const now = Date.now();
+  let stale = 0;
+  let retrying = 0;
+  let degraded = 0;
+
+  streams.forEach((stream) => {
+    const staleState = isStreamStale(stream, now);
+    if (staleState) stale += 1;
+    if (stream.errorStreak > 0) retrying += 1;
+    if (staleState || stream.errorStreak >= 2) degraded += 1;
+    applyStaleIndicator(stream.key, staleState, stream.lastSuccessAt ? now - stream.lastSuccessAt : Infinity);
+  });
+
+  let label = 'healthy';
+  if (stale > 0) {
+    label = `degraded (${stale} stale)`;
+  } else if (retrying > 0) {
+    label = `recovering (${retrying})`;
+  }
+
+  return { total: streams.length, stale, retrying, degraded, label };
+}
+
+function markPollSuccess(streamKey, durationMs = 0) {
+  const stream = state.poll.streams?.[streamKey];
+  const now = Date.now();
+  if (stream) {
+    stream.errorStreak = 0;
+    stream.lastSuccessAt = now;
+    stream.lastDurationMs = durationMs;
+    stream.lastError = null;
+  }
+  state.poll.lastSuccessAt = now;
   state.poll.errorStreak = 0;
+  els.lastUpdated.textContent = `Last updated: ${shortTs(new Date(now).toISOString())}`;
   renderMissionHeader();
 }
 
-function markPollError() {
+function markPollError(streamKey, error) {
+  const stream = state.poll.streams?.[streamKey];
+  if (stream) {
+    stream.errorStreak += 1;
+    stream.lastError = String(error?.message || error || 'poll error');
+  }
   state.poll.errorStreak += 1;
   renderMissionHeader();
 }
@@ -303,14 +420,13 @@ function renderMissionHeader() {
   ).length;
   const blockedTasks = Number(counts.blocked || 0);
   const offlineSisters = Number(state.overview?.offline_sisters || 0);
-  const alerts = blockedTasks + failedSubagents + offlineSisters;
+  const pollSnapshot = collectPollSnapshot();
+  const alerts = blockedTasks + failedSubagents + offlineSisters + Number(pollSnapshot.degraded || 0);
 
   els.queueDepthValue.textContent = n(queueDepth);
   els.alertsValue.textContent = n(alerts);
 
-  const pollAgeMs = state.poll.lastSuccessAt ? Date.now() - state.poll.lastSuccessAt : Infinity;
-  const pollHealthy = state.poll.errorStreak <= 2 && pollAgeMs < 75_000;
-  els.pollHealthValue.textContent = pollHealthy ? 'healthy' : 'degraded';
+  els.pollHealthValue.textContent = pollSnapshot.label;
 
   let missionState = 'STABLE';
   let missionClass = 'status-inactive';
@@ -408,6 +524,7 @@ function renderSisters(payload) {
 
 function renderWorkboard(payload) {
   const items = payload.items || [];
+  state.workboardItems = items;
 
   els.workboardGrid.innerHTML = items.length
     ? items
@@ -445,6 +562,246 @@ function renderWorkboard(payload) {
         })
         .join('')
     : '<article class="workboard-card">No workboard data found.</article>';
+
+  renderFleetActivityBoard();
+  renderRunsPipeline();
+}
+
+function renderFleetActivityBoard() {
+  const items = state.workboardItems || [];
+  if (!els.fleetActivityBoard) return;
+
+  els.fleetActivityBoard.innerHTML = items.length
+    ? items
+        .map((sister) => {
+          const primary = (sister.items || [])[0] || null;
+          const progressNum = Number(primary?.progress_percent);
+          const hasProgress =
+            primary &&
+            primary.progress_percent !== null &&
+            primary.progress_percent !== undefined &&
+            !Number.isNaN(progressNum);
+          const waitNote = primary?.waiting_for ? `waiting for ${primary.waiting_for}` : (primary?.progress_note || '-');
+          return `
+            <article class="workboard-card" data-workboard-sister-id="${esc(sister.sister_id)}">
+              <h3>${esc(sister.sister_name)} <span class="status ${esc(sister.sister_status)}">${esc(sister.sister_status)}</span></h3>
+              <div class="work-item">
+                <div class="title">${esc(primary?.title || 'No active task')}</div>
+                <div class="sub">${esc(primary?.summary || 'No summary available')}</div>
+                ${hasProgress ? `<div class="progress"><span style="width:${Math.max(0, Math.min(100, progressNum))}%"></span></div>` : ''}
+                <div class="note">${hasProgress ? `${Math.round(progressNum)}%` : 'No progress bar'} • ${esc(waitNote)}</div>
+                <div class="meta">Active tasks: ${n((sister.items || []).length)}</div>
+              </div>
+            </article>
+          `;
+        })
+        .join('')
+    : '<article class="workboard-card">No active operations found.</article>';
+}
+
+function renderFleetOwnerSnapshot() {
+  if (!els.fleetOwnerSnapshot) return;
+  const items = state.assignmentCatalog || [];
+  if (!items.length) {
+    els.fleetOwnerSnapshot.innerHTML = '<article class="work-item"><div class="sub">No task ownership data available.</div></article>';
+    return;
+  }
+
+  const owners = new Map();
+  for (const item of items) {
+    const owner = String(item.owner_sister_id || 'unassigned');
+    if (!owners.has(owner)) {
+      owners.set(owner, {
+        owner,
+        total: 0,
+        active: 0,
+        blocked: 0,
+        completed: 0
+      });
+    }
+    const row = owners.get(owner);
+    row.total += 1;
+    if (['in_progress', 'blocked', 'rework', 'inbox'].includes(String(item.status || ''))) row.active += 1;
+    if (item.status === 'blocked') row.blocked += 1;
+    if (item.status === 'completed') row.completed += 1;
+  }
+
+  const ranked = Array.from(owners.values())
+    .sort((a, b) => b.active - a.active || b.total - a.total)
+    .slice(0, 6);
+
+  els.fleetOwnerSnapshot.innerHTML = ranked
+    .map(
+      (row) => `
+        <article class="work-item">
+          <div class="title">${esc(row.owner)}</div>
+          <div class="sub">Active: ${n(row.active)} • Blocked: ${n(row.blocked)} • Completed: ${n(row.completed)}</div>
+          <div class="meta">Total tasks: ${n(row.total)}</div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+function parseTs(value) {
+  const ts = new Date(value || '').getTime();
+  return Number.isFinite(ts) ? ts : 0;
+}
+
+function textMatchScore(text, pattern) {
+  if (!text || !pattern) return 0;
+  const source = String(text).toLowerCase();
+  const target = String(pattern).toLowerCase().trim();
+  if (!target) return 0;
+  if (source.includes(target)) return Math.min(40, target.length + 8);
+  return 0;
+}
+
+function guessParentAssignment(run, catalog) {
+  const candidates = (catalog || []).filter((item) => item.owner_sister_id === run.sister_id);
+  if (!candidates.length) return null;
+
+  const runTs = parseTs(run.created_at || run.started_at || run.ended_at);
+  const taskText = String(run.task || run.label || '');
+
+  let best = null;
+  let bestScore = -Infinity;
+
+  for (const item of candidates) {
+    let score = 0;
+    score += textMatchScore(taskText, item.task_key);
+    score += textMatchScore(taskText, item.title);
+    const deltaMinutes = Math.abs(runTs - parseTs(item.updated_at)) / 60000;
+    score += Math.max(0, 30 - Math.min(30, deltaMinutes / 2));
+    if (item.status === 'in_progress') score += 8;
+    if (item.status === 'blocked') score += 4;
+
+    if (score > bestScore) {
+      best = item;
+      bestScore = score;
+    }
+  }
+
+  return best;
+}
+
+function renderRunsPipeline() {
+  if (!els.runsPipelineTable) return;
+  const runs = state.subagents || [];
+  if (!runs.length) {
+    els.runsPipelineTable.innerHTML = '<tr><td colspan="7">No subagent runs available.</td></tr>';
+    return;
+  }
+
+  els.runsPipelineTable.innerHTML = runs
+    .map((run) => {
+      const parent = guessParentAssignment(run, state.assignmentCatalog);
+      const parentLabel = parent ? `${parent.title} (${parent.status})` : 'No clear parent task';
+      return `
+        <tr data-run-id="${esc(run.run_id)}" data-parent-assignment-id="${esc(parent?.id || '')}">
+          <td><small>${esc(shortTs(run.created_at))}</small></td>
+          <td><small>${esc(run.run_id || '-')}</small></td>
+          <td>${esc(run.sister_id || '-')}</td>
+          <td><small>${esc(parentLabel)}</small></td>
+          <td><span class="status ${subagentStatusClass(run.status)}">${esc(run.status || 'unknown')}</span></td>
+          <td><small>${esc(formatRuntime(run.runtime_seconds))}</small></td>
+          <td>
+            <div class="action-row">
+              <button class="link-btn" data-action="pipeline-run" data-run-id="${esc(run.run_id)}" type="button">Inspect Run</button>
+              ${
+                parent?.id
+                  ? `<button class="link-btn" data-action="pipeline-parent" data-assignment-id="${esc(parent.id)}" type="button">Parent Task</button>`
+                  : ''
+              }
+              <button class="link-btn" data-action="pipeline-chat" data-sister-id="${esc(run.sister_id || '')}" type="button">Intervene</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    })
+    .join('');
+}
+
+function buildUnifiedTimelineItems() {
+  const timeline = [];
+  for (const event of state.eventsItems || []) {
+    timeline.push({
+      ts: parseTs(event.ts),
+      time: event.ts,
+      source: 'log',
+      entity: event.sister_id || '-',
+      status: event.event_type || '-',
+      summary: event.summary || '-'
+    });
+  }
+
+  for (const item of state.assignmentCatalog || []) {
+    timeline.push({
+      ts: parseTs(item.updated_at),
+      time: item.updated_at,
+      source: 'task',
+      entity: item.owner_sister_id || '-',
+      status: item.status || '-',
+      summary: item.title || '-'
+    });
+  }
+
+  for (const run of state.subagents || []) {
+    timeline.push({
+      ts: parseTs(run.created_at),
+      time: run.created_at,
+      source: 'run',
+      entity: run.sister_id || '-',
+      status: run.status || '-',
+      summary: run.task || run.label || '-'
+    });
+  }
+
+  for (const session of state.chat.sessions || []) {
+    timeline.push({
+      ts: parseTs(session.updated_at),
+      time: session.updated_at,
+      source: 'chat',
+      entity: session.scope_type === 'group' ? `group:${session.group_id}` : 'all_sisters',
+      status: session.status || 'active',
+      summary: `${session.title || 'Session'} • msgs ${n(session.message_count || 0)}`
+    });
+  }
+
+  return timeline.sort((a, b) => b.ts - a.ts).slice(0, TIMELINE_LIMIT);
+}
+
+function renderUnifiedTimeline() {
+  if (!els.timelineTable) return;
+  state.timelineItems = buildUnifiedTimelineItems();
+  const items = state.timelineItems || [];
+  els.timelineTable.innerHTML = items.length
+    ? items
+        .map(
+          (item) => `
+            <tr>
+              <td><small>${esc(shortTs(item.time))}</small></td>
+              <td>${esc(item.source)}</td>
+              <td>${esc(item.entity)}</td>
+              <td>${esc(item.status)}</td>
+              <td><small>${esc(item.summary)}</small></td>
+            </tr>
+          `
+        )
+        .join('')
+    : '<tr><td colspan="5">No activity available.</td></tr>';
+}
+
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function fillFilterSelect(selectEl, values) {
@@ -496,11 +853,14 @@ function renderSubagents(payload) {
 
   const suffix = payload.has_more ? ' (more available)' : '';
   els.subagentCountLabel.textContent = `Showing ${n(items.length)}${suffix}`;
+  renderRunsPipeline();
+  renderUnifiedTimeline();
   renderMissionHeader();
 }
 
 function renderEvents(payload) {
   const items = payload.items || [];
+  state.eventsItems = items;
 
   els.eventsTable.innerHTML = items.length
     ? items
@@ -521,10 +881,12 @@ function renderEvents(payload) {
 
   els.logsCountLabel.textContent = `Showing ${items.length} logs`;
   els.logsLoadMoreBtn.disabled = !payload.has_more;
+  renderUnifiedTimeline();
 }
 
 function renderAssignments(payload) {
   const items = payload.items || [];
+  state.assignmentItems = items;
   state.assignmentCounts = payload.counts || {};
   const totalCount = Number(payload.total_count ?? items.length);
   const hasMore = Boolean(payload.has_more ?? (totalCount > items.length));
@@ -546,7 +908,9 @@ function renderAssignments(payload) {
           ).join('');
 
           return `
-            <tr data-assignment-id="${esc(item.id)}">
+            <tr data-assignment-id="${esc(item.id)}" data-assignment-owner="${esc(item.owner_sister_id)}" data-assignment-title="${esc(
+              item.title
+            )}">
               <td><strong>${esc(item.title)}</strong><br/><small>${esc(item.description || '-')}</small></td>
               <td>${esc(item.owner_sister_id)}</td>
               <td><span class="status ${assignmentStatusClass(item.status)}">${esc(item.status)}</span></td>
@@ -557,6 +921,7 @@ function renderAssignments(payload) {
                 <div class="action-row">
                   <select data-role="status-select">${statusOptions}</select>
                   <button data-action="set-status" type="button">Update</button>
+                  <button class="link-btn" data-action="brief-chat" type="button">Brief</button>
                 </div>
               </td>
               <td>
@@ -567,6 +932,7 @@ function renderAssignments(payload) {
         })
         .join('')
     : '<tr><td colspan="8">No assignments in selected filter.</td></tr>';
+  renderUnifiedTimeline();
   renderMissionHeader();
 }
 
@@ -634,7 +1000,8 @@ async function openSisterModal(sisterId) {
       `model: ${profile.current_model || profile.model_primary || '-'}`,
       `skills: ${n(profile.skills?.counts?.effective || 0)} effective`,
       `tools: ${n(Array.isArray(profile.tools) ? profile.tools.length : 0)}`
-    ]
+    ],
+    entity: { sisterId: profile.id }
   });
 
   openModal(els.modal);
@@ -695,7 +1062,8 @@ async function openWorkboardModal(sisterId) {
       `sister_status: ${detail.sister.status || '-'}`,
       `active_items: ${n(detail.active_items?.length || 0)}`,
       `previous_items: ${n(detail.previous_items?.length || 0)}`
-    ]
+    ],
+    entity: { sisterId: detail.sister.id }
   });
 
   openModal(els.workboardModal);
@@ -768,7 +1136,8 @@ async function openSubagentModal(runId) {
       `requester: ${run.requester_display_key || run.requester_session_key || run.requester_agent_id || '-'}`,
       `task: ${run.task || run.label || '-'}`,
       `activity_events: ${n(activityItems.length)}`
-    ]
+    ],
+    entity: { sisterId: run.sister_id || null, runId: run.run_id || runId }
   });
   openModal(els.subagentModal);
 }
@@ -986,7 +1355,8 @@ function renderChatSessionMeta() {
       `scope: ${session.scope_type}${session.group_id ? ` (${session.group_id})` : ''}`,
       `dispatch_default: ${session.dispatch_mode_default || 'parallel'}`,
       `expires: ${shortTs(session.expires_at)}`
-    ]
+    ],
+    entity: { sessionId: session.id }
   });
 }
 
@@ -1089,6 +1459,7 @@ async function refreshChatBootstrap() {
   renderChatSessionList();
   renderChatGroupList();
   renderChatSessionMeta();
+  renderUnifiedTimeline();
 }
 
 async function refreshChatSessionData() {
@@ -1142,6 +1513,28 @@ async function createChatSession(scopeType, groupId = null) {
   state.chat.selectedSessionId = created.item?.id || null;
   await refreshChatBootstrap();
   await refreshChatSessionData();
+}
+
+async function ensureAllSistersSession() {
+  await refreshChatBootstrap();
+  state.chat.selectedContextType = 'all_sisters';
+  state.chat.selectedContextGroupId = null;
+  ensureChatContextAndSessionSelection();
+  if (!state.chat.selectedSessionId) {
+    await createChatSession('all_sisters', null);
+  } else {
+    renderChatContextRail();
+    renderChatSessionList();
+    await refreshChatSessionData();
+  }
+}
+
+async function primeChatDraft({ sisterId = null, text = '' } = {}) {
+  await ensureAllSistersSession();
+  const mention = sisterId ? `@${sisterId} ` : '';
+  const base = `${mention}${text || ''}`.trim();
+  els.chatInput.value = base;
+  els.chatInput.focus();
 }
 
 async function saveChatGroupFromForm() {
@@ -1233,7 +1626,8 @@ function openDomainsModal() {
     type: 'domains',
     title: 'Online Domains',
     status: `${n(links.length)} links online`,
-    lines: (links || []).slice(0, 4).map((item) => `${item.name || 'Untitled'} -> ${item.url}`)
+    lines: (links || []).slice(0, 4).map((item) => `${item.name || 'Untitled'} -> ${item.url}`),
+    entity: { kind: 'domains' }
   });
   openModal(els.domainsModal);
 }
@@ -1279,6 +1673,15 @@ async function refreshAssignments() {
   }
 }
 
+async function refreshAssignmentsCatalog() {
+  const q = new URLSearchParams({ days: String(DAYS), limit: String(ASSIGNMENTS_CATALOG_LIMIT) });
+  const payload = await fetchJson(`/api/assignments?${q.toString()}`);
+  state.assignmentCatalog = payload.items || [];
+  renderFleetOwnerSnapshot();
+  renderRunsPipeline();
+  renderUnifiedTimeline();
+}
+
 async function refreshAssignmentEvents(assignmentId) {
   if (!assignmentId) return;
   state.selectedAssignmentId = assignmentId;
@@ -1293,7 +1696,8 @@ async function refreshAssignmentEvents(assignmentId) {
       `assignment_id: ${assignmentId}`,
       `event_rows: ${n(payload.items?.length || 0)}`,
       'use Task Registry row action to change status or inspect owner'
-    ]
+    ],
+    entity: { assignmentId }
   });
 }
 
@@ -1331,32 +1735,135 @@ async function updateAssignmentStatus(assignmentId, status) {
   await Promise.all([refreshAssignments(), refreshWorkboard()]);
 }
 
-async function refreshAll() {
-  try {
-    await Promise.all([
-      refreshOverview(),
-      refreshSisters(),
-      refreshWorkboard(),
-      refreshSubagents(),
-      refreshEvents(),
-      refreshAssignments(),
-      refreshChatBootstrap()
-    ]);
-    await refreshChatSessionData();
-    markPollSuccess();
-    els.lastUpdated.textContent = `Last updated: ${shortTs(new Date().toISOString())}`;
-  } catch (err) {
-    markPollError();
-    els.lastUpdated.textContent = `Last updated: error (${err.message})`;
-  }
+const POLL_STREAM_CONFIGS = [
+  { key: 'overview', baseMs: POLL_OVERVIEW_MS, maxMs: 120000, staleAfterMs: 90000, refresh: refreshOverview },
+  { key: 'sisters', baseMs: POLL_SISTERS_MS, maxMs: 120000, staleAfterMs: 90000, refresh: refreshSisters },
+  { key: 'workboard', baseMs: POLL_WORKBOARD_MS, maxMs: 90000, staleAfterMs: 60000, refresh: refreshWorkboard },
+  { key: 'subagents', baseMs: POLL_SUBAGENTS_MS, maxMs: 120000, staleAfterMs: 70000, refresh: refreshSubagents },
+  { key: 'events', baseMs: POLL_EVENTS_MS, maxMs: 90000, staleAfterMs: 60000, refresh: refreshEvents },
+  { key: 'assignments', baseMs: POLL_ASSIGNMENTS_MS, maxMs: 90000, staleAfterMs: 60000, refresh: refreshAssignments },
+  {
+    key: 'assignmentsCatalog',
+    baseMs: POLL_ASSIGNMENTS_CATALOG_MS,
+    maxMs: 150000,
+    staleAfterMs: 95000,
+    refresh: refreshAssignmentsCatalog
+  },
+  { key: 'chatBootstrap', baseMs: POLL_CHAT_MS, maxMs: 120000, staleAfterMs: 70000, refresh: refreshChatBootstrap },
+  { key: 'chatSession', baseMs: POLL_CHAT_MS, maxMs: 120000, staleAfterMs: 70000, refresh: refreshChatSessionData }
+];
+
+const POLL_STREAMS_BY_KEY = Object.fromEntries(POLL_STREAM_CONFIGS.map((item) => [item.key, item]));
+
+function initializePollStreams() {
+  POLL_STREAM_CONFIGS.forEach((config) => {
+    state.poll.streams[config.key] = {
+      key: config.key,
+      baseMs: config.baseMs,
+      maxMs: Math.min(POLL_BACKOFF_MAX_MS, config.maxMs || POLL_BACKOFF_MAX_MS),
+      staleAfterMs: config.staleAfterMs,
+      refresh: config.refresh,
+      timerId: null,
+      inFlight: false,
+      currentPromise: null,
+      errorStreak: 0,
+      lastAttemptAt: 0,
+      lastSuccessAt: 0,
+      lastDurationMs: 0,
+      nextDelayMs: config.baseMs,
+      lastError: null
+    };
+  });
 }
 
-async function runPolledRefresh(refreshFn) {
-  try {
-    await refreshFn();
-    markPollSuccess();
-  } catch {
-    markPollError();
+function jitterDelay(ms) {
+  const jitter = (Math.random() * 2 - 1) * POLL_JITTER_FRACTION;
+  return Math.max(1500, Math.round(ms * (1 + jitter)));
+}
+
+function visibilityMultiplier() {
+  return document.hidden ? 1.6 : 1;
+}
+
+function computeNextPollDelay(stream) {
+  const streak = Math.max(0, Number(stream.errorStreak || 0));
+  const backoffMs = Math.min(stream.maxMs || POLL_BACKOFF_MAX_MS, stream.baseMs * Math.pow(2, Math.min(5, streak)));
+  return jitterDelay(Math.round(backoffMs * visibilityMultiplier()));
+}
+
+function withTimeout(promise, timeoutMs, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out after ${Math.round(timeoutMs / 1000)}s`)), timeoutMs);
+    })
+  ]);
+}
+
+async function runPollStream(streamKey, { manual = false } = {}) {
+  const stream = state.poll.streams[streamKey];
+  if (!stream) return;
+
+  if (stream.inFlight) {
+    if (manual && stream.currentPromise) {
+      return stream.currentPromise;
+    }
+    return;
+  }
+
+  stream.inFlight = true;
+  stream.lastAttemptAt = Date.now();
+
+  const timeoutMs = Math.max(30000, stream.baseMs * 4);
+  const startedAt = Date.now();
+  const task = (async () => {
+    try {
+      await withTimeout(Promise.resolve().then(() => stream.refresh()), timeoutMs, `poll:${stream.key}`);
+      markPollSuccess(stream.key, Date.now() - startedAt);
+    } catch (error) {
+      markPollError(stream.key, error);
+      if (manual) throw error;
+    } finally {
+      stream.inFlight = false;
+      stream.currentPromise = null;
+    }
+  })();
+
+  stream.currentPromise = task;
+  return task;
+}
+
+function schedulePollStream(streamKey, { immediate = false } = {}) {
+  const stream = state.poll.streams[streamKey];
+  if (!stream) return;
+  if (stream.timerId) {
+    clearTimeout(stream.timerId);
+  }
+
+  const delayMs = immediate ? 1000 : computeNextPollDelay(stream);
+  stream.nextDelayMs = delayMs;
+  stream.timerId = setTimeout(async () => {
+    await runPollStream(streamKey, { manual: false });
+    schedulePollStream(streamKey);
+  }, delayMs);
+}
+
+function startAdaptivePolling() {
+  Object.keys(POLL_STREAMS_BY_KEY).forEach((streamKey) => {
+    schedulePollStream(streamKey, { immediate: false });
+  });
+}
+
+async function refreshAll() {
+  const keys = Object.keys(POLL_STREAMS_BY_KEY);
+  const results = await Promise.allSettled(keys.map((key) => runPollStream(key, { manual: true })));
+  const failed = results
+    .map((result, index) => ({ result, key: keys[index] }))
+    .filter(({ result }) => result.status === 'rejected');
+
+  if (failed.length) {
+    const sample = failed[0].result.reason?.message || failed[0].key;
+    els.lastUpdated.textContent = `Last updated: partial (${failed.length} streams failed: ${sample})`;
   }
 }
 
@@ -1456,10 +1963,40 @@ els.missionOpenDomainsBtn.addEventListener('click', () => {
   openDomainsModal();
 });
 
+els.missionOpenTasksBtn.addEventListener('click', () => {
+  setActiveView('tasks');
+});
+
+els.missionInterveneBtn.addEventListener('click', async () => {
+  try {
+    const sisterId = state.context?.entity?.sisterId || null;
+    const label = state.context?.title || 'current mission context';
+    setActiveView('chat');
+    await primeChatDraft({
+      sisterId,
+      text: `Intervention: review ${label} and report status, blockers, and ETA.`
+    });
+  } catch (error) {
+    els.assignmentFormError.textContent = error.message;
+  }
+});
+
 els.missionOpenGroupsBtn.addEventListener('click', () => {
   setActiveView('chat');
   els.chatGroupDrawer.classList.add('open');
   els.chatGroupDrawer.setAttribute('aria-hidden', 'false');
+});
+
+els.exportLogsBtn.addEventListener('click', () => {
+  downloadJson('mission-logs.json', { exported_at: new Date().toISOString(), items: state.eventsItems || [] });
+});
+
+els.exportTasksBtn.addEventListener('click', () => {
+  downloadJson('mission-tasks.json', { exported_at: new Date().toISOString(), items: state.assignmentCatalog || [] });
+});
+
+els.exportRunsBtn.addEventListener('click', () => {
+  downloadJson('mission-runs.json', { exported_at: new Date().toISOString(), items: state.subagents || [] });
 });
 
 els.chatManageGroupsBtn.addEventListener('click', () => {
@@ -1596,7 +2133,8 @@ els.assignmentsTable.addEventListener('click', async (event) => {
 
   const assignmentId = row.getAttribute('data-assignment-id');
   const action = button.getAttribute('data-action');
-  const owner = row.children?.[1]?.textContent || '-';
+  const owner = row.getAttribute('data-assignment-owner') || row.children?.[1]?.textContent || '-';
+  const title = row.getAttribute('data-assignment-title') || 'Assignment';
   const status = row.children?.[2]?.textContent || '-';
   const priority = row.children?.[3]?.textContent || '-';
 
@@ -1605,9 +2143,10 @@ els.assignmentsTable.addEventListener('click', async (event) => {
       await refreshAssignmentEvents(assignmentId);
       setMissionContext({
         type: 'assignment',
-        title: assignmentId,
+        title: title,
         status: `${status} • owner ${owner}`,
-        lines: [`owner: ${owner}`, `status: ${status}`, `priority: ${priority}`]
+        lines: [`assignment_id: ${assignmentId}`, `owner: ${owner}`, `status: ${status}`, `priority: ${priority}`],
+        entity: { assignmentId, sisterId: owner }
       });
     } catch (error) {
       els.selectedAssignmentLabel.textContent = `Error loading events: ${error.message}`;
@@ -1622,9 +2161,34 @@ els.assignmentsTable.addEventListener('click', async (event) => {
       await updateAssignmentStatus(assignmentId, select.value);
       setMissionContext({
         type: 'assignment',
-        title: assignmentId,
+        title: title,
         status: `status updated to ${select.value}`,
-        lines: [`owner: ${owner}`, `priority: ${priority}`, `new_status: ${select.value}`]
+        lines: [
+          `assignment_id: ${assignmentId}`,
+          `owner: ${owner}`,
+          `priority: ${priority}`,
+          `new_status: ${select.value}`
+        ],
+        entity: { assignmentId, sisterId: owner }
+      });
+    } catch (error) {
+      els.assignmentFormError.textContent = error.message;
+    }
+  }
+
+  if (action === 'brief-chat') {
+    try {
+      setActiveView('chat');
+      await primeChatDraft({
+        sisterId: owner || null,
+        text: `Task handoff: ${title} (assignment ${assignmentId}). Current status: ${status}.`
+      });
+      setMissionContext({
+        type: 'chat_handoff',
+        title: title,
+        status: `Prepared intervention draft for ${owner || 'all sisters'}`,
+        lines: [`assignment_id: ${assignmentId}`, `owner: ${owner}`, `status: ${status}`],
+        entity: { assignmentId, sisterId: owner || null }
       });
     } catch (error) {
       els.assignmentFormError.textContent = error.message;
@@ -1660,6 +2224,54 @@ els.subagentsTable.addEventListener('click', (event) => {
   openSubagentModal(runId).catch((error) => {
     els.assignmentFormError.textContent = error.message;
   });
+});
+
+els.runsPipelineTable.addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-action]');
+  if (!button) return;
+  const action = button.getAttribute('data-action');
+  const runId = button.getAttribute('data-run-id');
+  const assignmentId = button.getAttribute('data-assignment-id');
+  const sisterId = button.getAttribute('data-sister-id');
+
+  if (action === 'pipeline-run' && runId) {
+    try {
+      setActiveView('runs');
+      await openSubagentModal(runId);
+    } catch (error) {
+      els.assignmentFormError.textContent = error.message;
+    }
+    return;
+  }
+
+  if (action === 'pipeline-parent' && assignmentId) {
+    try {
+      setActiveView('tasks');
+      await refreshAssignmentEvents(assignmentId);
+    } catch (error) {
+      els.assignmentFormError.textContent = error.message;
+    }
+    return;
+  }
+
+  if (action === 'pipeline-chat') {
+    try {
+      setActiveView('chat');
+      await primeChatDraft({
+        sisterId: sisterId || null,
+        text: 'Intervention request: provide current status, blockers, and next actions.'
+      });
+      setMissionContext({
+        type: 'run_intervention',
+        title: `Run ${runId || '-'}`,
+        status: 'Prepared intervention draft in Mission Chat',
+        lines: [`sister: ${sisterId || '-'}`, `run_id: ${runId || '-'}`],
+        entity: { sisterId: sisterId || null, runId: runId || null }
+      });
+    } catch (error) {
+      els.assignmentFormError.textContent = error.message;
+    }
+  }
 });
 
 els.overviewMetrics.addEventListener('click', (event) => {
@@ -1698,15 +2310,16 @@ els.refreshBtn.addEventListener('click', async () => {
   }
 });
 
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  Object.keys(POLL_STREAMS_BY_KEY).forEach((streamKey) => {
+    schedulePollStream(streamKey, { immediate: true });
+  });
+});
+
+initializePollStreams();
 setMissionContext(state.context);
 renderMissionHeader();
 setActiveView(state.activeView);
 refreshAll().catch(() => {});
-setInterval(() => runPolledRefresh(refreshOverview), POLL_OVERVIEW_MS);
-setInterval(() => runPolledRefresh(refreshSisters), POLL_SISTERS_MS);
-setInterval(() => runPolledRefresh(refreshWorkboard), POLL_WORKBOARD_MS);
-setInterval(() => runPolledRefresh(refreshSubagents), POLL_SUBAGENTS_MS);
-setInterval(() => runPolledRefresh(refreshEvents), POLL_EVENTS_MS);
-setInterval(() => runPolledRefresh(refreshAssignments), POLL_ASSIGNMENTS_MS);
-setInterval(() => runPolledRefresh(refreshChatBootstrap), POLL_CHAT_MS);
-setInterval(() => runPolledRefresh(refreshChatSessionData), POLL_CHAT_MS);
+startAdaptivePolling();

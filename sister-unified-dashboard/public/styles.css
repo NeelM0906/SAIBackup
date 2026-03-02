@@ -200,6 +200,12 @@ button:disabled {
   padding: 12px;
 }
 
+[data-stale="true"] {
+  opacity: 0.72;
+  outline: 1px dashed rgba(255, 179, 71, 0.75);
+  outline-offset: 2px;
+}
+
 .panel h2 {
   margin: 0 0 10px;
   font-size: 1rem;
