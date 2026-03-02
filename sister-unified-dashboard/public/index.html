@@ -13,6 +13,7 @@
         <p>Unified monitor for sister beings, assignments, activity logs, and active workboard</p>
       </div>
       <div class="topbar-actions">
+        <button id="openWorkboardBtn" type="button">Open Task Workboard</button>
         <button id="openMissionChatBtn" type="button">Open Mission Chat</button>
         <button id="refreshBtn" type="button">Force Refresh</button>
         <small id="lastUpdated">Last updated: --</small>
@@ -32,16 +33,6 @@
         </div>
         <div id="sisterGrid" class="sister-grid">
           <article class="sister-card">Loading sister beings...</article>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Active Workboard</h2>
-          <small>Top 5 work items per sister. Click a sister card to view active and previous task history.</small>
-        </div>
-        <div id="workboardGrid" class="workboard-grid">
-          <article class="workboard-card">Loading workboard...</article>
         </div>
       </section>
 
@@ -117,89 +108,117 @@
         </div>
       </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Assignments</h2>
-          <div class="filters">
-            <label for="assignmentStatusFilter">Status</label>
-            <select id="assignmentStatusFilter">
-              <option value="">All</option>
-              <option value="inbox">inbox</option>
-              <option value="in_progress">in_progress</option>
-              <option value="blocked">blocked</option>
-              <option value="completed">completed</option>
-              <option value="rework">rework</option>
-              <option value="cancelled">cancelled</option>
-            </select>
-            <label for="assignmentOwnerFilter">Owner</label>
-            <select id="assignmentOwnerFilter">
-              <option value="">All</option>
-            </select>
-          </div>
-        </div>
-
-        <form id="assignmentForm" class="form-grid">
-          <input id="assignmentTitle" placeholder="Assignment title" maxlength="180" required />
-          <select id="assignmentOwner" required>
-            <option value="">Select owner sister</option>
-          </select>
-          <select id="assignmentPriority">
-            <option value="normal">normal</option>
-            <option value="low">low</option>
-            <option value="high">high</option>
-            <option value="critical">critical</option>
-          </select>
-          <input id="assignmentTaskKey" placeholder="Task key (optional, e.g. ZA-12)" maxlength="80" />
-          <input id="assignmentDueAt" placeholder="Due at (optional ISO date/time)" maxlength="64" />
-          <input id="assignmentDescription" placeholder="Description (optional)" maxlength="500" />
-          <button type="submit">Create Assignment</button>
-          <small id="assignmentFormError" class="error"></small>
-        </form>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Owner</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Task Key</th>
-                <th>Updated</th>
-                <th>Action</th>
-                <th>Events</th>
-              </tr>
-            </thead>
-            <tbody id="assignmentsTable">
-              <tr><td colspan="8">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Assignment Event Feed</h2>
-          <small id="selectedAssignmentLabel">Select an assignment to view event history.</small>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Event</th>
-                <th>Actor</th>
-                <th>Transition</th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody id="assignmentEventsTable">
-              <tr><td colspan="5">No assignment selected.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
     </main>
+
+    <div id="workboardWorkspace" class="workboard-workspace" aria-hidden="true">
+      <div class="workboard-shell">
+        <header class="workboard-shell-header">
+          <div>
+            <h2>Task Workboard</h2>
+            <small>Track every task, status, and assignee in one dedicated dashboard.</small>
+          </div>
+          <div class="workboard-shell-actions">
+            <button id="workboardRefreshBtn" type="button">Refresh Workboard</button>
+            <button id="closeWorkboardBtn" type="button">Back to Dashboard</button>
+          </div>
+        </header>
+
+        <main class="workboard-shell-body">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Active Sister Workboard</h2>
+              <small>Top 5 active items per sister. Click a sister to view active and historical task details.</small>
+            </div>
+            <div id="workboardGrid" class="workboard-grid">
+              <article class="workboard-card">Loading workboard...</article>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Task Registry</h2>
+              <div class="filters">
+                <label for="assignmentStatusFilter">Status</label>
+                <select id="assignmentStatusFilter">
+                  <option value="">All</option>
+                  <option value="inbox">inbox</option>
+                  <option value="in_progress">in_progress</option>
+                  <option value="blocked">blocked</option>
+                  <option value="completed">completed</option>
+                  <option value="rework">rework</option>
+                  <option value="cancelled">cancelled</option>
+                </select>
+                <label for="assignmentOwnerFilter">Owner</label>
+                <select id="assignmentOwnerFilter">
+                  <option value="">All</option>
+                </select>
+              </div>
+            </div>
+
+            <form id="assignmentForm" class="form-grid">
+              <input id="assignmentTitle" placeholder="Assignment title" maxlength="180" required />
+              <select id="assignmentOwner" required>
+                <option value="">Select owner sister</option>
+              </select>
+              <select id="assignmentPriority">
+                <option value="normal">normal</option>
+                <option value="low">low</option>
+                <option value="high">high</option>
+                <option value="critical">critical</option>
+              </select>
+              <input id="assignmentTaskKey" placeholder="Task key (optional, e.g. ZA-12)" maxlength="80" />
+              <input id="assignmentDueAt" placeholder="Due at (optional ISO date/time)" maxlength="64" />
+              <input id="assignmentDescription" placeholder="Description (optional)" maxlength="500" />
+              <button type="submit">Create Assignment</button>
+              <small id="assignmentFormError" class="error"></small>
+            </form>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Task Key</th>
+                    <th>Updated</th>
+                    <th>Action</th>
+                    <th>Events</th>
+                  </tr>
+                </thead>
+                <tbody id="assignmentsTable">
+                  <tr><td colspan="8">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Task Event Feed</h2>
+              <small id="selectedAssignmentLabel">Select a task to view event history.</small>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Actor</th>
+                    <th>Transition</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody id="assignmentEventsTable">
+                  <tr><td colspan="5">No assignment selected.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
 
     <div id="sisterModal" class="modal" aria-hidden="true">
       <div class="modal-card">

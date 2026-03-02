@@ -1,10 +1,10 @@
 const DAYS = 7;
 const POLL_OVERVIEW_MS = 15000;
 const POLL_SISTERS_MS = 15000;
-const POLL_WORKBOARD_MS = 15000;
+const POLL_WORKBOARD_MS = 8000;
 const POLL_SUBAGENTS_MS = 12000;
 const POLL_EVENTS_MS = 8000;
-const POLL_ASSIGNMENTS_MS = 15000;
+const POLL_ASSIGNMENTS_MS = 8000;
 const POLL_CHAT_MS = 8000;
 const LOGS_DEFAULT_LIMIT = 10;
 const LOGS_LOAD_MORE_STEP = 50;
@@ -34,6 +34,10 @@ const state = {
 const els = {
   overviewMetrics: document.getElementById('overviewMetrics'),
   sisterGrid: document.getElementById('sisterGrid'),
+  openWorkboardBtn: document.getElementById('openWorkboardBtn'),
+  workboardWorkspace: document.getElementById('workboardWorkspace'),
+  closeWorkboardBtn: document.getElementById('closeWorkboardBtn'),
+  workboardRefreshBtn: document.getElementById('workboardRefreshBtn'),
   workboardGrid: document.getElementById('workboardGrid'),
   subagentsTable: document.getElementById('subagentsTable'),
   subagentStatusFilter: document.getElementById('subagentStatusFilter'),
@@ -1162,6 +1166,46 @@ els.subagentSisterFilter.addEventListener('change', () => {
 
 els.subagentRequesterFilter.addEventListener('change', () => {
   refreshSubagents().catch(() => {});
+});
+
+els.openWorkboardBtn.addEventListener('click', () => {
+  els.workboardWorkspace.classList.add('open');
+  els.workboardWorkspace.setAttribute('aria-hidden', 'false');
+  Promise.all([refreshWorkboard(), refreshAssignments()])
+    .then(() => {
+      if (state.selectedAssignmentId) {
+        return refreshAssignmentEvents(state.selectedAssignmentId);
+      }
+      return null;
+    })
+    .catch((error) => {
+      els.assignmentFormError.textContent = error.message;
+    });
+});
+
+els.closeWorkboardBtn.addEventListener('click', () => {
+  els.workboardWorkspace.classList.remove('open');
+  els.workboardWorkspace.setAttribute('aria-hidden', 'true');
+});
+
+els.workboardWorkspace.addEventListener('click', (event) => {
+  if (event.target === els.workboardWorkspace) {
+    els.workboardWorkspace.classList.remove('open');
+    els.workboardWorkspace.setAttribute('aria-hidden', 'true');
+  }
+});
+
+els.workboardRefreshBtn.addEventListener('click', () => {
+  Promise.all([refreshWorkboard(), refreshAssignments()])
+    .then(() => {
+      if (state.selectedAssignmentId) {
+        return refreshAssignmentEvents(state.selectedAssignmentId);
+      }
+      return null;
+    })
+    .catch((error) => {
+      els.assignmentFormError.textContent = error.message;
+    });
 });
 
 els.openMissionChatBtn.addEventListener('click', () => {
