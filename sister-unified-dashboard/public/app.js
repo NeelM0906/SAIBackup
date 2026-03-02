@@ -97,6 +97,9 @@ const els = {
   modalSisterMeta: document.getElementById('modalSisterMeta'),
   modalPersonality: document.getElementById('modalPersonality'),
   modalPersonalitySource: document.getElementById('modalPersonalitySource'),
+  modalSkills: document.getElementById('modalSkills'),
+  modalSkillsMeta: document.getElementById('modalSkillsMeta'),
+  modalSkillsWarnings: document.getElementById('modalSkillsWarnings'),
   modalTools: document.getElementById('modalTools'),
   modalStatus: document.getElementById('modalStatus'),
   modalRelevantInfo: document.getElementById('modalRelevantInfo'),
@@ -457,6 +460,14 @@ async function openSisterModal(sisterId) {
   els.modalSisterMeta.textContent = `${profile.id} • ${profile.current_status || '-'}`;
   els.modalPersonality.textContent = profile.personality || '-';
   els.modalPersonalitySource.textContent = profile.personality_source || 'No source file found';
+  els.modalSkills.textContent = safeJson(profile.skills?.effective || [], '[]');
+  els.modalSkillsMeta.textContent = `Effective: ${n(profile.skills?.counts?.effective || 0)} • Global: ${n(
+    profile.skills?.counts?.global || 0
+  )} • Workspace Local: ${n(profile.skills?.counts?.workspace_local || 0)} • Configured: ${n(
+    profile.skills?.counts?.configured_entries || 0
+  )}`;
+  const warnings = profile.skills?.discovery_warnings || [];
+  els.modalSkillsWarnings.textContent = warnings.length ? warnings.join('\n') : 'No non-standard skill paths detected.';
   els.modalTools.textContent = safeJson(profile.tools || [], '[]');
   els.modalStatus.innerHTML = `<span class="status ${esc(profile.current_status || 'offline')}">${esc(profile.current_status || 'offline')}</span>`;
   els.modalRelevantInfo.textContent = safeJson(profile.relevant_information || {}, '{}');

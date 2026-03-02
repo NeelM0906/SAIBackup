@@ -10,6 +10,11 @@ export const OPENCLAW_HOME = path.join(home, '.openclaw');
 export const OPENCLAW_CONFIG_PATH = path.join(OPENCLAW_HOME, 'openclaw.json');
 export const SISTER_LOGS_ROOT = path.join(OPENCLAW_HOME, 'agents');
 export const SUBAGENT_RUNS_PATH = path.join(OPENCLAW_HOME, 'subagents', 'runs.json');
+export const GLOBAL_SKILL_ROOT_CANDIDATES = [
+  '/opt/homebrew/lib/node_modules/openclaw/skills',
+  '/usr/local/lib/node_modules/openclaw/skills',
+  path.join(OPENCLAW_HOME, 'skills')
+];
 
 export const PROJECT_ROOT = path.resolve(path.join(import.meta.dirname, '..'));
 export const DB_PATH = path.join(PROJECT_ROOT, 'data', 'dashboard.db');

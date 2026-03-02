@@ -435,6 +435,13 @@ small {
   text-decoration: underline;
 }
 
+#modalSkillsWarnings {
+  display: block;
+  margin-top: 6px;
+  color: var(--warn);
+  white-space: pre-wrap;
+}
+
 .detail-list {
   display: grid;
   gap: 8px;

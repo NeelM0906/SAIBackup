@@ -8,7 +8,7 @@ Standalone Node.js dashboard for SAI Prime + all sister beings.
 - Incremental ingestion from `~/.openclaw/agents/*/sessions/*.jsonl`
 - Polling APIs for health, overview, sisters status/profile, recent events, workboard
 - Assignment lifecycle APIs (`create/list/get/update/events`)
-- Sister beings 3-column grid + modal profile view (IDENTITY.md priority)
+- Sister beings 3-column grid + modal profile view (IDENTITY.md priority) with effective skill access and skill-path warnings
 - Monitor logs default to 10 with `Load More (+50)`
 - Active workboard with top-5 items per sister and grounded heuristic progress
 - Dedicated subagents monitor with filterable run list and per-run activity modal

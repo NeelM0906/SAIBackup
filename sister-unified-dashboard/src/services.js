@@ -7,6 +7,7 @@ import {
   COLOSSEUM_DOMAINS_ROOT,
   COLOSSEUM_MAIN_DB,
   COLOSSEUM_API_BASE,
+  GLOBAL_SKILL_ROOT_CANDIDATES,
   IDLE_WINDOW_SECONDS,
   INGEST_MIN_INTERVAL_MS,
   LOOKBACK_DAYS_DEFAULT,
@@ -297,6 +298,128 @@ function getRawTools(agentId) {
 function getPrimaryModel(agentId, fallbackModel = '') {
   const { agent, defaultsModel } = getAgentConfig(agentId);
   return agent?.model?.primary || fallbackModel || defaultsModel || null;
+}
+
+function uniqSorted(values) {
+  return Array.from(new Set((values || []).filter((value) => Boolean(value)))).sort((a, b) =>
+    String(a).localeCompare(String(b))
+  );
+}
+
+function listSkillNamesFromRoot(rootPath) {
+  if (!rootPath || !fs.existsSync(rootPath)) return [];
+
+  try {
+    return fs
+      .readdirSync(rootPath, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function listWorkspaceLocalSkills(workspace) {
+  if (!workspace || !fs.existsSync(workspace)) return [];
+  const skillsRoot = path.join(workspace, 'skills');
+  if (!fs.existsSync(skillsRoot)) return [];
+
+  try {
+    return fs
+      .readdirSync(skillsRoot, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .filter((entry) => fs.existsSync(path.join(skillsRoot, entry.name, 'SKILL.md')))
+      .map((entry) => entry.name)
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function detectNonStandardSkillPaths(workspace) {
+  if (!workspace || !fs.existsSync(workspace)) return [];
+
+  const hits = [];
+  const skipDirs = new Set([
+    '.git',
+    '.openclaw',
+    'node_modules',
+    'memory',
+    'reports',
+    'data',
+    'sessions',
+    'skills'
+  ]);
+
+  function walk(dirPath, depth) {
+    if (depth > 4) return;
+
+    let entries = [];
+    try {
+      entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        if (skipDirs.has(entry.name)) continue;
+        walk(fullPath, depth + 1);
+        continue;
+      }
+
+      if (!entry.isFile() || entry.name !== 'SKILL.md') continue;
+      const skillDir = path.dirname(fullPath);
+      hits.push({
+        name: path.basename(skillDir),
+        path: skillDir,
+        note: 'detected but non standard path'
+      });
+    }
+  }
+
+  walk(workspace, 0);
+  const seen = new Set();
+  return hits.filter((item) => {
+    if (seen.has(item.path)) return false;
+    seen.add(item.path);
+    return true;
+  });
+}
+
+function getConfiguredSkillEntries() {
+  const config = loadOpenClawConfig();
+  const entries = config?.skills?.entries;
+  if (!entries || typeof entries !== 'object') return [];
+  return Object.keys(entries).filter(Boolean);
+}
+
+function getSkillAccess(agentId, workspace) {
+  const globalSkills = uniqSorted(
+    (GLOBAL_SKILL_ROOT_CANDIDATES || []).flatMap((rootPath) => listSkillNamesFromRoot(rootPath))
+  );
+  const workspaceLocalSkills = uniqSorted(listWorkspaceLocalSkills(workspace));
+  const configuredEntries = uniqSorted(getConfiguredSkillEntries());
+  const nonStandard = detectNonStandardSkillPaths(workspace);
+  const effective = uniqSorted(globalSkills.concat(workspaceLocalSkills, configuredEntries));
+
+  return {
+    effective,
+    global: globalSkills,
+    workspace_local: workspaceLocalSkills,
+    configured_entries: configuredEntries,
+    detected_non_standard_paths: nonStandard,
+    discovery_warnings: nonStandard.map((item) => `${item.note}: ${item.path}`),
+    counts: {
+      effective: effective.length,
+      global: globalSkills.length,
+      workspace_local: workspaceLocalSkills.length,
+      configured_entries: configuredEntries.length
+    },
+    source_workspace: workspace || resolveWorkspace(agentId, '')
+  };
 }
 
 function safeSqliteCount(dbPath, query) {
@@ -799,6 +922,7 @@ export function getSisterProfile(sisterId, days = LOOKBACK_DAYS_DEFAULT) {
 
   const personality = readPersonality(sister.workspace);
   const tools = getRawTools(sister.id);
+  const skills = getSkillAccess(sister.id, sister.workspace);
 
   return {
     id: sister.id,
@@ -806,6 +930,7 @@ export function getSisterProfile(sisterId, days = LOOKBACK_DAYS_DEFAULT) {
     personality: personality.personality,
     personality_source: personality.source_file,
     tools,
+    skills,
     current_status: sister.status,
     relevant_information: {
       workspace: sister.workspace,
@@ -815,7 +940,8 @@ export function getSisterProfile(sisterId, days = LOOKBACK_DAYS_DEFAULT) {
       last_event_at: sister.last_event_at,
       last_event_summary: sister.last_event?.summary || null,
       events_window: sister.events_window,
-      sessions_window: sister.sessions_window
+      sessions_window: sister.sessions_window,
+      skills_effective_count: skills.counts.effective
     }
   };
 }
