@@ -297,6 +297,23 @@ th {
   border-color: rgba(139, 153, 181, 0.5);
 }
 
+.status.status-chat-monitor_only,
+.status.status-chat-queued {
+  color: var(--warn);
+  border-color: rgba(255, 179, 71, 0.5);
+}
+
+.status.status-chat-sent,
+.status.status-chat-acked {
+  color: var(--ok);
+  border-color: rgba(45, 202, 143, 0.5);
+}
+
+.status.status-chat-failed {
+  color: var(--bad);
+  border-color: rgba(255, 107, 107, 0.6);
+}
+
 .panel-head {
   display: flex;
   align-items: center;
@@ -423,10 +440,144 @@ small {
   gap: 8px;
 }
 
+.chat-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.chat-main,
+.chat-side {
+  display: grid;
+  gap: 10px;
+}
+
+.chat-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-controls select {
+  min-width: 220px;
+}
+
+.mention-row {
+  display: grid;
+  gap: 6px;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip-btn {
+  border: 1px solid var(--line);
+  background: rgba(139, 197, 255, 0.14);
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+}
+
+.chat-messages {
+  min-height: 240px;
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(9, 16, 27, 0.45);
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.chat-message {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(11, 20, 34, 0.55);
+}
+
+.chat-message.role-operator {
+  border-color: rgba(225, 181, 68, 0.5);
+}
+
+.chat-message.role-system {
+  border-color: rgba(125, 211, 252, 0.45);
+}
+
+.chat-message-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.chat-message-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.86rem;
+}
+
+.chat-message-meta {
+  margin-top: 6px;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.chat-composer {
+  display: grid;
+  gap: 8px;
+}
+
+.chat-composer textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 94px;
+}
+
+.chat-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.group-form {
+  display: grid;
+  gap: 8px;
+}
+
+.group-form select[multiple] {
+  min-height: 140px;
+}
+
+.chat-side-section {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(11, 20, 34, 0.42);
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.chat-side-section h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 1100px) {
   .sister-grid,
   .workboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chat-layout {
+    grid-template-columns: 1fr;
   }
 
   .form-grid {
