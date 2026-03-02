@@ -17,6 +17,8 @@ import { useTreeStore } from "./store/tree-store";
 import { useUiStore } from "./store/ui-store";
 import { startWatching } from "./services/file-watcher";
 import { readAppSettings } from "./services/app-settings";
+import { scanAllSkills } from "./services/skill-scanner";
+import { listOpenClawCatalogAgents, listOpenClawToolIds } from "./services/openclaw-provider";
 import { join } from "./utils/paths";
 import type { VariableKind } from "./types/aui-node";
 
@@ -96,11 +98,39 @@ function App() {
         const refreshedNodes = refreshedStore.nodes;
         const targetNode = refreshedNodes.get(createdNodeId);
         const managerNode = managerId ? refreshedNodes.get(managerId) : null;
+        let catalogManagers: Awaited<ReturnType<typeof listOpenClawCatalogAgents>> = [];
+        let openclawSkills = [] as Awaited<ReturnType<typeof scanAllSkills>>;
+        let openclawTools: string[] = [];
+
+        if (projectPath && providerMode === "openclaw") {
+          try {
+            [catalogManagers, openclawSkills, openclawTools] = await Promise.all([
+              listOpenClawCatalogAgents(projectPath),
+              scanAllSkills(projectPath, "openclaw"),
+              listOpenClawToolIds(projectPath),
+            ]);
+          } catch {
+            catalogManagers = [];
+            openclawSkills = [];
+            openclawTools = [];
+          }
+        }
+
+        const catalogById = new Map(catalogManagers.map((item) => [item.id, item]));
+        const managerCatalog = managerId ? catalogById.get(managerId) : null;
 
         // Build OpenClaw capability summary for this team.
-        const allSkillIds = Array.from(refreshedNodes.values())
+        const loadedSkillIds = Array.from(refreshedNodes.values())
           .filter((n) => n.kind === "skill")
           .map((n) => n.id);
+        const allSkillIds = includeOpenClawCapabilities && providerMode === "openclaw" && openclawSkills.length > 0
+          ? openclawSkills.map((item) => item.id)
+          : loadedSkillIds;
+        const allSkillNames = includeOpenClawCapabilities && providerMode === "openclaw" && openclawSkills.length > 0
+          ? openclawSkills.map((item) => item.name)
+          : Array.from(refreshedNodes.values())
+            .filter((n) => n.kind === "skill")
+            .map((n) => n.name);
 
         const sisterNodes = Array.from(refreshedNodes.values()).filter(
           (n) => n.kind === "agent" && (n.tags?.includes("sister") || n.team === "openclaw-sisters"),
@@ -114,11 +144,13 @@ function App() {
           }
         };
         collectTools((managerNode?.config as { tools?: string[] } | null)?.tools);
+        collectTools(managerCatalog?.tools);
         if (toolSet.size === 0) {
           for (const sister of sisterNodes) {
             collectTools((sister.config as { tools?: string[] } | null)?.tools);
           }
         }
+        collectTools(openclawTools);
 
         if (includeOpenClawCapabilities && providerMode === "openclaw") {
           for (const skillId of allSkillIds) {
@@ -132,20 +164,23 @@ function App() {
               v.name !== "manager_being_id" &&
               v.name !== "manager_being_name" &&
               v.name !== "openclaw_tools" &&
+              v.name !== "openclaw_skills_list" &&
               v.name !== "openclaw_skills_access",
           ),
         ];
 
         if (managerId) {
+          const managerName = managerNode?.name ?? managerCatalog?.name ?? managerId;
           nextVars.push(
             { name: "manager_being_id", value: managerId, type: "text" as VariableKind },
-            { name: "manager_being_name", value: managerNode?.name ?? managerId, type: "text" as VariableKind },
+            { name: "manager_being_name", value: managerName, type: "text" as VariableKind },
           );
         }
 
         if (includeOpenClawCapabilities && providerMode === "openclaw") {
           nextVars.push(
             { name: "openclaw_tools", value: Array.from(toolSet).join(", "), type: "text" as VariableKind },
+            { name: "openclaw_skills_list", value: allSkillNames.join(", "), type: "text" as VariableKind },
             { name: "openclaw_skills_access", value: String(allSkillIds.length), type: "text" as VariableKind },
           );
         }
@@ -155,28 +190,35 @@ function App() {
         if (kind === "group" && memberIds.length > 0) {
           for (const memberId of memberIds) {
             const memberNode = refreshedNodes.get(memberId);
-            if (!memberNode) continue;
+            const catalogMember = catalogById.get(memberId);
+            if (!memberNode && !catalogMember) continue;
+            const memberName = memberNode?.name ?? catalogMember?.name ?? memberId;
 
-            const childDescription = memberNode.promptBody
+            const childDescription = memberNode?.promptBody
               ? memberNode.promptBody.split("\n").slice(0, 8).join("\n")
-              : `Sister being member: ${memberNode.name}`;
-            const childId = createGroupNode(memberNode.name, childDescription, createdNodeId);
+              : (catalogMember?.description || `Sister being member: ${memberName}`);
+            const childId = createGroupNode(memberName, childDescription, createdNodeId);
 
-            const memberTools = Array.isArray((memberNode.config as { tools?: string[] } | null)?.tools)
-              ? ((memberNode.config as { tools?: string[] } | null)?.tools as string[])
-              : [];
+            const memberTools = Array.isArray((memberNode?.config as { tools?: string[] } | null)?.tools)
+              ? ((memberNode?.config as { tools?: string[] } | null)?.tools as string[])
+              : (catalogMember?.tools ?? []);
 
             const childVars = [
               { name: "source_being_id", value: memberId, type: "text" as VariableKind },
-              { name: "source_being_name", value: memberNode.name, type: "text" as VariableKind },
+              { name: "source_being_name", value: memberName, type: "text" as VariableKind },
             ];
             if (memberTools.length > 0) {
               childVars.push({ name: "openclaw_tools", value: memberTools.join(", "), type: "text" as VariableKind });
             }
 
             updateNode(childId, {
-              config: memberNode.config ?? null,
-              tags: [...(memberNode.tags ?? []), "team-member"],
+              config: memberNode?.config ?? {
+                name: memberName,
+                description: catalogMember?.description || `OpenClaw sister member: ${memberName}`,
+                model: catalogMember?.model,
+                tools: catalogMember?.tools,
+              },
+              tags: [...(memberNode?.tags ?? ["openclaw", "sister"]), "team-member"],
               variables: childVars,
               lastModified: Date.now(),
             });

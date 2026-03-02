@@ -1,6 +1,7 @@
 import { readDir, exists, readTextFile } from "@tauri-apps/plugin-fs";
 import { joinPath, normalizePath } from "@/utils/paths";
 import type { ProviderMode } from "./app-settings";
+import { resolveOpenClawRoot } from "./openclaw-provider";
 
 interface OpenClawAgentConfig {
   id?: string;
@@ -28,14 +29,19 @@ async function appendSkillFiles(skillsDir: string, out: string[]) {
 
 async function scanOpenClawProject(root: string): Promise<string[]> {
   const found: string[] = [];
-  const configPath = joinPath(root, "openclaw.json");
+  const openclawRoot = await resolveOpenClawRoot(root);
+  if (!openclawRoot) {
+    return found;
+  }
+
+  const configPath = joinPath(openclawRoot, "openclaw.json");
   if (!(await safeExists(configPath))) {
     return found;
   }
 
   found.push(configPath);
-  await appendSkillFiles(joinPath(root, "skills"), found);
-  await appendSkillFiles(joinPath(root, "workspace", "skills"), found);
+  await appendSkillFiles(joinPath(openclawRoot, "skills"), found);
+  await appendSkillFiles(joinPath(openclawRoot, "workspace", "skills"), found);
 
   let parsed: OpenClawConfig | null = null;
   try {

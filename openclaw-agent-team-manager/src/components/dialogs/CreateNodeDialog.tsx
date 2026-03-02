@@ -125,15 +125,20 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
     scanAllSkills(projectPath, providerMode).then((skills) => {
       if (!cancelled) setFsSkills(skills);
     });
-    if (providerMode === "openclaw") {
-      listOpenClawCatalogAgents(projectPath).then((items) => {
-        if (!cancelled) setCatalogManagers(items);
-      }).catch(() => {
-        if (!cancelled) setCatalogManagers([]);
-      });
-    } else {
-      setCatalogManagers([]);
+    if (providerMode !== "openclaw") {
+      scanAllSkills(projectPath, "openclaw").then((skills) => {
+        if (!cancelled && skills.length > 0) {
+          setFsSkills((prev) => {
+            const byId = new Map(prev.map((item) => [item.id, item]));
+            for (const item of skills) byId.set(item.id, item);
+            return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name));
+          });
+        }
+      }).catch(() => {});
     }
+    listOpenClawCatalogAgents(projectPath).then((items) => {
+      if (!cancelled) setCatalogManagers(items);
+    }).catch(() => {});
     return () => { cancelled = true; };
   }, [open, projectPath, providerMode]);
 
@@ -418,7 +423,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
               ))}
             </select>
             <span style={{ color: "var(--text-secondary)", fontSize: 11, display: "block", marginTop: 4 }}>
-              Uses detected sister beings from OpenClaw config/identity data.
+              Uses detected sister beings from OpenClaw workspace + identity data.
             </span>
           </div>
         )}

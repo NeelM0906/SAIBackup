@@ -53,6 +53,22 @@ interface OpenClawConfig {
 
 type OpenClawAgentDefaults = NonNullable<NonNullable<OpenClawConfig["agents"]>["defaults"]>;
 
+interface DiscoveredSister {
+  key: string;
+  id: string;
+  name: string;
+  workspace: string;
+  sourcePath: string;
+  promptBody: string;
+  model?: string;
+  tools?: string[];
+}
+
+interface OpenClawContext {
+  rootPath: string;
+  config: OpenClawConfig | null;
+}
+
 function safeJsonParse<T>(raw: string): T | null {
   try {
     return JSON.parse(raw) as T;
@@ -61,11 +77,81 @@ function safeJsonParse<T>(raw: string): T | null {
   }
 }
 
-async function loadOpenClawConfig(projectPath: string): Promise<OpenClawConfig | null> {
-  const configPath = join(projectPath, "openclaw.json");
+function normalizeFsPath(path: string): string {
+  return String(path || "").replace(/\\/g, "/").replace(/\/+$/g, "");
+}
+
+function parentPath(path: string): string | null {
+  const normalized = normalizeFsPath(path);
+  if (!normalized) return null;
+  const isAbs = normalized.startsWith("/");
+  const parts = normalized.split("/").filter(Boolean);
+  if (parts.length <= 1) return isAbs ? "/" : null;
+  parts.pop();
+  return `${isAbs ? "/" : ""}${parts.join("/")}`;
+}
+
+function extractIdentityName(content: string, fallback: string): string {
+  const lines = String(content || "").split("\n").map((line) => line.trim()).filter(Boolean);
+  const heading = lines.find((line) => line.startsWith("#"));
+  if (heading) {
+    return heading.replace(/^#+\s*/, "").trim() || fallback;
+  }
+  return fallback;
+}
+
+async function listChildDirectories(root: string): Promise<string[]> {
+  if (!root || !(await exists(root))) return [];
+  try {
+    const entries = await readDir(root);
+    return entries.filter((entry) => entry.isDirectory && !!entry.name).map((entry) => entry.name);
+  } catch {
+    return [];
+  }
+}
+
+export async function resolveOpenClawRoot(projectPath: string): Promise<string | null> {
+  const start = normalizeFsPath(projectPath);
+  if (!start) return null;
+
+  const checked = new Set<string>();
+  const candidates = [start, join(start, ".openclaw")];
+
+  const hasConfig = async (root: string) => {
+    const normalized = normalizeFsPath(root);
+    if (!normalized || checked.has(normalized)) return false;
+    checked.add(normalized);
+    return exists(join(normalized, "openclaw.json"));
+  };
+
+  for (const candidate of candidates) {
+    if (await hasConfig(candidate)) {
+      return normalizeFsPath(candidate);
+    }
+  }
+
+  let cursor = start;
+  for (let i = 0; i < 8; i++) {
+    const parent = parentPath(cursor);
+    if (!parent || parent === cursor) break;
+    if (await hasConfig(parent)) return normalizeFsPath(parent);
+    const nested = join(parent, ".openclaw");
+    if (await hasConfig(nested)) return normalizeFsPath(nested);
+    cursor = parent;
+  }
+  return null;
+}
+
+async function resolveOpenClawContext(projectPath: string): Promise<OpenClawContext | null> {
+  const rootPath = await resolveOpenClawRoot(projectPath);
+  if (!rootPath) return null;
+  const configPath = join(rootPath, "openclaw.json");
   if (!(await exists(configPath))) return null;
   const raw = await readTextFile(configPath);
-  return safeJsonParse<OpenClawConfig>(raw);
+  return {
+    rootPath,
+    config: safeJsonParse<OpenClawConfig>(raw),
+  };
 }
 
 function toSisterDisplayName(agent: OpenClawAgentItem): string {
@@ -112,6 +198,105 @@ function syntheticNodeBase(idSeed: string): Pick<AuiNode, "id" | "lastModified" 
   };
 }
 
+async function collectWorkspaceToolIds(workspacePath: string): Promise<string[]> {
+  const toolsDir = join(workspacePath, "tools");
+  if (!(await exists(toolsDir))) return [];
+  const items = new Set<string>();
+  try {
+    const entries = await readDir(toolsDir);
+    for (const entry of entries) {
+      const name = String(entry.name || "").trim();
+      if (!name) continue;
+      if (entry.isDirectory) {
+        items.add(name);
+        continue;
+      }
+      if (entry.isFile && /\.(py|js|ts|sh)$/i.test(name)) {
+        items.add(name.replace(/\.(py|js|ts|sh)$/i, ""));
+      }
+    }
+  } catch {
+    return [];
+  }
+  return Array.from(items).sort((a, b) => a.localeCompare(b));
+}
+
+async function discoverSisters(projectPath: string): Promise<DiscoveredSister[]> {
+  const context = await resolveOpenClawContext(projectPath);
+  const rootPath = context?.rootPath;
+  const config = context?.config;
+  if (!rootPath) return [];
+  const defaults = config?.agents?.defaults;
+  const list = (config?.agents?.list || []).filter((item) => item?.id);
+  const byKey = new Map<string, DiscoveredSister>();
+
+  for (const agent of list) {
+    const workspace = String(agent.workspace || defaults?.workspace || "").trim();
+    if (!workspace) continue;
+    const identity = await readIdentityForWorkspace(workspace);
+    const fallbackName = toSisterDisplayName(agent);
+    const name = identity ? extractIdentityName(identity.content, fallbackName) : fallbackName;
+    const tools = Array.isArray(agent.tools?.alsoAllow) && agent.tools?.alsoAllow.length
+      ? agent.tools?.alsoAllow
+      : (Array.isArray(defaults?.tools?.alsoAllow) ? defaults.tools.alsoAllow : undefined);
+    const key = normalizeFsPath(workspace) || `agent:${agent.id}`;
+    byKey.set(key, {
+      key,
+      id: agent.id,
+      name,
+      workspace,
+      sourcePath: identity?.sourcePath || join(rootPath, "openclaw.json"),
+      promptBody: identity ? summarySlice(identity.content) : `workspace: ${workspace}\nidentity: missing`,
+      model: String(agent.model?.primary || defaults?.model?.primary || "").trim() || undefined,
+      tools,
+    });
+  }
+
+  // Additional sister directories that may not be listed in openclaw.json.
+  const sisterRoots = [
+    join(rootPath, "workspace", "sisters"),
+    join(rootPath, "sisters"),
+    join(rootPath, "workspace", ".openclaw", "workspace", "sisters"),
+  ];
+
+  for (const root of sisterRoots) {
+    const dirNames = await listChildDirectories(root);
+    for (const dirName of dirNames) {
+      const workspace = join(root, dirName);
+      const key = normalizeFsPath(workspace);
+      const existing = byKey.get(key);
+      const identity = await readIdentityForWorkspace(workspace);
+      if (existing) {
+        if (identity) {
+          existing.sourcePath = identity.sourcePath;
+          existing.promptBody = summarySlice(identity.content);
+          existing.name = extractIdentityName(identity.content, existing.name);
+        }
+        if (!existing.tools || existing.tools.length === 0) {
+          const fromWorkspace = await collectWorkspaceToolIds(workspace);
+          if (fromWorkspace.length > 0) existing.tools = fromWorkspace;
+        }
+        continue;
+      }
+
+      const baseName = titleCase(dirName.replace(/^sai[-_]/i, ""));
+      const inferredName = identity ? extractIdentityName(identity.content, baseName) : baseName;
+      const inferredTools = await collectWorkspaceToolIds(workspace);
+      byKey.set(key, {
+        key,
+        id: dirName,
+        name: inferredName,
+        workspace,
+        sourcePath: identity?.sourcePath || workspace,
+        promptBody: identity ? summarySlice(identity.content) : `workspace: ${workspace}\nidentity: missing`,
+        tools: inferredTools.length > 0 ? inferredTools : undefined,
+      });
+    }
+  }
+
+  return Array.from(byKey.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
 function inferWorkspaceEntityType(dirName: string): string {
   const value = String(dirName || "").toLowerCase();
   if (value.includes("dashboard")) return "dashboard";
@@ -126,33 +311,30 @@ function inferWorkspaceEntityType(dirName: string): string {
 }
 
 export async function detectProviderMode(projectPath: string): Promise<ProviderMode> {
-  return (await exists(join(projectPath, "openclaw.json"))) ? "openclaw" : "claude";
+  return (await resolveOpenClawRoot(projectPath)) ? "openclaw" : "claude";
 }
 
 export async function buildOpenClawSisterNodes(projectPath: string): Promise<AuiNode[]> {
-  const config = await loadOpenClawConfig(projectPath);
-  const list = (config?.agents?.list || []).filter((item) => item?.id);
-  const defaults = config?.agents?.defaults;
+  const sisters = await discoverSisters(projectPath);
   const nodes: AuiNode[] = [];
 
-  for (const agent of list) {
-    const workspace = String(agent.workspace || defaults?.workspace || "").trim();
-    const identity = workspace ? await readIdentityForWorkspace(workspace) : null;
-    const sourcePath = identity?.sourcePath || join(projectPath, "openclaw.json");
-    const promptBody = identity
-      ? summarySlice(identity.content)
-      : `No identity profile file found in workspace.\n\nworkspace: ${workspace || "(unset)"}`;
-
+  for (const sister of sisters) {
     nodes.push({
-      ...syntheticNodeBase(`openclaw:sister:${agent.id}`),
-      name: toSisterDisplayName(agent),
+      ...syntheticNodeBase(`openclaw:sister:${sister.key}`),
+      id: generateNodeId(`openclaw:sister:${sister.key}`),
+      name: sister.name,
       kind: "agent",
       parentId: "root",
       team: "openclaw-sisters",
-      sourcePath,
-      config: toAgentConfig(agent, defaults),
-      promptBody,
-      tags: ["openclaw", "sister", agent.id],
+      sourcePath: sister.sourcePath,
+      config: {
+        name: sister.name,
+        description: `OpenClaw sister agent: ${sister.id}`,
+        model: sister.model,
+        tools: sister.tools,
+      },
+      promptBody: sister.promptBody,
+      tags: ["openclaw", "sister", sister.id],
     });
   }
 
@@ -161,15 +343,16 @@ export async function buildOpenClawSisterNodes(projectPath: string): Promise<Aui
 
 export async function buildOpenClawEntityNodes(projectPath: string): Promise<AuiNode[]> {
   const nodes: AuiNode[] = [];
-  const workspaceRoot = join(projectPath, "workspace");
+  const context = await resolveOpenClawContext(projectPath);
+  const rootPath = context?.rootPath || projectPath;
+  const config = context?.config;
+  const workspaceRoot = join(rootPath, "workspace");
   const entityRootId = generateNodeId("openclaw:entities:root");
   const runtimeConfigId = generateNodeId("openclaw:entities:runtime-config");
   const sisterRegistryId = generateNodeId("openclaw:entities:sister-registry");
   const workspaceCatalogId = generateNodeId("openclaw:entities:workspaces");
   const dashboardsId = generateNodeId("openclaw:entities:dashboards");
   const beingsSnapshotId = generateNodeId("openclaw:entities:beings-snapshot");
-  const config = await loadOpenClawConfig(projectPath);
-
   nodes.push({
     ...syntheticNodeBase("openclaw:entities:root"),
     id: entityRootId,
@@ -177,7 +360,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     kind: "context",
     parentId: "root",
     team: null,
-    sourcePath: join(projectPath, "openclaw.json"),
+    sourcePath: join(rootPath, "openclaw.json"),
     config: null,
     promptBody: "Synthetic OpenClaw entity catalog generated from local workspace state.",
     tags: ["openclaw", "entities", "entity-type:catalog-root"],
@@ -192,7 +375,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     kind: "context",
     parentId: entityRootId,
     team: null,
-    sourcePath: join(projectPath, "openclaw.json"),
+    sourcePath: join(rootPath, "openclaw.json"),
     config: null,
     promptBody: [
       `openclaw_version: ${String(config?.meta?.lastTouchedVersion || "-")}`,
@@ -215,7 +398,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     kind: "context",
     parentId: entityRootId,
     team: null,
-    sourcePath: join(projectPath, "openclaw.json"),
+    sourcePath: join(rootPath, "openclaw.json"),
     config: null,
     promptBody: sisters.length > 0
       ? sisters.map((sister) => {
@@ -280,7 +463,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     kind: "context",
     parentId: entityRootId,
     team: null,
-    sourcePath: join(projectPath, "openclaw.json"),
+    sourcePath: join(rootPath, "openclaw.json"),
     config: null,
     promptBody: ONLINE_DASHBOARDS.map((item) => `- ${item.name}: ${item.url}`).join("\n"),
     tags: ["openclaw", "dashboards", "entity-type:dashboards"],
@@ -293,7 +476,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
       kind: "context",
       parentId: dashboardsId,
       team: null,
-      sourcePath: join(projectPath, "openclaw.json"),
+      sourcePath: join(rootPath, "openclaw.json"),
       config: null,
       promptBody: `entity_type: dashboard\nurl: ${item.url}`,
       tags: ["openclaw", "dashboard", "entity-type:dashboard", `entity-url:${item.url}`],
@@ -346,25 +529,64 @@ export interface OpenClawCatalogAgent {
 }
 
 export async function listOpenClawCatalogAgents(projectPath: string): Promise<OpenClawCatalogAgent[]> {
-  const config = await loadOpenClawConfig(projectPath);
-  const list = (config?.agents?.list || []).filter((item) => item?.id);
-  const defaults = config?.agents?.defaults;
-
-  const items = list.map((agent) => {
-    const workspace = String(agent.workspace || defaults?.workspace || "").trim();
-    const tools = Array.isArray(agent.tools?.alsoAllow) && agent.tools?.alsoAllow.length
-      ? agent.tools?.alsoAllow
-      : (Array.isArray(defaults?.tools?.alsoAllow) ? defaults.tools?.alsoAllow : undefined);
-
-    return {
-      id: generateNodeId(`openclaw:sister:${agent.id}`),
-      name: toSisterDisplayName(agent),
-      description: `OpenClaw sister (${agent.id})${workspace ? ` • ${workspace}` : ""}`,
-      sourcePath: workspace || join(projectPath, "openclaw.json"),
-      model: String(agent.model?.primary || defaults?.model?.primary || "").trim() || undefined,
-      tools,
-    };
-  });
+  const items = (await discoverSisters(projectPath)).map((sister) => ({
+    id: generateNodeId(`openclaw:sister:${sister.key}`),
+    name: sister.name,
+    description: `OpenClaw sister (${sister.id})${sister.workspace ? ` • ${sister.workspace}` : ""}`,
+    sourcePath: sister.sourcePath,
+    model: sister.model,
+    tools: sister.tools,
+  }));
 
   return items.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export async function listOpenClawToolIds(projectPath: string): Promise<string[]> {
+  const set = new Set<string>();
+  const context = await resolveOpenClawContext(projectPath);
+  const rootPath = context?.rootPath || projectPath;
+  const config = context?.config;
+  const defaults = config?.agents?.defaults;
+
+  const collectTools = (tools?: string[]) => {
+    if (!Array.isArray(tools)) return;
+    for (const tool of tools) {
+      const value = String(tool || "").trim();
+      if (value) set.add(value);
+    }
+  };
+
+  collectTools(defaults?.tools?.alsoAllow);
+  for (const agent of config?.agents?.list || []) {
+    collectTools(agent.tools?.alsoAllow);
+  }
+
+  const explicitToolRoots = [
+    join(rootPath, "workspace", "tools"),
+    join(rootPath, "tools"),
+  ];
+  for (const root of explicitToolRoots) {
+    if (!(await exists(root))) continue;
+    try {
+      const entries = await readDir(root);
+      for (const entry of entries) {
+        const name = String(entry.name || "").trim();
+        if (!name) continue;
+        if (entry.isDirectory) {
+          set.add(name);
+        } else if (entry.isFile && /\.(py|js|ts|sh)$/i.test(name)) {
+          set.add(name.replace(/\.(py|js|ts|sh)$/i, ""));
+        }
+      }
+    } catch {
+      // Ignore tool folder read issues.
+    }
+  }
+
+  const discoveredSisters = await discoverSisters(projectPath);
+  for (const sister of discoveredSisters) {
+    collectTools(sister.tools);
+  }
+
+  return Array.from(set).sort((a, b) => a.localeCompare(b));
 }

@@ -2,6 +2,7 @@ import { readDir, readTextFile, exists } from "@tauri-apps/plugin-fs";
 import matter from "gray-matter";
 import { join, titleCase, generateNodeId } from "@/utils/paths";
 import type { ProviderMode } from "./app-settings";
+import { resolveOpenClawRoot } from "./openclaw-provider";
 
 export interface SkillInfo {
   id: string;
@@ -82,11 +83,13 @@ async function scanClaudeSkills(projectPath: string): Promise<SkillInfo[]> {
 async function scanOpenClawSkills(projectPath: string): Promise<SkillInfo[]> {
   const items: SkillInfo[] = [];
   const seenPaths = new Set<string>();
+  const openclawRoot = await resolveOpenClawRoot(projectPath);
+  if (!openclawRoot) return items;
 
-  await scanSkillDirectory(join(projectPath, "skills"), items, seenPaths);
-  await scanSkillDirectory(join(projectPath, "workspace", "skills"), items, seenPaths);
+  await scanSkillDirectory(join(openclawRoot, "skills"), items, seenPaths);
+  await scanSkillDirectory(join(openclawRoot, "workspace", "skills"), items, seenPaths);
 
-  const configPath = join(projectPath, "openclaw.json");
+  const configPath = join(openclawRoot, "openclaw.json");
   if (await exists(configPath)) {
     try {
       const raw = await readTextFile(configPath);
