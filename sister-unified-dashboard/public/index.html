@@ -10,7 +10,7 @@
     <header class="topbar">
       <div>
         <h1>Sister Unified Dashboard</h1>
-        <p>Phase 2.2: Assignment Lifecycle + Status Tracking + Event History</p>
+        <p>Unified monitor for sister beings, assignments, activity logs, and active workboard</p>
       </div>
       <div class="topbar-actions">
         <button id="refreshBtn" type="button">Force Refresh</button>
@@ -25,20 +25,50 @@
       </section>
 
       <section class="panel">
-        <h2>Sisters Monitor</h2>
+        <div class="panel-head">
+          <h2>Sister Beings</h2>
+          <small>Click any sister to view personality, tools, and status details</small>
+        </div>
+        <div id="sisterGrid" class="sister-grid">
+          <article class="sister-card">Loading sister beings...</article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Active Workboard</h2>
+          <small>Top 5 work items per sister. Heuristic progress is marked and to be improved.</small>
+        </div>
+        <div id="workboardGrid" class="workboard-grid">
+          <article class="workboard-card">Loading workboard...</article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Sisters Monitor Logs</h2>
+          <div class="filters">
+            <label for="sisterFilter">Sister</label>
+            <select id="sisterFilter">
+              <option value="">All</option>
+            </select>
+            <button id="logsLoadMoreBtn" type="button">Load More (+50)</button>
+            <small id="logsCountLabel">Showing 0</small>
+          </div>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
+                <th>Time</th>
                 <th>Sister</th>
-                <th>Status</th>
-                <th>Current Model</th>
-                <th>Active Session</th>
-                <th>Last Event</th>
-                <th>Events (7d)</th>
+                <th>Type</th>
+                <th>Role</th>
+                <th>Tool</th>
+                <th>Summary</th>
               </tr>
             </thead>
-            <tbody id="sistersTable">
+            <tbody id="eventsTable">
               <tr><td colspan="6">Loading...</td></tr>
             </tbody>
           </table>
@@ -127,36 +157,42 @@
           </table>
         </div>
       </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Recent Events</h2>
-          <div class="filters">
-            <label for="sisterFilter">Sister</label>
-            <select id="sisterFilter">
-              <option value="">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Sister</th>
-                <th>Type</th>
-                <th>Role</th>
-                <th>Tool</th>
-                <th>Summary</th>
-              </tr>
-            </thead>
-            <tbody id="eventsTable">
-              <tr><td colspan="6">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
     </main>
+
+    <div id="sisterModal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalSisterName">Sister Profile</h3>
+            <small id="modalSisterMeta"></small>
+          </div>
+          <button id="closeModalBtn" type="button">Close</button>
+        </div>
+
+        <div class="modal-body">
+          <section>
+            <h4>Personality</h4>
+            <p id="modalPersonality">-</p>
+            <small id="modalPersonalitySource"></small>
+          </section>
+
+          <section>
+            <h4>Raw Tool IDs</h4>
+            <pre id="modalTools">[]</pre>
+          </section>
+
+          <section>
+            <h4>Current Status</h4>
+            <div id="modalStatus"></div>
+          </section>
+
+          <section>
+            <h4>Relevant Information</h4>
+            <pre id="modalRelevantInfo">{}</pre>
+          </section>
+        </div>
+      </div>
+    </div>
 
     <script src="/app.js"></script>
   </body>

@@ -10,6 +10,7 @@ import {
   INGEST_MIN_INTERVAL_MS,
   LOOKBACK_DAYS_DEFAULT,
   ONLINE_WINDOW_SECONDS,
+  OPENCLAW_CONFIG_PATH,
   SNAPSHOT_FALLBACK_PATH
 } from './config.js';
 import { getDb } from './db.js';
@@ -17,6 +18,7 @@ import { ingestSessions } from './ingest.js';
 
 let lastIngestMs = 0;
 let lastIngestResult = { ingested_at: null, stats: {} };
+let configCache = { mtimeMs: 0, payload: null };
 
 function nowIso() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
@@ -33,15 +35,69 @@ function parseIso(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-export function ensureIngested(force = false) {
-  const now = Date.now();
-  if (!force && now - lastIngestMs < INGEST_MIN_INTERVAL_MS) {
-    return lastIngestResult;
-  }
+function isInactiveStatus(status) {
+  return status !== 'online';
+}
 
-  lastIngestResult = ingestSessions();
-  lastIngestMs = now;
-  return lastIngestResult;
+function safeJsonParse(value) {
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function loadOpenClawConfig() {
+  if (!fs.existsSync(OPENCLAW_CONFIG_PATH)) return null;
+
+  try {
+    const stat = fs.statSync(OPENCLAW_CONFIG_PATH);
+    if (configCache.payload && configCache.mtimeMs === stat.mtimeMs) {
+      return configCache.payload;
+    }
+
+    const parsed = JSON.parse(fs.readFileSync(OPENCLAW_CONFIG_PATH, 'utf8'));
+    configCache = { mtimeMs: stat.mtimeMs, payload: parsed };
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function getAgentConfig(agentId) {
+  const config = loadOpenClawConfig();
+  const list = config?.agents?.list || [];
+  const defaultsWorkspace = config?.agents?.defaults?.workspace || '';
+  const defaultsTools = config?.agents?.defaults?.tools?.alsoAllow || [];
+  const defaultsModel = config?.agents?.defaults?.model?.primary || '';
+
+  const agent = list.find((item) => item?.id === agentId) || null;
+  return {
+    agent,
+    defaultsWorkspace,
+    defaultsTools,
+    defaultsModel
+  };
+}
+
+function resolveWorkspace(agentId, fallbackWorkspace = '') {
+  const { agent, defaultsWorkspace } = getAgentConfig(agentId);
+  if (agent?.workspace) return agent.workspace;
+  if (fallbackWorkspace) return fallbackWorkspace;
+  return defaultsWorkspace || '';
+}
+
+function getRawTools(agentId) {
+  const { agent, defaultsTools } = getAgentConfig(agentId);
+  const tools = agent?.tools?.alsoAllow;
+  if (Array.isArray(tools) && tools.length) return tools;
+  return Array.isArray(defaultsTools) ? defaultsTools : [];
+}
+
+function getPrimaryModel(agentId, fallbackModel = '') {
+  const { agent, defaultsModel } = getAgentConfig(agentId);
+  return agent?.model?.primary || fallbackModel || defaultsModel || null;
 }
 
 function safeSqliteCount(dbPath, query) {
@@ -92,6 +148,213 @@ function getBeingsSummary() {
     domains_online: domainsOnline,
     domain_counts: domainCounts
   };
+}
+
+function identityCandidates(workspace) {
+  if (!workspace) return [];
+  return ['IDENTITY.md', 'SOUL.md', 'AGENTS.md'].map((file) => path.join(workspace, file));
+}
+
+function extractPersonalitySummary(markdown) {
+  const text = String(markdown || '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/\r/g, '');
+
+  const paragraphs = text
+    .split(/\n\s*\n/g)
+    .map((block) =>
+      block
+        .split('\n')
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith('#') && !line.startsWith('|') && !line.startsWith('---'))
+        .join(' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+    )
+    .filter((block) => block.length > 40);
+
+  if (!paragraphs.length) {
+    return 'No personality summary found in profile files.';
+  }
+
+  return paragraphs.slice(0, 2).join('\n\n').slice(0, 1500);
+}
+
+function readPersonality(workspace) {
+  for (const filePath of identityCandidates(workspace)) {
+    if (fs.existsSync(filePath)) {
+      try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        return {
+          source_file: filePath,
+          personality: extractPersonalitySummary(raw)
+        };
+      } catch {
+        // Continue fallback chain.
+      }
+    }
+  }
+
+  return {
+    source_file: null,
+    personality: 'No profile file found (IDENTITY.md, SOUL.md, AGENTS.md).'
+  };
+}
+
+function extractWaitingTarget(text) {
+  if (!text) return null;
+  const clean = String(text).trim();
+
+  const direct = clean.match(/waiting\s+for\s+response\s+from\s+([a-z0-9_\- ]{2,60})/i);
+  if (direct) return direct[1].trim();
+
+  const needLine = clean.match(/need:\s*([a-z0-9_\- ,.]{2,80})/i);
+  if (needLine) return needLine[1].trim();
+
+  const blockedBy = clean.match(/blocked\s+by\s+([a-z0-9_\- ]{2,60})/i);
+  if (blockedBy) return blockedBy[1].trim();
+
+  return null;
+}
+
+function statusRecencyBoost(updatedAt) {
+  const ts = parseIso(updatedAt);
+  if (!ts) return 0;
+
+  const mins = Math.floor((Date.now() - ts.getTime()) / 60000);
+  if (mins <= 10) return 25;
+  if (mins <= 30) return 18;
+  if (mins <= 60) return 12;
+  if (mins <= 180) return 6;
+  if (mins <= 720) return 3;
+  return 0;
+}
+
+function runtimeProgressFromRecency(updatedAt) {
+  const ts = parseIso(updatedAt);
+  if (!ts) return 20;
+
+  const mins = Math.floor((Date.now() - ts.getTime()) / 60000);
+  if (mins <= 5) return 72;
+  if (mins <= 15) return 65;
+  if (mins <= 30) return 58;
+  if (mins <= 60) return 50;
+  if (mins <= 180) return 42;
+  return 30;
+}
+
+function buildProgress({ status, updatedAt, eventCount, sisterStatus, lastActiveStatus, waitingFor }) {
+  const recency = statusRecencyBoost(updatedAt);
+  const eventBoost = Math.min(15, (Number(eventCount) || 0) * 3);
+
+  if (status === 'blocked') {
+    let base = 50;
+    if (lastActiveStatus === 'rework') base = 68;
+    if (lastActiveStatus === 'in_progress') base = 58;
+    if (lastActiveStatus === 'inbox') base = 35;
+
+    const percent = Math.min(85, base + Math.min(12, (Number(eventCount) || 0) * 2));
+    return {
+      percent,
+      note: waitingFor ? `waiting for response from ${waitingFor}` : 'blocked',
+      source: 'heuristic'
+    };
+  }
+
+  if (isInactiveStatus(sisterStatus)) {
+    return {
+      percent: null,
+      note: 'inactive',
+      source: null
+    };
+  }
+
+  if (status === 'in_progress') {
+    return {
+      percent: Math.min(92, 45 + recency + eventBoost),
+      note: 'heuristic (to be improved)',
+      source: 'heuristic'
+    };
+  }
+
+  if (status === 'rework') {
+    return {
+      percent: Math.min(95, 60 + recency + eventBoost),
+      note: 'heuristic (to be improved)',
+      source: 'heuristic'
+    };
+  }
+
+  if (status === 'inbox') {
+    return {
+      percent: 20,
+      note: 'queued',
+      source: 'heuristic'
+    };
+  }
+
+  return {
+    percent: null,
+    note: null,
+    source: null
+  };
+}
+
+function buildRuntimeFallbackWorkItem(sisterId, sisterStatus, db) {
+  const latest = db
+    .prepare(
+      `
+        SELECT ts, summary, event_type, tool_name
+        FROM events
+        WHERE sister_id = ?
+        ORDER BY ts DESC
+        LIMIT 1
+      `
+    )
+    .get(sisterId);
+
+  if (!latest) return null;
+
+  if (isInactiveStatus(sisterStatus)) {
+    return {
+      assignment_id: null,
+      title: 'Runtime activity',
+      summary: latest.summary || latest.event_type || 'No recent summary',
+      status: 'inactive',
+      priority: null,
+      updated_at: latest.ts,
+      progress_percent: null,
+      progress_note: 'inactive',
+      progress_source: null,
+      waiting_for: null,
+      runtime: true
+    };
+  }
+
+  return {
+    assignment_id: null,
+    title: 'Runtime activity',
+    summary: latest.summary || latest.event_type || 'No recent summary',
+    status: 'runtime',
+    priority: null,
+    updated_at: latest.ts,
+    progress_percent: runtimeProgressFromRecency(latest.ts),
+    progress_note: 'heuristic (to be improved)',
+    progress_source: 'heuristic',
+    waiting_for: null,
+    runtime: true
+  };
+}
+
+export function ensureIngested(force = false) {
+  const now = Date.now();
+  if (!force && now - lastIngestMs < INGEST_MIN_INTERVAL_MS) {
+    return lastIngestResult;
+  }
+
+  lastIngestResult = ingestSessions();
+  lastIngestMs = now;
+  return lastIngestResult;
 }
 
 export function getOverview(days = LOOKBACK_DAYS_DEFAULT) {
@@ -194,11 +457,13 @@ export function getSisters(days = LOOKBACK_DAYS_DEFAULT) {
       }
     }
 
+    const workspace = resolveWorkspace(sister.id, sister.workspace || '');
+
     return {
       id: sister.id,
       display_name: sister.display_name,
-      workspace: sister.workspace,
-      model_primary: sister.model_primary,
+      workspace,
+      model_primary: getPrimaryModel(sister.id, sister.model_primary),
       current_model: model?.summary || null,
       status,
       last_event_at: last?.ts || null,
@@ -219,42 +484,169 @@ export function getSisters(days = LOOKBACK_DAYS_DEFAULT) {
   };
 }
 
+export function getSisterProfile(sisterId, days = LOOKBACK_DAYS_DEFAULT) {
+  const sisters = getSisters(days).items;
+  const sister = sisters.find((item) => item.id === sisterId);
+  if (!sister) return null;
+
+  const personality = readPersonality(sister.workspace);
+  const tools = getRawTools(sister.id);
+
+  return {
+    id: sister.id,
+    display_name: sister.display_name,
+    personality: personality.personality,
+    personality_source: personality.source_file,
+    tools,
+    current_status: sister.status,
+    relevant_information: {
+      workspace: sister.workspace,
+      model_primary: sister.model_primary,
+      current_model: sister.current_model,
+      active_session: sister.active_session,
+      last_event_at: sister.last_event_at,
+      last_event_summary: sister.last_event?.summary || null,
+      events_window: sister.events_window,
+      sessions_window: sister.sessions_window
+    }
+  };
+}
+
 export function getEvents({ days = LOOKBACK_DAYS_DEFAULT, limit = 100, sisterId = null } = {}) {
   ensureIngested(false);
   const db = getDb();
   const window = windowStartIso(days);
-  const boundedLimit = Math.min(Math.max(Number(limit) || 100, 1), 500);
+  const boundedLimit = Math.min(Math.max(Number(limit) || 100, 1), 1000);
 
-  let items;
+  const clauses = ['ts >= ?'];
+  const params = [window];
+
   if (sisterId) {
-    items = db
-      .prepare(
-        `
-          SELECT ts, sister_id, session_id, event_type, role, content_type, tool_name, summary
-          FROM events
-          WHERE ts >= ? AND sister_id = ?
-          ORDER BY ts DESC
-          LIMIT ?
-        `
-      )
-      .all(window, sisterId, boundedLimit);
-  } else {
-    items = db
-      .prepare(
-        `
-          SELECT ts, sister_id, session_id, event_type, role, content_type, tool_name, summary
-          FROM events
-          WHERE ts >= ?
-          ORDER BY ts DESC
-          LIMIT ?
-        `
-      )
-      .all(window, boundedLimit);
+    clauses.push('sister_id = ?');
+    params.push(sisterId);
   }
+
+  const rows = db
+    .prepare(
+      `
+        SELECT ts, sister_id, session_id, event_type, role, content_type, tool_name, summary
+        FROM events
+        WHERE ${clauses.join(' AND ')}
+        ORDER BY ts DESC
+        LIMIT ?
+      `
+    )
+    .all(...params, boundedLimit + 1);
+
+  const hasMore = rows.length > boundedLimit;
+  const items = rows.slice(0, boundedLimit);
 
   return {
     window_days: Math.max(days, 1),
     limit: boundedLimit,
+    has_more: hasMore,
+    items
+  };
+}
+
+export function getWorkboard(days = LOOKBACK_DAYS_DEFAULT) {
+  ensureIngested(false);
+  const db = getDb();
+  const sisters = getSisters(days).items;
+
+  const assignmentsStmt = db.prepare(
+    `
+      SELECT id, title, description, owner_sister_id, priority, status, updated_at
+      FROM assignments
+      WHERE owner_sister_id = ?
+        AND COALESCE(archived_at, '') = ''
+        AND status IN ('in_progress', 'rework', 'blocked', 'inbox')
+      ORDER BY updated_at DESC
+      LIMIT 5
+    `
+  );
+
+  const assignmentEventCountStmt = db.prepare(
+    'SELECT COUNT(*) AS c FROM assignment_events WHERE assignment_id = ?'
+  );
+
+  const lastStatusChangeStmt = db.prepare(
+    `
+      SELECT from_status, to_status, note, metadata_json, created_at
+      FROM assignment_events
+      WHERE assignment_id = ? AND event_type = 'status_changed'
+      ORDER BY created_at DESC
+      LIMIT 1
+    `
+  );
+
+  const lastBlockedStatusStmt = db.prepare(
+    `
+      SELECT from_status, to_status, note, metadata_json, created_at
+      FROM assignment_events
+      WHERE assignment_id = ? AND event_type = 'status_changed' AND to_status = 'blocked'
+      ORDER BY created_at DESC
+      LIMIT 1
+    `
+  );
+
+  const items = sisters.map((sister) => {
+    const rows = assignmentsStmt.all(sister.id);
+
+    const workItems = rows.map((assignment) => {
+      const eventCount = Number(assignmentEventCountStmt.get(assignment.id)?.c || 0);
+      const lastStatus = lastStatusChangeStmt.get(assignment.id);
+      const lastBlocked = lastBlockedStatusStmt.get(assignment.id);
+
+      const waitingFromNote = extractWaitingTarget(lastBlocked?.note || null);
+      const waitingFromDescription = extractWaitingTarget(assignment.description || null);
+      const waitingFromMeta = extractWaitingTarget(
+        safeJsonParse(lastBlocked?.metadata_json)?.waiting_for || null
+      );
+      const waitingFor = waitingFromMeta || waitingFromNote || waitingFromDescription || null;
+
+      const progress = buildProgress({
+        status: assignment.status,
+        updatedAt: assignment.updated_at,
+        eventCount,
+        sisterStatus: sister.status,
+        lastActiveStatus: lastBlocked?.from_status || lastStatus?.from_status || null,
+        waitingFor
+      });
+
+      return {
+        assignment_id: assignment.id,
+        title: assignment.title,
+        summary: assignment.description || null,
+        status: assignment.status,
+        priority: assignment.priority,
+        updated_at: assignment.updated_at,
+        progress_percent: progress.percent,
+        progress_note: progress.note,
+        progress_source: progress.source,
+        waiting_for: waitingFor,
+        runtime: false
+      };
+    });
+
+    if (!workItems.length) {
+      const runtimeFallback = buildRuntimeFallbackWorkItem(sister.id, sister.status, db);
+      if (runtimeFallback) {
+        workItems.push(runtimeFallback);
+      }
+    }
+
+    return {
+      sister_id: sister.id,
+      sister_name: sister.display_name,
+      sister_status: sister.status,
+      current_model: sister.current_model || sister.model_primary,
+      items: workItems.slice(0, 5)
+    };
+  });
+
+  return {
+    window_days: Math.max(days, 1),
     items
   };
 }

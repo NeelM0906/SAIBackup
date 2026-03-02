@@ -14,7 +14,15 @@ import {
   listAssignments,
   updateAssignment
 } from './src/repositories/assignments.js';
-import { ensureIngested, getEvents, getHealth, getOverview, getSisters } from './src/services.js';
+import {
+  ensureIngested,
+  getEvents,
+  getHealth,
+  getOverview,
+  getSisterProfile,
+  getSisters,
+  getWorkboard
+} from './src/services.js';
 
 const PUBLIC_DIR = path.join(PROJECT_ROOT, 'public');
 
@@ -96,11 +104,27 @@ async function handleRequest(req, res) {
     return json(res, 200, getSisters(days));
   }
 
+  const sisterProfileMatch = url.pathname.match(/^\/api\/sisters\/([^/]+)\/profile$/);
+  if (sisterProfileMatch && method === 'GET') {
+    const sisterId = decodeURIComponent(sisterProfileMatch[1]);
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    const profile = getSisterProfile(sisterId, days);
+    if (!profile) {
+      return jsonError(res, 404, 'SISTER_NOT_FOUND', `Sister not found: ${sisterId}`);
+    }
+    return json(res, 200, { ok: true, profile });
+  }
+
   if (url.pathname === '/api/events' && method === 'GET') {
     const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
-    const limit = toInt(url.searchParams.get('limit'), 100);
+    const limit = toInt(url.searchParams.get('limit'), 10);
     const sisterId = url.searchParams.get('sister_id') || null;
     return json(res, 200, getEvents({ days, limit, sisterId }));
+  }
+
+  if (url.pathname === '/api/workboard' && method === 'GET') {
+    const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
+    return json(res, 200, getWorkboard(days));
   }
 
   if (url.pathname === '/api/refresh' && method === 'POST') {

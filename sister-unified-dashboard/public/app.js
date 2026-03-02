@@ -1,21 +1,29 @@
 const DAYS = 7;
 const POLL_OVERVIEW_MS = 15000;
 const POLL_SISTERS_MS = 15000;
+const POLL_WORKBOARD_MS = 15000;
 const POLL_EVENTS_MS = 8000;
 const POLL_ASSIGNMENTS_MS = 15000;
+const LOGS_DEFAULT_LIMIT = 10;
+const LOGS_LOAD_MORE_STEP = 50;
 
 const ASSIGNMENT_STATUSES = ['inbox', 'in_progress', 'blocked', 'completed', 'rework', 'cancelled'];
 
 const state = {
   sisters: [],
-  selectedAssignmentId: null
+  selectedAssignmentId: null,
+  logsLimit: LOGS_DEFAULT_LIMIT,
+  profileCache: new Map()
 };
 
 const els = {
   overviewMetrics: document.getElementById('overviewMetrics'),
-  sistersTable: document.getElementById('sistersTable'),
+  sisterGrid: document.getElementById('sisterGrid'),
+  workboardGrid: document.getElementById('workboardGrid'),
   eventsTable: document.getElementById('eventsTable'),
   sisterFilter: document.getElementById('sisterFilter'),
+  logsLoadMoreBtn: document.getElementById('logsLoadMoreBtn'),
+  logsCountLabel: document.getElementById('logsCountLabel'),
   refreshBtn: document.getElementById('refreshBtn'),
   lastUpdated: document.getElementById('lastUpdated'),
   assignmentForm: document.getElementById('assignmentForm'),
@@ -30,7 +38,16 @@ const els = {
   assignmentOwnerFilter: document.getElementById('assignmentOwnerFilter'),
   assignmentsTable: document.getElementById('assignmentsTable'),
   assignmentEventsTable: document.getElementById('assignmentEventsTable'),
-  selectedAssignmentLabel: document.getElementById('selectedAssignmentLabel')
+  selectedAssignmentLabel: document.getElementById('selectedAssignmentLabel'),
+  modal: document.getElementById('sisterModal'),
+  closeModalBtn: document.getElementById('closeModalBtn'),
+  modalSisterName: document.getElementById('modalSisterName'),
+  modalSisterMeta: document.getElementById('modalSisterMeta'),
+  modalPersonality: document.getElementById('modalPersonality'),
+  modalPersonalitySource: document.getElementById('modalPersonalitySource'),
+  modalTools: document.getElementById('modalTools'),
+  modalStatus: document.getElementById('modalStatus'),
+  modalRelevantInfo: document.getElementById('modalRelevantInfo')
 };
 
 function n(value) {
@@ -55,6 +72,14 @@ function esc(value) {
 
 function assignmentStatusClass(status) {
   return `status-${String(status || 'inbox')}`;
+}
+
+function safeJson(value, fallback) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return fallback;
+  }
 }
 
 async function fetchJson(path, options) {
@@ -100,53 +125,90 @@ function renderOverview(data) {
 }
 
 function populateOwnerSelectors(items) {
-  const options = ['<option value="">All</option>']
-    .concat(items.map((item) => `<option value="${esc(item.id)}">${esc(item.display_name)} (${esc(item.id)})</option>`))
-    .join('');
+  const allOpt = '<option value="">All</option>';
+  const ownerSelectOpt = '<option value="">Select owner sister</option>';
+  const mapped = items.map(
+    (item) => `<option value="${esc(item.id)}">${esc(item.display_name)} (${esc(item.id)})</option>`
+  );
 
-  const ownerOptions = ['<option value="">Select owner sister</option>']
-    .concat(items.map((item) => `<option value="${esc(item.id)}">${esc(item.display_name)} (${esc(item.id)})</option>`))
-    .join('');
-
-  const currentFilter = els.assignmentOwnerFilter.value;
+  const currentOwnerFilter = els.assignmentOwnerFilter.value;
   const currentOwner = els.assignmentOwner.value;
-  const currentSisterFilter = els.sisterFilter.value;
+  const currentLogFilter = els.sisterFilter.value;
 
-  els.assignmentOwnerFilter.innerHTML = options;
-  els.assignmentOwner.innerHTML = ownerOptions;
-  els.sisterFilter.innerHTML = ['<option value="">All</option>']
-    .concat(items.map((item) => `<option value="${esc(item.id)}">${esc(item.display_name)} (${esc(item.id)})</option>`))
-    .join('');
+  els.assignmentOwnerFilter.innerHTML = [allOpt].concat(mapped).join('');
+  els.assignmentOwner.innerHTML = [ownerSelectOpt].concat(mapped).join('');
+  els.sisterFilter.innerHTML = [allOpt].concat(mapped).join('');
 
-  if (currentFilter) els.assignmentOwnerFilter.value = currentFilter;
+  if (currentOwnerFilter) els.assignmentOwnerFilter.value = currentOwnerFilter;
   if (currentOwner) els.assignmentOwner.value = currentOwner;
-  if (currentSisterFilter) els.sisterFilter.value = currentSisterFilter;
+  if (currentLogFilter) els.sisterFilter.value = currentLogFilter;
+}
+
+function renderSisterGrid(items) {
+  els.sisterGrid.innerHTML = items.length
+    ? items
+        .map(
+          (item) => `
+            <article class="sister-card" data-sister-id="${esc(item.id)}">
+              <h3>${esc(item.display_name)}</h3>
+              <span class="status ${esc(item.status)}">${esc(item.status)}</span>
+              <div class="meta">ID: ${esc(item.id)}</div>
+              <div class="meta">Model: ${esc(item.current_model || item.model_primary || '-')}</div>
+              <div class="meta">Last Event: ${esc(shortTs(item.last_event_at))}</div>
+            </article>
+          `
+        )
+        .join('')
+    : '<article class="sister-card">No sister data found.</article>';
 }
 
 function renderSisters(payload) {
   const items = payload.items || [];
   state.sisters = items;
 
-  els.sistersTable.innerHTML = items.length
+  renderSisterGrid(items);
+  populateOwnerSelectors(items);
+}
+
+function renderWorkboard(payload) {
+  const items = payload.items || [];
+
+  els.workboardGrid.innerHTML = items.length
     ? items
-        .map((item) => {
-          const model = item.current_model || item.model_primary || '-';
-          const summary = item?.last_event?.summary || '-';
+        .map((sister) => {
+          const workItems = sister.items || [];
+          const list = workItems.length
+            ? workItems
+                .map((item) => {
+                  const hasProgress = item.progress_percent !== null && item.progress_percent !== undefined;
+                  return `
+                    <article class="work-item">
+                      <div class="title">${esc(item.title || 'Untitled')}</div>
+                      <div class="sub">
+                        <span class="status ${assignmentStatusClass(item.status)}">${esc(item.status || '-')}</span>
+                        ${item.priority ? ` • ${esc(item.priority)}` : ''}
+                      </div>
+                      <div class="sub">${esc(item.summary || '-')}</div>
+                      ${hasProgress ? `<div class="progress"><span style="width:${Math.max(0, Math.min(100, Number(item.progress_percent) || 0))}%"></span></div>` : ''}
+                      <div class="note">
+                        ${hasProgress ? `${Math.round(Number(item.progress_percent) || 0)}%` : 'No progress bar (inactive)'}
+                        ${item.progress_note ? ` • ${esc(item.progress_note)}` : ''}
+                      </div>
+                    </article>
+                  `;
+                })
+                .join('')
+            : '<article class="work-item"><div class="sub">No active work items.</div></article>';
+
           return `
-            <tr>
-              <td><strong>${esc(item.display_name)}</strong><br/><small>${esc(item.id)}</small></td>
-              <td><span class="status ${esc(item.status)}">${esc(item.status)}</span></td>
-              <td>${esc(model)}</td>
-              <td><small>${esc(item.active_session || '-')}</small></td>
-              <td><small>${esc(shortTs(item.last_event_at))}<br/>${esc(summary)}</small></td>
-              <td>${n(item.events_window)}</td>
-            </tr>
+            <article class="workboard-card">
+              <h3>${esc(sister.sister_name)} <span class="status ${esc(sister.sister_status)}">${esc(sister.sister_status)}</span></h3>
+              <div class="work-items">${list}</div>
+            </article>
           `;
         })
         .join('')
-    : '<tr><td colspan="6">No sister data found.</td></tr>';
-
-  populateOwnerSelectors(items);
+    : '<article class="workboard-card">No workboard data found.</article>';
 }
 
 function renderEvents(payload) {
@@ -155,19 +217,22 @@ function renderEvents(payload) {
   els.eventsTable.innerHTML = items.length
     ? items
         .map(
-          (e) => `
+          (event) => `
             <tr>
-              <td><small>${esc(shortTs(e.ts))}</small></td>
-              <td>${esc(e.sister_id)}</td>
-              <td>${esc(e.event_type)}</td>
-              <td>${esc(e.role || '-')}</td>
-              <td>${esc(e.tool_name || '-')}</td>
-              <td><small>${esc(e.summary || '-')}</small></td>
+              <td><small>${esc(shortTs(event.ts))}</small></td>
+              <td>${esc(event.sister_id)}</td>
+              <td>${esc(event.event_type)}</td>
+              <td>${esc(event.role || '-')}</td>
+              <td>${esc(event.tool_name || '-')}</td>
+              <td><small>${esc(event.summary || '-')}</small></td>
             </tr>
           `
         )
         .join('')
     : '<tr><td colspan="6">No events in selected window.</td></tr>';
+
+  els.logsCountLabel.textContent = `Showing ${items.length} logs`;
+  els.logsLoadMoreBtn.disabled = !payload.has_more;
 }
 
 function renderAssignments(payload) {
@@ -224,16 +289,50 @@ function renderAssignmentEvents(payload) {
     : '<tr><td colspan="5">No assignment events found.</td></tr>';
 }
 
+function openModal() {
+  els.modal.classList.add('open');
+  els.modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeModal() {
+  els.modal.classList.remove('open');
+  els.modal.setAttribute('aria-hidden', 'true');
+}
+
+async function openSisterModal(sisterId) {
+  let profile = state.profileCache.get(sisterId);
+  if (!profile) {
+    const payload = await fetchJson(`/api/sisters/${encodeURIComponent(sisterId)}/profile?days=${DAYS}`);
+    profile = payload.profile;
+    state.profileCache.set(sisterId, profile);
+  }
+
+  els.modalSisterName.textContent = profile.display_name || profile.id;
+  els.modalSisterMeta.textContent = `${profile.id} • ${profile.current_status || '-'}`;
+  els.modalPersonality.textContent = profile.personality || '-';
+  els.modalPersonalitySource.textContent = profile.personality_source || 'No source file found';
+  els.modalTools.textContent = safeJson(profile.tools || [], '[]');
+  els.modalStatus.innerHTML = `<span class="status ${esc(profile.current_status || 'offline')}">${esc(profile.current_status || 'offline')}</span>`;
+  els.modalRelevantInfo.textContent = safeJson(profile.relevant_information || {}, '{}');
+
+  openModal();
+}
+
 async function refreshOverview() {
   renderOverview(await fetchJson(`/api/overview?days=${DAYS}`));
 }
 
 async function refreshSisters() {
-  renderSisters(await fetchJson(`/api/sisters?days=${DAYS}`));
+  const payload = await fetchJson(`/api/sisters?days=${DAYS}`);
+  renderSisters(payload);
+}
+
+async function refreshWorkboard() {
+  renderWorkboard(await fetchJson(`/api/workboard?days=${DAYS}`));
 }
 
 async function refreshEvents() {
-  const q = new URLSearchParams({ days: String(DAYS), limit: '100' });
+  const q = new URLSearchParams({ days: String(DAYS), limit: String(state.logsLimit) });
   if (els.sisterFilter.value) q.set('sister_id', els.sisterFilter.value);
   renderEvents(await fetchJson(`/api/events?${q.toString()}`));
 }
@@ -280,7 +379,7 @@ async function createAssignmentFromForm() {
 
   els.assignmentForm.reset();
   els.assignmentPriority.value = 'normal';
-  await refreshAssignments();
+  await Promise.all([refreshAssignments(), refreshWorkboard()]);
 }
 
 async function updateAssignmentStatus(assignmentId, status) {
@@ -290,12 +389,18 @@ async function updateAssignmentStatus(assignmentId, status) {
     body: JSON.stringify({ status, actor: 'operator' })
   });
 
-  await refreshAssignments();
+  await Promise.all([refreshAssignments(), refreshWorkboard()]);
 }
 
 async function refreshAll() {
   try {
-    await Promise.all([refreshOverview(), refreshSisters(), refreshEvents(), refreshAssignments()]);
+    await Promise.all([
+      refreshOverview(),
+      refreshSisters(),
+      refreshWorkboard(),
+      refreshEvents(),
+      refreshAssignments()
+    ]);
     els.lastUpdated.textContent = `Last updated: ${shortTs(new Date().toISOString())}`;
   } catch (err) {
     els.lastUpdated.textContent = `Last updated: error (${err.message})`;
@@ -303,6 +408,12 @@ async function refreshAll() {
 }
 
 els.sisterFilter.addEventListener('change', () => {
+  state.logsLimit = LOGS_DEFAULT_LIMIT;
+  refreshEvents().catch(() => {});
+});
+
+els.logsLoadMoreBtn.addEventListener('click', () => {
+  state.logsLimit += LOGS_LOAD_MORE_STEP;
   refreshEvents().catch(() => {});
 });
 
@@ -353,6 +464,19 @@ els.assignmentsTable.addEventListener('click', async (event) => {
   }
 });
 
+els.sisterGrid.addEventListener('click', (event) => {
+  const card = event.target.closest('[data-sister-id]');
+  if (!card) return;
+  openSisterModal(card.getAttribute('data-sister-id')).catch((error) => {
+    els.assignmentFormError.textContent = error.message;
+  });
+});
+
+els.closeModalBtn.addEventListener('click', closeModal);
+els.modal.addEventListener('click', (event) => {
+  if (event.target === els.modal) closeModal();
+});
+
 els.refreshBtn.addEventListener('click', async () => {
   els.refreshBtn.disabled = true;
   try {
@@ -366,5 +490,6 @@ els.refreshBtn.addEventListener('click', async () => {
 refreshAll().catch(() => {});
 setInterval(() => refreshOverview().catch(() => {}), POLL_OVERVIEW_MS);
 setInterval(() => refreshSisters().catch(() => {}), POLL_SISTERS_MS);
+setInterval(() => refreshWorkboard().catch(() => {}), POLL_WORKBOARD_MS);
 setInterval(() => refreshEvents().catch(() => {}), POLL_EVENTS_MS);
 setInterval(() => refreshAssignments().catch(() => {}), POLL_ASSIGNMENTS_MS);
