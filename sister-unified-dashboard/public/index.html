@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sister Unified Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Sister Unified Dashboard</h1>
+        <p>Phase 2.2: Assignment Lifecycle + Status Tracking + Event History</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="refreshBtn" type="button">Force Refresh</button>
+        <small id="lastUpdated">Last updated: --</small>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <h2>Overview</h2>
+        <div class="metrics" id="overviewMetrics"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Sisters Monitor</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Sister</th>
+                <th>Status</th>
+                <th>Current Model</th>
+                <th>Active Session</th>
+                <th>Last Event</th>
+                <th>Events (7d)</th>
+              </tr>
+            </thead>
+            <tbody id="sistersTable">
+              <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Assignments</h2>
+          <div class="filters">
+            <label for="assignmentStatusFilter">Status</label>
+            <select id="assignmentStatusFilter">
+              <option value="">All</option>
+              <option value="inbox">inbox</option>
+              <option value="in_progress">in_progress</option>
+              <option value="blocked">blocked</option>
+              <option value="completed">completed</option>
+              <option value="rework">rework</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+            <label for="assignmentOwnerFilter">Owner</label>
+            <select id="assignmentOwnerFilter">
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+
+        <form id="assignmentForm" class="form-grid">
+          <input id="assignmentTitle" placeholder="Assignment title" maxlength="180" required />
+          <select id="assignmentOwner" required>
+            <option value="">Select owner sister</option>
+          </select>
+          <select id="assignmentPriority">
+            <option value="normal">normal</option>
+            <option value="low">low</option>
+            <option value="high">high</option>
+            <option value="critical">critical</option>
+          </select>
+          <input id="assignmentTaskKey" placeholder="Task key (optional, e.g. ZA-12)" maxlength="80" />
+          <input id="assignmentDueAt" placeholder="Due at (optional ISO date/time)" maxlength="64" />
+          <input id="assignmentDescription" placeholder="Description (optional)" maxlength="500" />
+          <button type="submit">Create Assignment</button>
+          <small id="assignmentFormError" class="error"></small>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Task Key</th>
+                <th>Updated</th>
+                <th>Action</th>
+                <th>Events</th>
+              </tr>
+            </thead>
+            <tbody id="assignmentsTable">
+              <tr><td colspan="8">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Assignment Event Feed</h2>
+          <small id="selectedAssignmentLabel">Select an assignment to view event history.</small>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>Actor</th>
+                <th>Transition</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="assignmentEventsTable">
+              <tr><td colspan="5">No assignment selected.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recent Events</h2>
+          <div class="filters">
+            <label for="sisterFilter">Sister</label>
+            <select id="sisterFilter">
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Sister</th>
+                <th>Type</th>
+                <th>Role</th>
+                <th>Tool</th>
+                <th>Summary</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTable">
+              <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
