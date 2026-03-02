@@ -264,6 +264,17 @@ export function GroupEditor({ node }: GroupEditorProps) {
     return result;
   }, [nodes, node.id]);
 
+  const managerBeing = useMemo(() => {
+    const managerId = variables.find((v) => v.name === "manager_being_id")?.value?.trim();
+    const managerNameVar = variables.find((v) => v.name === "manager_being_name")?.value?.trim();
+    if (!managerId && !managerNameVar) return null;
+    const nodeName = managerId ? nodes.get(managerId)?.name : null;
+    return {
+      id: managerId || "",
+      name: nodeName || managerNameVar || managerId || "Unknown",
+    };
+  }, [variables, nodes]);
+
   const handleSave = () => {
     updateNode(node.id, {
       name,
@@ -625,6 +636,25 @@ IMPORTANT: Each agent already has their full skill file content above. Pass it d
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
+
+      {managerBeing && !isMember && (
+        <div
+          style={{
+            marginBottom: 16,
+            padding: "8px 10px",
+            borderRadius: 6,
+            border: "1px solid var(--border-color)",
+            background: "rgba(163, 113, 247, 0.08)",
+          }}
+        >
+          <div style={{ fontSize: 10, textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: 2 }}>
+            Assigned Manager Being
+          </div>
+          <div style={{ fontSize: 13, color: "var(--text-primary)" }}>
+            {managerBeing.name}{managerBeing.id ? ` (${managerBeing.id})` : ""}
+          </div>
+        </div>
+      )}
 
       {/* 2. Deploy — only for top-level teams */}
       {!isMember && (

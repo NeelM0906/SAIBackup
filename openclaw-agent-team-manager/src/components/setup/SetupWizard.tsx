@@ -8,6 +8,7 @@ type Step = 1 | 2 | 3;
 
 export function SetupWizard() {
   const projectPath = useTreeStore((s) => s.projectPath);
+  const providerMode = useTreeStore((s) => s.providerMode);
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState<Step>(1);
 
@@ -26,6 +27,10 @@ export function SetupWizard() {
   // Check if wizard should show
   useEffect(() => {
     if (!projectPath) return;
+    if (providerMode === "openclaw" || projectPath.includes(".openclaw")) {
+      setVisible(false);
+      return;
+    }
     (async () => {
       try {
         const settingsPath = join(projectPath, ".aui", "settings.json");
@@ -39,7 +44,7 @@ export function SetupWizard() {
         setVisible(true);
       }
     })();
-  }, [projectPath]);
+  }, [projectPath, providerMode]);
 
   // Check agent teams status when entering step 2
   useEffect(() => {

@@ -18,6 +18,7 @@ import { useUiStore } from "./store/ui-store";
 import { startWatching } from "./services/file-watcher";
 import { readAppSettings } from "./services/app-settings";
 import { join } from "./utils/paths";
+import type { VariableKind } from "./types/aui-node";
 
 function App() {
   const inspectorOpen = useUiStore((s) => s.inspectorOpen);
@@ -34,6 +35,7 @@ function App() {
   const createGroupNode = useTreeStore((s) => s.createGroupNode);
   const createPipelineNode = useTreeStore((s) => s.createPipelineNode);
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
+  const updateNode = useTreeStore((s) => s.updateNode);
   const deleteNodeFromDisk = useTreeStore((s) => s.deleteNodeFromDisk);
   const unwatchRef = useRef<(() => void) | null>(null);
 
@@ -41,7 +43,14 @@ function App() {
     ? nodes.get(deleteDialogNodeId)?.name ?? ""
     : "";
 
-  const handleCreate = async (kind: "agent" | "skill" | "group" | "pipeline", name: string, description: string, parentId: string | null, skillIds: string[]) => {
+  const handleCreate = async (
+    kind: "agent" | "skill" | "group" | "pipeline",
+    name: string,
+    description: string,
+    parentId: string | null,
+    skillIds: string[],
+    managerId: string | null,
+  ) => {
     try {
       const resolvedParentId = parentId ?? useUiStore.getState().createDialogParentId ?? undefined;
       if (kind === "agent") await createAgentNode(name, description, resolvedParentId);
@@ -49,18 +58,41 @@ function App() {
       else if (kind === "group") createGroupNode(name, description, resolvedParentId);
       else await createSkillNode(name, description, resolvedParentId);
 
-      // Assign selected skills to the newly created node
-      if (skillIds.length > 0) {
-        const store = useTreeStore.getState();
-        // Find the node we just created (last node added with matching name)
-        for (const [id, node] of store.nodes) {
-          if (node.name === name || node.name === name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')) {
-            for (const skillId of skillIds) {
-              assignSkillToNode(id, skillId);
-            }
-            break;
-          }
+      const store = useTreeStore.getState();
+      const displayName = name.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      const expectedParent = resolvedParentId ?? "root";
+      const expectedKind = kind === "pipeline" ? "pipeline" : kind;
+
+      let createdNodeId: string | null = null;
+      let createdAt = -1;
+      for (const [id, node] of store.nodes) {
+        if (node.kind !== expectedKind) continue;
+        if ((node.parentId ?? "root") !== expectedParent) continue;
+        if (!(node.name === name || node.name === displayName)) continue;
+        if (node.lastModified > createdAt) {
+          createdAt = node.lastModified;
+          createdNodeId = id;
         }
+      }
+
+      if (createdNodeId && skillIds.length > 0) {
+        for (const skillId of skillIds) {
+          assignSkillToNode(createdNodeId, skillId);
+        }
+      }
+
+      if (createdNodeId && managerId) {
+        const managerNode = store.nodes.get(managerId);
+        const managerName = managerNode?.name ?? managerId;
+        const targetNode = useTreeStore.getState().nodes.get(createdNodeId);
+        const nextVars = [
+          ...(targetNode?.variables ?? []).filter(
+            (v) => v.name !== "manager_being_id" && v.name !== "manager_being_name",
+          ),
+          { name: "manager_being_id", value: managerId, type: "text" as VariableKind },
+          { name: "manager_being_name", value: managerName, type: "text" as VariableKind },
+        ];
+        updateNode(createdNodeId, { variables: nextVars, lastModified: Date.now() });
       }
 
       toast(`Created ${name}`, "success");

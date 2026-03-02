@@ -8,7 +8,14 @@ type CreateKind = "agent" | "skill" | "group" | "pipeline";
 interface CreateNodeDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreate: (kind: CreateKind, name: string, description: string, parentId: string | null, skillIds: string[]) => void;
+  onCreate: (
+    kind: CreateKind,
+    name: string,
+    description: string,
+    parentId: string | null,
+    skillIds: string[],
+    managerId: string | null,
+  ) => void;
 }
 
 const NAME_PATTERN = /^[a-z][a-z0-9-]*$/;
@@ -28,6 +35,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   const [touched, setTouched] = useState(false);
   const [parentId, setParentId] = useState<string | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
+  const [managerId, setManagerId] = useState<string>("");
 
   // Skill mode: "existing" to assign from catalog, "new" to create fresh
   const [skillMode, setSkillMode] = useState<"existing" | "new">("existing");
@@ -41,7 +49,9 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
     const options: Array<{ id: string; name: string }> = [];
     for (const [id, node] of nodes) {
       if (node.kind === "human" || node.kind === "agent" || node.kind === "group") {
-        options.push({ id, name: node.name });
+        const isSister = node.kind === "agent" && (node.tags?.includes("sister") || node.team === "openclaw-sisters");
+        const label = isSister ? `${node.name} (sister)` : node.name;
+        options.push({ id, name: label });
       }
     }
     options.sort((a, b) => {
@@ -50,6 +60,17 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       return a.name.localeCompare(b.name);
     });
     return options;
+  }, [nodes]);
+
+  const sisterManagerOptions = useMemo(() => {
+    const items: Array<{ id: string; name: string }> = [];
+    for (const [id, node] of nodes) {
+      if (node.kind !== "agent") continue;
+      const isSister = node.tags?.includes("sister") || node.team === "openclaw-sisters";
+      if (!isSister) continue;
+      items.push({ id, name: node.name });
+    }
+    return items.sort((a, b) => a.name.localeCompare(b.name));
   }, [nodes]);
 
   // Build list of available skills for agent/group assignment display
@@ -97,6 +118,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       setSelectedSkills(new Set());
       setSkillMode("existing");
       setSelectedExistingSkillId("");
+      setManagerId("");
       const parent = nodes.get(pid);
       if (parent?.kind === "group") {
         setKind("group");
@@ -114,6 +136,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       setSelectedSkills(new Set());
       setSkillMode("existing");
       setSelectedExistingSkillId("");
+      setManagerId("");
     }
   }, [open, createDialogParentId, createDialogDefaultKind, nodes]);
 
@@ -162,6 +185,8 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       ? nameValid
       : nameValid;
 
+  const shouldShowManagerPicker = !isInsideTeam && (kind === "group" || kind === "pipeline");
+
   const handleSubmit = () => {
     if (kind === "skill" && skillMode === "existing" && selectedExistingSkillId) {
       // Assign existing skill to parent
@@ -173,7 +198,14 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       return;
     }
     if (canCreate) {
-      onCreate(kind, name, description, parentId, Array.from(selectedSkills));
+      onCreate(
+        kind,
+        name,
+        description,
+        parentId,
+        Array.from(selectedSkills),
+        managerId || null,
+      );
     }
   };
 
@@ -279,6 +311,40 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
             );
           })}
         </div>
+
+        {shouldShowManagerPicker && (
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ color: "var(--text-secondary)", fontSize: 12, display: "block", marginBottom: 4 }}>
+              Manager Being (optional)
+            </span>
+            <select
+              value={managerId}
+              onChange={(e) => setManagerId(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "8px 12px",
+                background: "var(--bg-primary)",
+                border: "1px solid var(--border-color)",
+                borderRadius: 6,
+                color: "var(--text-primary)",
+                fontSize: 14,
+                outline: "none",
+                boxSizing: "border-box",
+                cursor: "pointer",
+              }}
+            >
+              <option value="">Unassigned</option>
+              {sisterManagerOptions.map((opt) => (
+                <option key={opt.id} value={opt.id}>
+                  {opt.name}
+                </option>
+              ))}
+            </select>
+            <span style={{ color: "var(--text-secondary)", fontSize: 11, display: "block", marginTop: 4 }}>
+              Uses detected sister beings from OpenClaw config/identity data.
+            </span>
+          </div>
+        )}
 
         {/* Skill mode: existing vs new */}
         {kind === "skill" && (

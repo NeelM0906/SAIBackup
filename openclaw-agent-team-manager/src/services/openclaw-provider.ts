@@ -32,6 +32,15 @@ interface OpenClawAgentItem {
 }
 
 interface OpenClawConfig {
+  meta?: {
+    lastTouchedVersion?: string;
+    lastTouchedAt?: string;
+  };
+  acp?: {
+    enabled?: boolean;
+    defaultAgent?: string;
+    allowedAgents?: string[];
+  };
   agents?: {
     defaults?: {
       workspace?: string;
@@ -154,9 +163,12 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
   const nodes: AuiNode[] = [];
   const workspaceRoot = join(projectPath, "workspace");
   const entityRootId = generateNodeId("openclaw:entities:root");
+  const runtimeConfigId = generateNodeId("openclaw:entities:runtime-config");
+  const sisterRegistryId = generateNodeId("openclaw:entities:sister-registry");
   const workspaceCatalogId = generateNodeId("openclaw:entities:workspaces");
   const dashboardsId = generateNodeId("openclaw:entities:dashboards");
   const beingsSnapshotId = generateNodeId("openclaw:entities:beings-snapshot");
+  const config = await loadOpenClawConfig(projectPath);
 
   nodes.push({
     ...syntheticNodeBase("openclaw:entities:root"),
@@ -169,6 +181,53 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     config: null,
     promptBody: "Synthetic OpenClaw entity catalog generated from local workspace state.",
     tags: ["openclaw", "entities", "entity-type:catalog-root"],
+  });
+
+  const defaults = config?.agents?.defaults;
+  const sisters = (config?.agents?.list || []).filter((item) => item?.id);
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:runtime-config"),
+    id: runtimeConfigId,
+    name: "Runtime Configuration",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(projectPath, "openclaw.json"),
+    config: null,
+    promptBody: [
+      `openclaw_version: ${String(config?.meta?.lastTouchedVersion || "-")}`,
+      `last_touched_at: ${String(config?.meta?.lastTouchedAt || "-")}`,
+      `acp_enabled: ${String(config?.acp?.enabled ?? "-")}`,
+      `acp_default_agent: ${String(config?.acp?.defaultAgent || "-")}`,
+      `acp_allowed_agents: ${(config?.acp?.allowedAgents || []).join(", ") || "-"}`,
+      `sisters_total: ${String(sisters.length)}`,
+      `default_workspace: ${String(defaults?.workspace || "-")}`,
+      `default_model: ${String(defaults?.model?.primary || "-")}`,
+      `default_tools_count: ${String(defaults?.tools?.alsoAllow?.length || 0)}`,
+    ].join("\n"),
+    tags: ["openclaw", "entities", "entity-type:runtime-config"],
+  });
+
+  nodes.push({
+    ...syntheticNodeBase("openclaw:entities:sister-registry"),
+    id: sisterRegistryId,
+    name: "Sister Registry",
+    kind: "context",
+    parentId: entityRootId,
+    team: null,
+    sourcePath: join(projectPath, "openclaw.json"),
+    config: null,
+    promptBody: sisters.length > 0
+      ? sisters.map((sister) => {
+          const workspace = String(sister.workspace || defaults?.workspace || "-");
+          const model = String(sister.model?.primary || defaults?.model?.primary || "-");
+          const toolCount = Array.isArray(sister.tools?.alsoAllow) && sister.tools?.alsoAllow.length
+            ? sister.tools?.alsoAllow.length
+            : (defaults?.tools?.alsoAllow?.length || 0);
+          return `- ${toSisterDisplayName(sister)} [${sister.id}] | model: ${model} | tools: ${toolCount} | workspace: ${workspace}`;
+        }).join("\n")
+      : "No sister agents found in openclaw.json",
+    tags: ["openclaw", "entities", "entity-type:sister-registry"],
   });
 
   nodes.push({
