@@ -1,8 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { homeDir } from "@tauri-apps/api/path";
 import { useUiStore } from "@/store/ui-store";
 import { useTreeStore } from "@/store/tree-store";
 import { scanAllSkills, type SkillInfo } from "@/services/skill-scanner";
 import { listOpenClawCatalogAgents, type OpenClawCatalogAgent } from "@/services/openclaw-provider";
+import { join } from "@/utils/paths";
 
 type CreateKind = "agent" | "skill" | "group" | "pipeline";
 
@@ -30,6 +32,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   const nodes = useTreeStore((s) => s.nodes);
   const projectPath = useTreeStore((s) => s.projectPath);
   const providerMode = useTreeStore((s) => s.providerMode);
+  const loadProject = useTreeStore((s) => s.loadProject);
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
 
   const [kind, setKind] = useState<CreateKind>("agent");
@@ -49,6 +52,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   // Filesystem-scanned skills (all skills in the system)
   const [fsSkills, setFsSkills] = useState<SkillInfo[]>([]);
   const [catalogManagers, setCatalogManagers] = useState<OpenClawCatalogAgent[]>([]);
+  const hydrateAttemptedRef = useRef(false);
 
   // Build list of possible parent nodes
   const parentOptions = useMemo(() => {
@@ -65,6 +69,9 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       if (b.id === "root") return 1;
       return a.name.localeCompare(b.name);
     });
+    if (options.length === 0) {
+      options.push({ id: "root", name: "Root" });
+    }
     return options;
   }, [nodes]);
 
@@ -129,6 +136,41 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
     }
     return () => { cancelled = true; };
   }, [open, projectPath, providerMode]);
+
+  // Force OpenClaw hydration if dialog opens before sisters/root are loaded.
+  useEffect(() => {
+    if (!open) {
+      hydrateAttemptedRef.current = false;
+      return;
+    }
+    if (nodes.has("root") && Array.from(nodes.values()).some((n) => n.kind === "agent" && (n.tags?.includes("sister") || n.team === "openclaw-sisters"))) {
+      return;
+    }
+    if (hydrateAttemptedRef.current) return;
+    hydrateAttemptedRef.current = true;
+    homeDir()
+      .then((home) => loadProject(join(home, ".openclaw")))
+      .catch(() => {});
+  }, [open, nodes, loadProject]);
+
+  // Additional manager catalog fallback directly from ~/.openclaw
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+    homeDir()
+      .then((home) => listOpenClawCatalogAgents(join(home, ".openclaw")))
+      .then((items) => {
+        if (!cancelled && items.length > 0) {
+          setCatalogManagers((prev) => {
+            const byId = new Map(prev.map((p) => [p.id, p]));
+            for (const item of items) byId.set(item.id, item);
+            return Array.from(byId.values());
+          });
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [open]);
 
   // Reset form state when dialog opens/closes
   useEffect(() => {
