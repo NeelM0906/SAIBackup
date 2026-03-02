@@ -148,11 +148,11 @@ export function GroupEditor({ node }: GroupEditorProps) {
   useEffect(() => {
     if (!projectPath) return;
     let cancelled = false;
-    scanAllSkills(projectPath).then((skills) => {
+    scanAllSkills(projectPath, providerMode).then((skills) => {
       if (!cancelled) setFsSkills(skills);
     });
     return () => { cancelled = true; };
-  }, [projectPath, node.id, nodes]);
+  }, [projectPath, providerMode, node.id, nodes]);
 
   useEffect(() => {
     let cancelled = false;

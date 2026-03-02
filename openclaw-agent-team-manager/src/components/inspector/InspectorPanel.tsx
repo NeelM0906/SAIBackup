@@ -320,6 +320,7 @@ function RootEditor({ node }: { node: AuiNode }) {
   const updateNode = useTreeStore((s) => s.updateNode);
   const nodes = useTreeStore((s) => s.nodes);
   const projectPath = useTreeStore((s) => s.projectPath);
+  const providerMode = useTreeStore((s) => s.providerMode);
   const cacheSkillName = useTreeStore((s) => s.cacheSkillName);
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
   const removeSkillFromNode = useTreeStore((s) => s.removeSkillFromNode);
@@ -347,11 +348,11 @@ function RootEditor({ node }: { node: AuiNode }) {
   useEffect(() => {
     if (!projectPath) return;
     let cancelled = false;
-    scanAllSkills(projectPath).then((skills) => {
+    scanAllSkills(projectPath, providerMode).then((skills) => {
       if (!cancelled) setFsSkills(skills);
     });
     return () => { cancelled = true; };
-  }, [projectPath, nodes]);
+  }, [projectPath, providerMode, nodes]);
 
   // All skill nodes
   const treeSkills = useMemo(() => {

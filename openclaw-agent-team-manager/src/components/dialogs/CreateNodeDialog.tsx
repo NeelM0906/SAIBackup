@@ -19,6 +19,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   const createDialogDefaultKind = useUiStore((s) => s.createDialogDefaultKind);
   const nodes = useTreeStore((s) => s.nodes);
   const projectPath = useTreeStore((s) => s.projectPath);
+  const providerMode = useTreeStore((s) => s.providerMode);
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
 
   const [kind, setKind] = useState<CreateKind>("agent");
@@ -82,11 +83,11 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   useEffect(() => {
     if (!open || !projectPath) return;
     let cancelled = false;
-    scanAllSkills(projectPath).then((skills) => {
+    scanAllSkills(projectPath, providerMode).then((skills) => {
       if (!cancelled) setFsSkills(skills);
     });
     return () => { cancelled = true; };
-  }, [open, projectPath]);
+  }, [open, projectPath, providerMode]);
 
   // Reset form state when dialog opens/closes
   useEffect(() => {

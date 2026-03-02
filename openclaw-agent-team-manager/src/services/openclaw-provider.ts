@@ -103,6 +103,19 @@ function syntheticNodeBase(idSeed: string): Pick<AuiNode, "id" | "lastModified" 
   };
 }
 
+function inferWorkspaceEntityType(dirName: string): string {
+  const value = String(dirName || "").toLowerCase();
+  if (value.includes("dashboard")) return "dashboard";
+  if (value.includes("report")) return "reporting";
+  if (value.includes("recovery")) return "recovery";
+  if (value.includes("sister")) return "sister-workspace";
+  if (value.includes("skill")) return "skill-pack";
+  if (value.includes("tool")) return "tooling";
+  if (value.includes("presentation")) return "presentation";
+  if (value.includes("colosseum")) return "battle-domain";
+  return "workspace";
+}
+
 export async function detectProviderMode(projectPath: string): Promise<ProviderMode> {
   return (await exists(join(projectPath, "openclaw.json"))) ? "openclaw" : "claude";
 }
@@ -155,7 +168,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     sourcePath: join(projectPath, "openclaw.json"),
     config: null,
     promptBody: "Synthetic OpenClaw entity catalog generated from local workspace state.",
-    tags: ["openclaw", "entities"],
+    tags: ["openclaw", "entities", "entity-type:catalog-root"],
   });
 
   nodes.push({
@@ -168,7 +181,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     sourcePath: workspaceRoot,
     config: null,
     promptBody: `Workspace root: ${workspaceRoot}`,
-    tags: ["openclaw", "workspace-catalog"],
+    tags: ["openclaw", "workspace-catalog", "entity-type:workspace-catalog"],
   });
 
   if (await exists(workspaceRoot)) {
@@ -183,6 +196,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
 
       for (const dirName of dirs) {
         const p = join(workspaceRoot, dirName);
+        const entityType = inferWorkspaceEntityType(dirName);
         nodes.push({
           ...syntheticNodeBase(`openclaw:workspace:${dirName}`),
           name: titleCase(dirName),
@@ -191,8 +205,8 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
           team: null,
           sourcePath: p,
           config: null,
-          promptBody: `Workspace entity: ${dirName}\npath: ${p}`,
-          tags: ["openclaw", "workspace-entity", dirName],
+          promptBody: `entity_type: ${entityType}\nworkspace: ${dirName}\npath: ${p}`,
+          tags: ["openclaw", "workspace-entity", dirName, `entity-type:${entityType}`],
         });
       }
     } catch {
@@ -210,8 +224,22 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     sourcePath: join(projectPath, "openclaw.json"),
     config: null,
     promptBody: ONLINE_DASHBOARDS.map((item) => `- ${item.name}: ${item.url}`).join("\n"),
-    tags: ["openclaw", "dashboards"],
+    tags: ["openclaw", "dashboards", "entity-type:dashboards"],
   });
+
+  for (const item of ONLINE_DASHBOARDS) {
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:dashboard:${item.name}`),
+      name: item.name,
+      kind: "context",
+      parentId: dashboardsId,
+      team: null,
+      sourcePath: join(projectPath, "openclaw.json"),
+      config: null,
+      promptBody: `entity_type: dashboard\nurl: ${item.url}`,
+      tags: ["openclaw", "dashboard", "entity-type:dashboard", `entity-url:${item.url}`],
+    });
+  }
 
   const snapshotPath = join(workspaceRoot, "colosseum-dashboard", "data", "main_colosseum.json");
   let beingsPrompt = `Snapshot path: ${snapshotPath}\nstatus: unavailable`;
@@ -243,7 +271,7 @@ export async function buildOpenClawEntityNodes(projectPath: string): Promise<Aui
     sourcePath: snapshotPath,
     config: null,
     promptBody: beingsPrompt,
-    tags: ["openclaw", "beings", "snapshot"],
+    tags: ["openclaw", "beings", "snapshot", "entity-type:beings-snapshot"],
   });
 
   return nodes;

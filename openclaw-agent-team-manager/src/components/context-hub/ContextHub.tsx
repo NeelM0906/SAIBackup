@@ -8,6 +8,8 @@ import { join, getFileName, titleCase, generateNodeId } from "@/utils/paths";
 import { detectTeam, getTeamColor } from "@/utils/grouping";
 import { scanAllSkills } from "@/services/skill-scanner";
 import { toast } from "@/components/common/Toast";
+import type { ProviderMode } from "@/services/app-settings";
+import { listOpenClawCatalogAgents } from "@/services/openclaw-provider";
 
 // ── Types for catalog items ─────────────────────────────
 
@@ -15,7 +17,7 @@ interface CatalogItem {
   id: string;
   name: string;
   description: string;
-  kind: "agent" | "skill" | "group";
+  kind: "agent" | "skill" | "group" | "entity";
   team: string | null;
   sourcePath: string;
   model?: string;
@@ -24,15 +26,17 @@ interface CatalogItem {
   skills?: string[];
   assignedSkillCount?: number;
   agentCount?: number;
+  entityType?: string;
+  url?: string;
 }
 
-type FilterChip = "All" | "Skills" | "Teams" | "Agents";
-const FILTERS: FilterChip[] = ["All", "Skills", "Teams", "Agents"];
+type FilterChip = "All" | "Skills" | "Teams" | "Agents" | "Entities";
+const FILTERS: FilterChip[] = ["All", "Skills", "Teams", "Agents", "Entities"];
 
 // ── Filesystem scanning (independent of store) ──────────
 
-async function scanSkills(projectPath: string): Promise<CatalogItem[]> {
-  const skills = await scanAllSkills(projectPath);
+async function scanSkills(projectPath: string, providerMode: ProviderMode): Promise<CatalogItem[]> {
+  const skills = await scanAllSkills(projectPath, providerMode);
   return skills.map((s) => {
     // Extract folder name from sourcePath (e.g. ".../skills/gsd-review/SKILL.md" -> "gsd-review")
     const parts = s.sourcePath.replace(/\\/g, "/").split("/");
@@ -48,7 +52,21 @@ async function scanSkills(projectPath: string): Promise<CatalogItem[]> {
   });
 }
 
-async function scanAgents(projectPath: string): Promise<CatalogItem[]> {
+async function scanAgents(projectPath: string, providerMode: ProviderMode): Promise<CatalogItem[]> {
+  if (providerMode === "openclaw") {
+    const sisters = await listOpenClawCatalogAgents(projectPath);
+    return sisters.map((agent) => ({
+      id: agent.id,
+      name: agent.name,
+      description: agent.description,
+      kind: "agent" as const,
+      team: "openclaw-sisters",
+      sourcePath: agent.sourcePath,
+      model: agent.model,
+      tools: agent.tools,
+    }));
+  }
+
   const items: CatalogItem[] = [];
   const agentsDir = join(projectPath, ".claude", "agents");
 
@@ -108,6 +126,7 @@ const KIND_COLORS: Record<string, string> = {
   agent: "#f0883e",
   skill: "#3fb950",
   group: "#4a9eff",
+  entity: "#a371f7",
 };
 
 function BentoCard({
@@ -115,11 +134,13 @@ function BentoCard({
   isOnTree,
   onAddToTree,
   onEdit,
+  onOpenUrl,
 }: {
   item: CatalogItem;
   isOnTree: boolean;
   onAddToTree: () => void;
   onEdit: () => void;
+  onOpenUrl: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const color = KIND_COLORS[item.kind] ?? "#4a9eff";
@@ -204,6 +225,14 @@ function BentoCard({
                 border="rgba(76,175,80,0.3)"
               />
             )}
+            {item.kind === "entity" && item.entityType && (
+              <Badge
+                text={item.entityType}
+                bg="rgba(163,113,247,0.15)"
+                color="#a371f7"
+                border="rgba(163,113,247,0.35)"
+              />
+            )}
           </div>
         </div>
 
@@ -237,6 +266,12 @@ function BentoCard({
               {item.skills?.length ? <DetailRow label="Skills" value={item.skills.join(", ")} /> : null}
             </div>
           )}
+          {item.kind === "entity" && (
+            <div style={{ marginBottom: 10 }}>
+              {item.entityType ? <DetailRow label="Type" value={item.entityType} /> : null}
+              {item.url ? <DetailRow label="URL" value={item.url} /> : null}
+            </div>
+          )}
 
           {/* Source path */}
           {item.sourcePath && (
@@ -252,13 +287,16 @@ function BentoCard({
 
           {/* Actions */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {!isOnTree && item.kind !== "group" ? (
+            {!isOnTree && item.kind !== "group" && item.kind !== "entity" ? (
               <ActionButton label="Add to Tree" color="#3fb950" onClick={(e) => { e.stopPropagation(); onAddToTree(); }} />
             ) : (
               <ActionButton label="View on Tree" color="var(--accent-blue)" onClick={(e) => { e.stopPropagation(); onEdit(); }} />
             )}
-            {item.kind !== "group" && (
+            {item.kind !== "group" && item.kind !== "entity" && (
               <ActionButton label="Edit" color="var(--accent-blue)" onClick={(e) => { e.stopPropagation(); onEdit(); }} />
+            )}
+            {item.url && (
+              <ActionButton label="Open URL" color="#a371f7" onClick={(e) => { e.stopPropagation(); onOpenUrl(); }} />
             )}
           </div>
         </div>
@@ -610,6 +648,7 @@ export function ContextHub() {
   const toggleContextHub = useUiStore((s) => s.toggleContextHub);
   const selectNode = useUiStore((s) => s.selectNode);
   const projectPath = useTreeStore((s) => s.projectPath);
+  const providerMode = useTreeStore((s) => s.providerMode);
   const treeNodes = useTreeStore((s) => s.nodes);
   const addNode = useTreeStore((s) => s.addNode);
 
@@ -651,6 +690,37 @@ export function ContextHub() {
     return items.sort((a, b) => a.name.localeCompare(b.name));
   }, [treeNodes]);
 
+  const entityItems = useMemo<CatalogItem[]>(() => {
+    if (providerMode !== "openclaw") return [];
+    const items: CatalogItem[] = [];
+    for (const [, node] of treeNodes) {
+      if (node.kind !== "context") continue;
+      if (!node.tags.includes("openclaw")) continue;
+      const entityTypeTag = node.tags.find((tag) => tag.startsWith("entity-type:"));
+      const urlTag = node.tags.find((tag) => tag.startsWith("entity-url:"));
+      const entityType = entityTypeTag ? entityTypeTag.replace("entity-type:", "") : "context";
+      const urlFromTag = urlTag ? urlTag.replace("entity-url:", "") : undefined;
+      const urlFromPrompt = node.promptBody
+        .split("\n")
+        .find((line) => line.toLowerCase().startsWith("url:"))
+        ?.split(":")
+        .slice(1)
+        .join(":")
+        .trim();
+      items.push({
+        id: node.id,
+        name: node.name,
+        description: node.promptBody,
+        kind: "entity",
+        team: node.team,
+        sourcePath: node.sourcePath,
+        entityType,
+        url: urlFromTag || urlFromPrompt,
+      });
+    }
+    return items.sort((a, b) => a.name.localeCompare(b.name));
+  }, [providerMode, treeNodes]);
+
   // Scan filesystem when hub opens
   useEffect(() => {
     if (!contextHubOpen || !projectPath) return;
@@ -660,8 +730,8 @@ export function ContextHub() {
     const load = async () => {
       try {
         const [skills, agents] = await Promise.all([
-          scanSkills(projectPath),
-          scanAgents(projectPath),
+          scanSkills(projectPath, providerMode),
+          scanAgents(projectPath, providerMode),
         ]);
         if (!cancelled) {
           setSkillItems(skills);
@@ -675,7 +745,7 @@ export function ContextHub() {
 
     load();
     return () => { cancelled = true; };
-  }, [contextHubOpen, projectPath]);
+  }, [contextHubOpen, projectPath, providerMode]);
 
   // Build filtered + searched items
   const { sections, totalCount } = useMemo(() => {
@@ -685,7 +755,9 @@ export function ContextHub() {
       return (
         item.name.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q) ||
-        (item.team ?? "").toLowerCase().includes(q)
+        (item.team ?? "").toLowerCase().includes(q) ||
+        (item.entityType ?? "").toLowerCase().includes(q) ||
+        (item.url ?? "").toLowerCase().includes(q)
       );
     };
 
@@ -695,16 +767,19 @@ export function ContextHub() {
       ? skillItems.filter(matchesSearch) : [];
     const filteredAgents = (activeFilter === "All" || activeFilter === "Agents")
       ? agentItems.filter(matchesSearch) : [];
+    const filteredEntities = (activeFilter === "All" || activeFilter === "Entities")
+      ? entityItems.filter(matchesSearch) : [];
 
     return {
       sections: [
         { label: "Teams", items: filteredTeams },
         { label: "Skills", items: filteredSkills },
-        { label: "Agents", items: filteredAgents },
+        { label: providerMode === "openclaw" ? "Sisters" : "Agents", items: filteredAgents },
+        { label: "Entities", items: filteredEntities },
       ].filter((s) => s.items.length > 0),
-      totalCount: filteredTeams.length + filteredSkills.length + filteredAgents.length,
+      totalCount: filteredTeams.length + filteredSkills.length + filteredAgents.length + filteredEntities.length,
     };
-  }, [search, activeFilter, teamItems, skillItems, agentItems]);
+  }, [search, activeFilter, teamItems, skillItems, agentItems, entityItems, providerMode]);
 
   const isOnTree = (itemId: string) => treeNodes.has(itemId);
 
@@ -713,7 +788,7 @@ export function ContextHub() {
       addNode({
         id: item.id,
         name: item.name,
-        kind: item.kind,
+        kind: item.kind === "entity" ? "context" : item.kind,
         parentId: "root",
         team: item.team,
         sourcePath: item.sourcePath,
@@ -740,6 +815,16 @@ export function ContextHub() {
   const handleNewClick = () => {
     useUiStore.getState().openCreateDialog();
     toggleContextHub();
+  };
+
+  const handleOpenUrl = async (item: CatalogItem) => {
+    if (!item.url) return;
+    try {
+      const { open: shellOpen } = await import("@tauri-apps/plugin-shell");
+      await shellOpen(item.url);
+    } catch {
+      toast("Could not open URL", "error");
+    }
   };
 
   if (!contextHubOpen) return null;
@@ -838,7 +923,7 @@ export function ContextHub() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search skills, agents, teams..."
+            placeholder="Search skills, sisters, teams, entities..."
             style={{
               width: "100%", boxSizing: "border-box",
               padding: "8px 30px 8px 12px",
@@ -922,6 +1007,7 @@ export function ContextHub() {
                       isOnTree={isOnTree(item.id)}
                       onAddToTree={() => handleAddToTree(item)}
                       onEdit={() => handleEdit(item)}
+                      onOpenUrl={() => handleOpenUrl(item)}
                     />
                   ))}
                 </div>
