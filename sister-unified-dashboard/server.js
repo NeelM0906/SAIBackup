@@ -312,7 +312,7 @@ async function handleRequest(req, res) {
 
   if (url.pathname === '/api/assignments' && method === 'GET') {
     const days = toInt(url.searchParams.get('days'), LOOKBACK_DAYS_DEFAULT);
-    const limit = toInt(url.searchParams.get('limit'), 100);
+    const limit = toInt(url.searchParams.get('limit'), 300);
     const status = url.searchParams.get('status') || null;
     const ownerSisterId = url.searchParams.get('owner_sister_id') || null;
 

@@ -136,7 +136,10 @@
 
           <section class="panel">
             <div class="panel-head">
-              <h2>Task Registry</h2>
+              <div>
+                <h2>Task Registry</h2>
+                <small id="assignmentsCoverage">Loading task coverage...</small>
+              </div>
               <div class="filters">
                 <label for="assignmentStatusFilter">Status</label>
                 <select id="assignmentStatusFilter">
@@ -152,6 +155,7 @@
                 <select id="assignmentOwnerFilter">
                   <option value="">All</option>
                 </select>
+                <button id="assignmentsLoadMoreBtn" class="link-btn" type="button">Load 200 More</button>
               </div>
             </div>
 

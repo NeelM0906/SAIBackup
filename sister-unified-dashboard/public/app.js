@@ -9,6 +9,8 @@ const POLL_CHAT_MS = 8000;
 const LOGS_DEFAULT_LIMIT = 10;
 const LOGS_LOAD_MORE_STEP = 50;
 const SUBAGENTS_LIMIT = 200;
+const ASSIGNMENTS_DEFAULT_LIMIT = 300;
+const ASSIGNMENTS_LOAD_MORE_STEP = 200;
 
 const ASSIGNMENT_STATUSES = ['inbox', 'in_progress', 'blocked', 'completed', 'rework', 'cancelled'];
 
@@ -16,6 +18,7 @@ const state = {
   sisters: [],
   selectedAssignmentId: null,
   logsLimit: LOGS_DEFAULT_LIMIT,
+  assignmentsLimit: ASSIGNMENTS_DEFAULT_LIMIT,
   profileCache: new Map(),
   workboardDetailCache: new Map(),
   subagentRunCache: new Map(),
@@ -92,6 +95,8 @@ const els = {
   assignmentFormError: document.getElementById('assignmentFormError'),
   assignmentStatusFilter: document.getElementById('assignmentStatusFilter'),
   assignmentOwnerFilter: document.getElementById('assignmentOwnerFilter'),
+  assignmentsCoverage: document.getElementById('assignmentsCoverage'),
+  assignmentsLoadMoreBtn: document.getElementById('assignmentsLoadMoreBtn'),
   assignmentsTable: document.getElementById('assignmentsTable'),
   assignmentEventsTable: document.getElementById('assignmentEventsTable'),
   selectedAssignmentLabel: document.getElementById('selectedAssignmentLabel'),
@@ -388,6 +393,17 @@ function renderEvents(payload) {
 
 function renderAssignments(payload) {
   const items = payload.items || [];
+  const totalCount = Number(payload.total_count ?? items.length);
+  const hasMore = Boolean(payload.has_more ?? (totalCount > items.length));
+
+  if (els.assignmentsCoverage) {
+    const suffix = hasMore ? ` (showing first ${n(payload.limit || items.length)})` : '';
+    els.assignmentsCoverage.textContent = `Showing ${n(items.length)} of ${n(totalCount)} tasks${suffix}`;
+  }
+
+  if (els.assignmentsLoadMoreBtn) {
+    els.assignmentsLoadMoreBtn.disabled = !hasMore;
+  }
 
   els.assignmentsTable.innerHTML = items.length
     ? items
@@ -1066,7 +1082,7 @@ async function refreshEvents() {
 }
 
 async function refreshAssignments() {
-  const q = new URLSearchParams({ days: String(DAYS), limit: '120' });
+  const q = new URLSearchParams({ days: String(DAYS), limit: String(state.assignmentsLimit) });
   if (els.assignmentStatusFilter.value) q.set('status', els.assignmentStatusFilter.value);
   if (els.assignmentOwnerFilter.value) q.set('owner_sister_id', els.assignmentOwnerFilter.value);
 
@@ -1149,10 +1165,17 @@ els.logsLoadMoreBtn.addEventListener('click', () => {
 });
 
 els.assignmentStatusFilter.addEventListener('change', () => {
+  state.assignmentsLimit = ASSIGNMENTS_DEFAULT_LIMIT;
   refreshAssignments().catch(() => {});
 });
 
 els.assignmentOwnerFilter.addEventListener('change', () => {
+  state.assignmentsLimit = ASSIGNMENTS_DEFAULT_LIMIT;
+  refreshAssignments().catch(() => {});
+});
+
+els.assignmentsLoadMoreBtn.addEventListener('click', () => {
+  state.assignmentsLimit += ASSIGNMENTS_LOAD_MORE_STEP;
   refreshAssignments().catch(() => {});
 });
 

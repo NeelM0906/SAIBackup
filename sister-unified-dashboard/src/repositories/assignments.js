@@ -130,7 +130,7 @@ export function getAssignment(assignmentId) {
   return assignmentRowToDto(row);
 }
 
-export function listAssignments({ status, ownerSisterId, days = 7, limit = 100 } = {}) {
+export function listAssignments({ status, ownerSisterId, days = 7, limit = 300 } = {}) {
   const db = getDb();
 
   const clauses = ["COALESCE(archived_at, '') = ''", 'updated_at >= ?'];
@@ -147,7 +147,7 @@ export function listAssignments({ status, ownerSisterId, days = 7, limit = 100 }
     params.push(ownerSisterId);
   }
 
-  const boundedLimit = Math.min(Math.max(Number(limit) || 100, 1), 300);
+  const boundedLimit = Math.min(Math.max(Number(limit) || 300, 1), 2000);
   const sql = `
     SELECT *
     FROM assignments
@@ -157,6 +157,18 @@ export function listAssignments({ status, ownerSisterId, days = 7, limit = 100 }
   `;
 
   const items = db.prepare(sql).all(...params, boundedLimit).map(assignmentRowToDto);
+
+  const totalCount = Number(
+    db
+      .prepare(
+        `
+          SELECT COUNT(*) AS c
+          FROM assignments
+          WHERE ${clauses.join(' AND ')}
+        `
+      )
+      .get(...params)?.c || 0
+  );
 
   const counts = db
     .prepare(
@@ -177,7 +189,9 @@ export function listAssignments({ status, ownerSisterId, days = 7, limit = 100 }
     items,
     counts,
     limit: boundedLimit,
-    window_days: Math.max(Number(days) || 1, 1)
+    window_days: Math.max(Number(days) || 1, 1),
+    total_count: totalCount,
+    has_more: totalCount > items.length
   };
 }
 
