@@ -16,6 +16,8 @@ interface CreateNodeDialogProps {
     parentId: string | null,
     skillIds: string[],
     managerId: string | null,
+    memberIds: string[],
+    includeOpenClawCapabilities: boolean,
   ) => void;
 }
 
@@ -37,6 +39,8 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
   const [parentId, setParentId] = useState<string | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
   const [managerId, setManagerId] = useState<string>("");
+  const [selectedMemberIds, setSelectedMemberIds] = useState<Set<string>>(new Set());
+  const [includeOpenClawCapabilities, setIncludeOpenClawCapabilities] = useState(true);
 
   // Skill mode: "existing" to assign from catalog, "new" to create fresh
   const [skillMode, setSkillMode] = useState<"existing" | "new">("existing");
@@ -135,6 +139,8 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       setSkillMode("existing");
       setSelectedExistingSkillId("");
       setManagerId("");
+      setSelectedMemberIds(new Set());
+      setIncludeOpenClawCapabilities(true);
       const parent = nodes.get(pid);
       if (parent?.kind === "group") {
         setKind("group");
@@ -153,6 +159,8 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       setSkillMode("existing");
       setSelectedExistingSkillId("");
       setManagerId("");
+      setSelectedMemberIds(new Set());
+      setIncludeOpenClawCapabilities(true);
     }
   }, [open, createDialogParentId, createDialogDefaultKind, nodes]);
 
@@ -178,7 +186,7 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
         { value: "group", label: "Agent", color: "#f0883e" },
       ]
     : [
-        { value: "group", label: "Team", color: "var(--accent-blue)" },
+        { value: "group", label: "Agent Team", color: "var(--accent-blue)" },
         { value: "agent", label: "Agent", color: "#f0883e" },
         { value: "pipeline", label: "Project Manager", color: "#d946ef" },
       ];
@@ -188,6 +196,15 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
       const next = new Set(prev);
       if (next.has(skillId)) next.delete(skillId);
       else next.add(skillId);
+      return next;
+    });
+  }
+
+  function toggleMember(memberId: string) {
+    setSelectedMemberIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(memberId)) next.delete(memberId);
+      else next.add(memberId);
       return next;
     });
   }
@@ -221,6 +238,8 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
         parentId,
         Array.from(selectedSkills),
         managerId || null,
+        Array.from(selectedMemberIds),
+        includeOpenClawCapabilities,
       );
     }
   };
@@ -360,6 +379,79 @@ export function CreateNodeDialog({ open, onClose, onCreate }: CreateNodeDialogPr
               Uses detected sister beings from OpenClaw config/identity data.
             </span>
           </div>
+        )}
+
+        {shouldShowManagerPicker && kind === "group" && (
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ color: "var(--text-secondary)", fontSize: 12, display: "block", marginBottom: 6 }}>
+              Team Member Beings
+            </span>
+            {sisterManagerOptions.length === 0 ? (
+              <div style={{ color: "var(--text-secondary)", fontSize: 12, fontStyle: "italic" }}>
+                No sister beings detected yet.
+              </div>
+            ) : (
+              <div
+                style={{
+                  maxHeight: 140,
+                  overflowY: "auto",
+                  border: "1px solid var(--border-color)",
+                  borderRadius: 6,
+                  padding: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                }}
+              >
+                {sisterManagerOptions.map((opt) => (
+                  <label
+                    key={opt.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      color: "var(--text-primary)",
+                      fontSize: 13,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedMemberIds.has(opt.id)}
+                      onChange={() => toggleMember(opt.id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                    <span>{opt.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+            <span style={{ color: "var(--text-secondary)", fontSize: 11, display: "block", marginTop: 4 }}>
+              Selected beings will be added as team members automatically.
+            </span>
+          </div>
+        )}
+
+        {shouldShowManagerPicker && (
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginBottom: 16,
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={includeOpenClawCapabilities}
+              onChange={(e) => setIncludeOpenClawCapabilities(e.target.checked)}
+              style={{ cursor: "pointer" }}
+            />
+            <span style={{ color: "var(--text-primary)", fontSize: 12 }}>
+              Grant OpenClaw tools + skills access to this team
+            </span>
+          </label>
         )}
 
         {/* Skill mode: existing vs new */}

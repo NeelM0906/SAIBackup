@@ -53,8 +53,8 @@ interface TreeActions {
   loadTreeMetadata(projectPath: string): Promise<TreeMetadata | null>;
   createAgentNode(name: string, description: string, parentId?: string): Promise<void>;
   createSkillNode(name: string, description: string, parentId?: string): Promise<void>;
-  createGroupNode(name: string, description: string, parentId?: string): void;
-  createPipelineNode(name: string, description: string, parentId?: string): void;
+  createGroupNode(name: string, description: string, parentId?: string): string;
+  createPipelineNode(name: string, description: string, parentId?: string): string;
   updatePipelineSteps(nodeId: string, steps: PipelineStep[]): void;
   deployPipeline(nodeId: string, options?: { skipLaunch?: boolean }): Promise<void>;
   cacheSkillName(id: string, name: string): void;
@@ -697,7 +697,7 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
     });
   },
 
-  createGroupNode(name: string, description: string, parentId?: string) {
+  createGroupNode(name: string, description: string, parentId?: string): string {
     const id = `group-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const resolvedParent = parentId ?? "root";
     const node: AuiNode = {
@@ -736,9 +736,10 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
     });
 
     get().saveTreeMetadata();
+    return id;
   },
 
-  createPipelineNode(name: string, description: string, parentId?: string) {
+  createPipelineNode(name: string, description: string, parentId?: string): string {
     const id = `pipeline-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const resolvedParent = parentId ?? "root";
     const node: AuiNode = {
@@ -777,6 +778,7 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
     });
 
     get().saveTreeMetadata();
+    return id;
   },
 
   updatePipelineSteps(nodeId: string, steps: PipelineStep[]) {

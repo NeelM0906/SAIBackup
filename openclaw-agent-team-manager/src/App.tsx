@@ -37,6 +37,7 @@ function App() {
   const assignSkillToNode = useTreeStore((s) => s.assignSkillToNode);
   const updateNode = useTreeStore((s) => s.updateNode);
   const deleteNodeFromDisk = useTreeStore((s) => s.deleteNodeFromDisk);
+  const providerMode = useTreeStore((s) => s.providerMode);
   const selectNode = useUiStore((s) => s.selectNode);
   const unwatchRef = useRef<(() => void) | null>(null);
 
@@ -51,28 +52,36 @@ function App() {
     parentId: string | null,
     skillIds: string[],
     managerId: string | null,
+    memberIds: string[],
+    includeOpenClawCapabilities: boolean,
   ) => {
     try {
       const resolvedParentId = parentId ?? useUiStore.getState().createDialogParentId ?? undefined;
-      if (kind === "agent") await createAgentNode(name, description, resolvedParentId);
-      else if (kind === "pipeline") createPipelineNode(name, description, resolvedParentId);
-      else if (kind === "group") createGroupNode(name, description, resolvedParentId);
-      else await createSkillNode(name, description, resolvedParentId);
+      let createdNodeId: string | null = null;
+      if (kind === "agent") {
+        await createAgentNode(name, description, resolvedParentId);
+      } else if (kind === "pipeline") {
+        createdNodeId = createPipelineNode(name, description, resolvedParentId);
+      } else if (kind === "group") {
+        createdNodeId = createGroupNode(name, description, resolvedParentId);
+      } else {
+        await createSkillNode(name, description, resolvedParentId);
+      }
 
       const store = useTreeStore.getState();
-      const displayName = name.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-      const expectedParent = resolvedParentId ?? "root";
-      const expectedKind = kind === "pipeline" ? "pipeline" : kind;
-
-      let createdNodeId: string | null = null;
-      let createdAt = -1;
-      for (const [id, node] of store.nodes) {
-        if (node.kind !== expectedKind) continue;
-        if ((node.parentId ?? "root") !== expectedParent) continue;
-        if (!(node.name === name || node.name === displayName)) continue;
-        if (node.lastModified > createdAt) {
-          createdAt = node.lastModified;
-          createdNodeId = id;
+      if (!createdNodeId) {
+        const displayName = name.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+        const expectedParent = resolvedParentId ?? "root";
+        const expectedKind = kind === "pipeline" ? "pipeline" : kind;
+        let createdAt = -1;
+        for (const [id, node] of store.nodes) {
+          if (node.kind !== expectedKind) continue;
+          if ((node.parentId ?? "root") !== expectedParent) continue;
+          if (!(node.name === name || node.name === displayName)) continue;
+          if (node.lastModified > createdAt) {
+            createdAt = node.lastModified;
+            createdNodeId = id;
+          }
         }
       }
 
@@ -82,18 +91,97 @@ function App() {
         }
       }
 
-      if (createdNodeId && managerId) {
-        const managerNode = store.nodes.get(managerId);
-        const managerName = managerNode?.name ?? managerId;
-        const targetNode = useTreeStore.getState().nodes.get(createdNodeId);
+      if (createdNodeId) {
+        const refreshedStore = useTreeStore.getState();
+        const refreshedNodes = refreshedStore.nodes;
+        const targetNode = refreshedNodes.get(createdNodeId);
+        const managerNode = managerId ? refreshedNodes.get(managerId) : null;
+
+        // Build OpenClaw capability summary for this team.
+        const allSkillIds = Array.from(refreshedNodes.values())
+          .filter((n) => n.kind === "skill")
+          .map((n) => n.id);
+
+        const sisterNodes = Array.from(refreshedNodes.values()).filter(
+          (n) => n.kind === "agent" && (n.tags?.includes("sister") || n.team === "openclaw-sisters"),
+        );
+
+        const toolSet = new Set<string>();
+        const collectTools = (nodeTools: unknown) => {
+          if (!Array.isArray(nodeTools)) return;
+          for (const tool of nodeTools) {
+            if (typeof tool === "string" && tool.trim()) toolSet.add(tool.trim());
+          }
+        };
+        collectTools((managerNode?.config as { tools?: string[] } | null)?.tools);
+        if (toolSet.size === 0) {
+          for (const sister of sisterNodes) {
+            collectTools((sister.config as { tools?: string[] } | null)?.tools);
+          }
+        }
+
+        if (includeOpenClawCapabilities && providerMode === "openclaw") {
+          for (const skillId of allSkillIds) {
+            assignSkillToNode(createdNodeId, skillId);
+          }
+        }
+
         const nextVars = [
           ...(targetNode?.variables ?? []).filter(
-            (v) => v.name !== "manager_being_id" && v.name !== "manager_being_name",
+            (v) =>
+              v.name !== "manager_being_id" &&
+              v.name !== "manager_being_name" &&
+              v.name !== "openclaw_tools" &&
+              v.name !== "openclaw_skills_access",
           ),
-          { name: "manager_being_id", value: managerId, type: "text" as VariableKind },
-          { name: "manager_being_name", value: managerName, type: "text" as VariableKind },
         ];
+
+        if (managerId) {
+          nextVars.push(
+            { name: "manager_being_id", value: managerId, type: "text" as VariableKind },
+            { name: "manager_being_name", value: managerNode?.name ?? managerId, type: "text" as VariableKind },
+          );
+        }
+
+        if (includeOpenClawCapabilities && providerMode === "openclaw") {
+          nextVars.push(
+            { name: "openclaw_tools", value: Array.from(toolSet).join(", "), type: "text" as VariableKind },
+            { name: "openclaw_skills_access", value: String(allSkillIds.length), type: "text" as VariableKind },
+          );
+        }
+
         updateNode(createdNodeId, { variables: nextVars, lastModified: Date.now() });
+
+        if (kind === "group" && memberIds.length > 0) {
+          for (const memberId of memberIds) {
+            const memberNode = refreshedNodes.get(memberId);
+            if (!memberNode) continue;
+
+            const childDescription = memberNode.promptBody
+              ? memberNode.promptBody.split("\n").slice(0, 8).join("\n")
+              : `Sister being member: ${memberNode.name}`;
+            const childId = createGroupNode(memberNode.name, childDescription, createdNodeId);
+
+            const memberTools = Array.isArray((memberNode.config as { tools?: string[] } | null)?.tools)
+              ? ((memberNode.config as { tools?: string[] } | null)?.tools as string[])
+              : [];
+
+            const childVars = [
+              { name: "source_being_id", value: memberId, type: "text" as VariableKind },
+              { name: "source_being_name", value: memberNode.name, type: "text" as VariableKind },
+            ];
+            if (memberTools.length > 0) {
+              childVars.push({ name: "openclaw_tools", value: memberTools.join(", "), type: "text" as VariableKind });
+            }
+
+            updateNode(childId, {
+              config: memberNode.config ?? null,
+              tags: [...(memberNode.tags ?? []), "team-member"],
+              variables: childVars,
+              lastModified: Date.now(),
+            });
+          }
+        }
       }
 
       if (createdNodeId) {
