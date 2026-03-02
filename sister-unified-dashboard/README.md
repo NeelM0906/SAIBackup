@@ -11,6 +11,7 @@ Standalone Node.js dashboard for SAI Prime + all sister beings.
 - Sister beings 3-column grid + modal profile view (IDENTITY.md priority)
 - Monitor logs default to 10 with `Load More (+50)`
 - Active workboard with top-5 items per sister and grounded heuristic progress
+- Dedicated subagents monitor with filterable run list and per-run activity modal
 - Clickable `Domains Online` metric with online-domain URL list
 - `Domains Online` click-through now uses curated production links (dashboards/apps)
 - Static frontend (HTML/CSS/JS) with polling every few seconds
@@ -34,6 +35,9 @@ Optional env vars:
 - `GET /api/events?days=7&limit=100&sister_id=<id>`
 - `GET /api/workboard?days=7`
 - `GET /api/workboard/:sisterId?days=7&limit=120`
+- `GET /api/subagents?days=7&limit=200&status=&requester=&sister_id=`
+- `GET /api/subagents/:runId?days=7`
+- `GET /api/subagents/:runId/activity?days=7&limit=200`
 - `POST /api/refresh`
 - `GET /api/assignments?days=7&limit=100&status=&owner_sister_id=`
 - `POST /api/assignments`

@@ -46,6 +46,47 @@
 
       <section class="panel">
         <div class="panel-head">
+          <h2>Subagents Monitor</h2>
+          <div class="filters">
+            <label for="subagentStatusFilter">Status</label>
+            <select id="subagentStatusFilter">
+              <option value="">All</option>
+            </select>
+            <label for="subagentSisterFilter">Sister</label>
+            <select id="subagentSisterFilter">
+              <option value="">All</option>
+            </select>
+            <label for="subagentRequesterFilter">Requester</label>
+            <select id="subagentRequesterFilter">
+              <option value="">All</option>
+            </select>
+            <small id="subagentCountLabel">Showing 0</small>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Spawned</th>
+                <th>Run</th>
+                <th>Sister</th>
+                <th>Requester</th>
+                <th>Status</th>
+                <th>Runtime</th>
+                <th>Last Activity</th>
+                <th>Task</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="subagentsTable">
+              <tr><td colspan="9">Loading subagent runs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
           <h2>Sisters Monitor Logs</h2>
           <div class="filters">
             <label for="sisterFilter">Sister</label>
@@ -232,6 +273,44 @@
           <section>
             <h4>Accessible URLs</h4>
             <div id="domainsList" class="detail-list"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="subagentModal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalSubagentName">Subagent Run</h3>
+            <small id="modalSubagentMeta"></small>
+          </div>
+          <button id="closeSubagentModalBtn" type="button">Close</button>
+        </div>
+
+        <div class="modal-body">
+          <section>
+            <h4>Run Details</h4>
+            <pre id="modalSubagentDetails">{}</pre>
+          </section>
+          <section>
+            <h4>Activity</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Source</th>
+                    <th>Type</th>
+                    <th>Tool</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody id="modalSubagentActivity">
+                  <tr><td colspan="5">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </section>
         </div>
       </div>

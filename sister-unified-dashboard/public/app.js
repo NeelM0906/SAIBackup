@@ -2,10 +2,12 @@ const DAYS = 7;
 const POLL_OVERVIEW_MS = 15000;
 const POLL_SISTERS_MS = 15000;
 const POLL_WORKBOARD_MS = 15000;
+const POLL_SUBAGENTS_MS = 12000;
 const POLL_EVENTS_MS = 8000;
 const POLL_ASSIGNMENTS_MS = 15000;
 const LOGS_DEFAULT_LIMIT = 10;
 const LOGS_LOAD_MORE_STEP = 50;
+const SUBAGENTS_LIMIT = 200;
 
 const ASSIGNMENT_STATUSES = ['inbox', 'in_progress', 'blocked', 'completed', 'rework', 'cancelled'];
 
@@ -15,6 +17,7 @@ const state = {
   logsLimit: LOGS_DEFAULT_LIMIT,
   profileCache: new Map(),
   workboardDetailCache: new Map(),
+  subagentRunCache: new Map(),
   overview: null
 };
 
@@ -22,6 +25,11 @@ const els = {
   overviewMetrics: document.getElementById('overviewMetrics'),
   sisterGrid: document.getElementById('sisterGrid'),
   workboardGrid: document.getElementById('workboardGrid'),
+  subagentsTable: document.getElementById('subagentsTable'),
+  subagentStatusFilter: document.getElementById('subagentStatusFilter'),
+  subagentSisterFilter: document.getElementById('subagentSisterFilter'),
+  subagentRequesterFilter: document.getElementById('subagentRequesterFilter'),
+  subagentCountLabel: document.getElementById('subagentCountLabel'),
   eventsTable: document.getElementById('eventsTable'),
   sisterFilter: document.getElementById('sisterFilter'),
   logsLoadMoreBtn: document.getElementById('logsLoadMoreBtn'),
@@ -59,7 +67,13 @@ const els = {
   domainsModal: document.getElementById('domainsModal'),
   closeDomainsModalBtn: document.getElementById('closeDomainsModalBtn'),
   domainsModalCount: document.getElementById('domainsModalCount'),
-  domainsList: document.getElementById('domainsList')
+  domainsList: document.getElementById('domainsList'),
+  subagentModal: document.getElementById('subagentModal'),
+  closeSubagentModalBtn: document.getElementById('closeSubagentModalBtn'),
+  modalSubagentName: document.getElementById('modalSubagentName'),
+  modalSubagentMeta: document.getElementById('modalSubagentMeta'),
+  modalSubagentDetails: document.getElementById('modalSubagentDetails'),
+  modalSubagentActivity: document.getElementById('modalSubagentActivity')
 };
 
 function n(value) {
@@ -86,12 +100,27 @@ function assignmentStatusClass(status) {
   return `status-${String(status || 'inbox')}`;
 }
 
+function subagentStatusClass(status) {
+  return `status-subagent-${String(status || 'unknown')}`;
+}
+
 function safeJson(value, fallback) {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
     return fallback;
   }
+}
+
+function formatRuntime(seconds) {
+  const total = Number(seconds);
+  if (!Number.isFinite(total) || total < 0) return '-';
+  const s = Math.floor(total % 60);
+  const m = Math.floor((total / 60) % 60);
+  const h = Math.floor(total / 3600);
+  if (h > 0) return `${h}h ${m}m ${s}s`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
 }
 
 async function fetchJson(path, options) {
@@ -228,6 +257,56 @@ function renderWorkboard(payload) {
         })
         .join('')
     : '<article class="workboard-card">No workboard data found.</article>';
+}
+
+function fillFilterSelect(selectEl, values) {
+  const current = selectEl.value;
+  const options = ['<option value="">All</option>']
+    .concat(
+      (values || []).map((value) => `<option value="${esc(value)}">${esc(value)}</option>`)
+    )
+    .join('');
+  selectEl.innerHTML = options;
+  if (current) {
+    selectEl.value = current;
+  }
+}
+
+function renderSubagents(payload) {
+  const items = payload.items || [];
+  const filters = payload.filters || {};
+  fillFilterSelect(els.subagentStatusFilter, filters.statuses || []);
+  fillFilterSelect(els.subagentSisterFilter, filters.sisters || []);
+  fillFilterSelect(els.subagentRequesterFilter, filters.requesters || []);
+
+  els.subagentsTable.innerHTML = items.length
+    ? items
+        .map((item) => {
+          const requester = item.requester_display_key || item.requester_session_key || item.requester_agent_id || '-';
+          const task = item.task || item.label || '-';
+          const lastActivity = item.activity?.last_event_at
+            ? `${shortTs(item.activity.last_event_at)} • ${item.activity.last_event_type || '-'}`
+            : '-';
+
+          return `
+            <tr>
+              <td><small>${esc(shortTs(item.created_at))}</small></td>
+              <td><small>${esc(item.run_id || '-')}</small></td>
+              <td>${esc(item.sister_id || '-')}</td>
+              <td><small>${esc(requester)}</small></td>
+              <td><span class="status ${subagentStatusClass(item.status)}">${esc(item.status || 'unknown')}</span></td>
+              <td><small>${esc(formatRuntime(item.runtime_seconds))}</small></td>
+              <td><small>${esc(lastActivity)}</small></td>
+              <td><small>${esc(task)}</small></td>
+              <td><button class="link-btn" data-action="view-subagent" data-run-id="${esc(item.run_id)}" type="button">Inspect</button></td>
+            </tr>
+          `;
+        })
+        .join('')
+    : '<tr><td colspan="9">No subagent runs in selected filter.</td></tr>';
+
+  const suffix = payload.has_more ? ' (more available)' : '';
+  els.subagentCountLabel.textContent = `Showing ${n(items.length)}${suffix}`;
 }
 
 function renderEvents(payload) {
@@ -389,6 +468,67 @@ async function openWorkboardModal(sisterId) {
   openModal(els.workboardModal);
 }
 
+function renderSubagentActivityRows(items) {
+  return items.length
+    ? items
+        .map(
+          (item) => `
+            <tr>
+              <td><small>${esc(shortTs(item.ts))}</small></td>
+              <td>${esc(item.source || '-')}</td>
+              <td>${esc(item.event_type || '-')}</td>
+              <td>${esc(item.tool_name || '-')}</td>
+              <td><small>${esc(item.summary || '-')}</small></td>
+            </tr>
+          `
+        )
+        .join('')
+    : '<tr><td colspan="5">No activity found.</td></tr>';
+}
+
+async function openSubagentModal(runId) {
+  let run = state.subagentRunCache.get(runId);
+  if (!run) {
+    const runPayload = await fetchJson(`/api/subagents/${encodeURIComponent(runId)}?days=${DAYS}`);
+    run = runPayload.run;
+    state.subagentRunCache.set(runId, run);
+  }
+
+  const activityPayload = await fetchJson(`/api/subagents/${encodeURIComponent(runId)}/activity?days=${DAYS}&limit=200`);
+  const activityItems = activityPayload.items || [];
+
+  els.modalSubagentName.textContent = `Subagent Run ${run.run_id || runId}`;
+  els.modalSubagentMeta.textContent = `${run.sister_id || '-'} • ${run.status || 'unknown'} • ${formatRuntime(
+    run.runtime_seconds
+  )}`;
+  els.modalSubagentDetails.textContent = safeJson(
+    {
+      run_id: run.run_id,
+      status: run.status,
+      sister_id: run.sister_id,
+      requester_session_key: run.requester_session_key,
+      requester_display_key: run.requester_display_key,
+      requester_agent_id: run.requester_agent_id,
+      child_session_key: run.child_session_key,
+      child_session_id: run.child_session_id,
+      model: run.model,
+      task: run.task,
+      label: run.label,
+      outcome: run.outcome,
+      created_at: run.created_at,
+      started_at: run.started_at,
+      ended_at: run.ended_at,
+      cleanup_completed_at: run.cleanup_completed_at,
+      archive_at: run.archive_at,
+      run_timeout_seconds: run.run_timeout_seconds,
+      runtime_seconds: run.runtime_seconds
+    },
+    '{}'
+  );
+  els.modalSubagentActivity.innerHTML = renderSubagentActivityRows(activityItems);
+  openModal(els.subagentModal);
+}
+
 function renderDomainLinks() {
   const links = state.overview?.beings?.online_dashboards || state.overview?.beings?.online_domains || [];
   els.domainsModalCount.textContent = `Online links: ${n(links.length)}`;
@@ -431,6 +571,14 @@ async function refreshSisters() {
 async function refreshWorkboard() {
   renderWorkboard(await fetchJson(`/api/workboard?days=${DAYS}`));
   state.workboardDetailCache.clear();
+}
+
+async function refreshSubagents() {
+  const q = new URLSearchParams({ days: String(DAYS), limit: String(SUBAGENTS_LIMIT) });
+  if (els.subagentStatusFilter.value) q.set('status', els.subagentStatusFilter.value);
+  if (els.subagentSisterFilter.value) q.set('sister_id', els.subagentSisterFilter.value);
+  if (els.subagentRequesterFilter.value) q.set('requester', els.subagentRequesterFilter.value);
+  renderSubagents(await fetchJson(`/api/subagents?${q.toString()}`));
 }
 
 async function refreshEvents() {
@@ -500,6 +648,7 @@ async function refreshAll() {
       refreshOverview(),
       refreshSisters(),
       refreshWorkboard(),
+      refreshSubagents(),
       refreshEvents(),
       refreshAssignments()
     ]);
@@ -525,6 +674,18 @@ els.assignmentStatusFilter.addEventListener('change', () => {
 
 els.assignmentOwnerFilter.addEventListener('change', () => {
   refreshAssignments().catch(() => {});
+});
+
+els.subagentStatusFilter.addEventListener('change', () => {
+  refreshSubagents().catch(() => {});
+});
+
+els.subagentSisterFilter.addEventListener('change', () => {
+  refreshSubagents().catch(() => {});
+});
+
+els.subagentRequesterFilter.addEventListener('change', () => {
+  refreshSubagents().catch(() => {});
 });
 
 els.assignmentForm.addEventListener('submit', async (event) => {
@@ -582,6 +743,17 @@ els.workboardGrid.addEventListener('click', (event) => {
   });
 });
 
+els.subagentsTable.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-action="view-subagent"]');
+  if (!button) return;
+  const runId = button.getAttribute('data-run-id');
+  if (!runId) return;
+
+  openSubagentModal(runId).catch((error) => {
+    els.assignmentFormError.textContent = error.message;
+  });
+});
+
 els.overviewMetrics.addEventListener('click', (event) => {
   const card = event.target.closest('[data-metric-key="domains_online"]');
   if (!card) return;
@@ -603,6 +775,11 @@ els.domainsModal.addEventListener('click', (event) => {
   if (event.target === els.domainsModal) closeModal(els.domainsModal);
 });
 
+els.closeSubagentModalBtn.addEventListener('click', () => closeModal(els.subagentModal));
+els.subagentModal.addEventListener('click', (event) => {
+  if (event.target === els.subagentModal) closeModal(els.subagentModal);
+});
+
 els.refreshBtn.addEventListener('click', async () => {
   els.refreshBtn.disabled = true;
   try {
@@ -617,5 +794,6 @@ refreshAll().catch(() => {});
 setInterval(() => refreshOverview().catch(() => {}), POLL_OVERVIEW_MS);
 setInterval(() => refreshSisters().catch(() => {}), POLL_SISTERS_MS);
 setInterval(() => refreshWorkboard().catch(() => {}), POLL_WORKBOARD_MS);
+setInterval(() => refreshSubagents().catch(() => {}), POLL_SUBAGENTS_MS);
 setInterval(() => refreshEvents().catch(() => {}), POLL_EVENTS_MS);
 setInterval(() => refreshAssignments().catch(() => {}), POLL_ASSIGNMENTS_MS);

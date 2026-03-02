@@ -275,6 +275,28 @@ th {
   border-color: rgba(255, 107, 107, 0.6);
 }
 
+.status.status-subagent-running {
+  color: var(--warn);
+  border-color: rgba(255, 179, 71, 0.5);
+}
+
+.status.status-subagent-completed {
+  color: var(--ok);
+  border-color: rgba(45, 202, 143, 0.5);
+}
+
+.status.status-subagent-error,
+.status.status-subagent-killed,
+.status.status-subagent-timeout {
+  color: var(--bad);
+  border-color: rgba(255, 107, 107, 0.6);
+}
+
+.status.status-subagent-unknown {
+  color: var(--off);
+  border-color: rgba(139, 153, 181, 0.5);
+}
+
 .panel-head {
   display: flex;
   align-items: center;
