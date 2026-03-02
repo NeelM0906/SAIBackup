@@ -4,9 +4,9 @@
   "version": "0.7.2",
   "type": "module",
   "scripts": {
-    "predev": "node ./scripts/generate-openclaw-catalog.mjs",
+    "predev": "node ./scripts/generate-openclaw-catalog.mjs && node ./scripts/generate-beings-registry.mjs",
     "dev": "vite",
-    "prebuild": "node ./scripts/generate-openclaw-catalog.mjs",
+    "prebuild": "node ./scripts/generate-openclaw-catalog.mjs && node ./scripts/generate-beings-registry.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"

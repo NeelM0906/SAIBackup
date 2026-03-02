@@ -11,6 +11,7 @@ import { detectTeam } from "@/utils/grouping";
 import { hasTauriRuntime, isWindows } from "@/utils/platform";
 import { readAppSettings, type ProviderMode } from "@/services/app-settings";
 import {
+  buildBeingsEntityNodes,
   buildOpenClawEntityNodes,
   buildOpenClawSisterNodes,
   detectProviderMode,
@@ -333,11 +334,12 @@ export const useTreeStore = create<TreeStore>()((set, get) => ({
       }
 
       if (providerMode === "openclaw") {
-        const [sisters, entities] = await Promise.all([
+        const [sisters, entities, beings] = await Promise.all([
           buildOpenClawSisterNodes(path),
           buildOpenClawEntityNodes(path),
+          buildBeingsEntityNodes(path),
         ]);
-        for (const node of [...sisters, ...entities]) {
+        for (const node of [...sisters, ...entities, ...beings]) {
           if (metadata?.hierarchy[node.id] !== undefined) {
             node.parentId = metadata.hierarchy[node.id];
           } else if (!node.parentId) {
@@ -2388,11 +2390,12 @@ IMPORTANT: Each agent already has their full skill file content above. Pass it d
     }
 
     if (providerMode === "openclaw") {
-      const [sisters, entities] = await Promise.all([
+      const [sisters, entities, beings] = await Promise.all([
         buildOpenClawSisterNodes(projectPath),
         buildOpenClawEntityNodes(projectPath),
+        buildBeingsEntityNodes(projectPath),
       ]);
-      for (const node of [...sisters, ...entities]) {
+      for (const node of [...sisters, ...entities, ...beings]) {
         node.parentId = targetMeta.hierarchy[node.id] !== undefined
           ? targetMeta.hierarchy[node.id]
           : (node.parentId ?? "root");

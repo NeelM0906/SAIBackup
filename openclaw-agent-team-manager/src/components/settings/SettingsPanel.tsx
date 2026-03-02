@@ -7,6 +7,7 @@ import { useUiStore } from "@/store/ui-store";
 import { useTreeStore } from "@/store/tree-store";
 import { join } from "@/utils/paths";
 import { toast } from "@/components/common/Toast";
+import { useGatewayStatus } from "@/hooks/useGatewayStatus";
 import {
   DEFAULT_APP_SETTINGS,
   readAppSettings,
@@ -60,6 +61,7 @@ export function SettingsPanel() {
   const [version, setVersion] = useState("0.6.3");
   const [includeSkills, setIncludeSkills] = useState(false);
   const [settingsRoot, setSettingsRoot] = useState<string | null>(null);
+  const gatewayStatus = useGatewayStatus(settings.openclawApiBase || "http://127.0.0.1:5050", 15000);
 
   useEffect(() => {
     getVersion().then(v => setVersion(v)).catch(() => {});
@@ -269,6 +271,19 @@ export function SettingsPanel() {
                 onChange={(e) => setSettings({ ...settings, openclawApiBase: e.target.value })}
                 placeholder="http://127.0.0.1:5077"
               />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4, fontSize: 11 }}>
+                <div
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: gatewayStatus.available ? "#3fb950" : "#f85149",
+                  }}
+                />
+                <span style={{ color: gatewayStatus.available ? "#3fb950" : "#f85149" }}>
+                  {gatewayStatus.available ? "Connected" : gatewayStatus.error || "Offline"}
+                </span>
+              </div>
             </div>
 
             {/* Colors */}

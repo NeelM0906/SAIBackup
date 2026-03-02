@@ -1034,6 +1034,160 @@ export async function listOpenClawToolIds(projectPath: string): Promise<string[]
   return Array.from(set).sort((a, b) => a.localeCompare(b));
 }
 
+export async function buildBeingsEntityNodes(projectPath: string): Promise<AuiNode[]> {
+  const { loadBeingsRegistry } = await import("./beings-registry");
+  const registry = await loadBeingsRegistry();
+  if (!registry) return [];
+
+  const nodes: AuiNode[] = [];
+  const context = await resolveOpenClawContext(projectPath);
+  const rootPath = context?.rootPath || projectPath;
+
+  // ElevenLabs Voice Beings parent
+  const elevenLabsRootId = generateNodeId("openclaw:beings:elevenlabs");
+  nodes.push({
+    ...syntheticNodeBase("openclaw:beings:elevenlabs"),
+    id: elevenLabsRootId,
+    name: "ElevenLabs Voice Beings",
+    kind: "context",
+    parentId: "root",
+    team: null,
+    sourcePath: join(rootPath, "beings-registry.json"),
+    config: null,
+    promptBody: `total_beings: ${registry.elevenLabsBeings.length}\ngenerated_at: ${registry.generatedAt}`,
+    tags: ["openclaw", "beings", "elevenlabs", "entity-type:elevenlabs-root"],
+  });
+
+  for (const being of registry.elevenLabsBeings) {
+    const lines = [
+      `name: ${being.name}`,
+      `type: ${being.type}`,
+      `domain: ${being.domain}`,
+      `status: ${being.status}`,
+      `description: ${being.description}`,
+    ];
+    if (being.voiceId) lines.push(`voice_id: ${being.voiceId}`);
+    if (being.knowledgeVectors) lines.push(`knowledge_vectors: ${being.knowledgeVectors}`);
+
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:beings:elevenlabs:${being.id}`),
+      id: generateNodeId(`openclaw:beings:elevenlabs:${being.id}`),
+      name: being.name,
+      kind: "agent",
+      parentId: elevenLabsRootId,
+      team: "elevenlabs-beings",
+      sourcePath: join(rootPath, "beings-registry.json"),
+      config: {
+        name: being.name,
+        description: being.description,
+      },
+      promptBody: lines.join("\n"),
+      tags: ["openclaw", "beings", "elevenlabs", being.domain, `being-type:${being.type}`],
+    });
+  }
+
+  // Pinecone Primary parent
+  const pineconePrimaryId = generateNodeId("openclaw:beings:pinecone-primary");
+  const totalPrimaryVectors = registry.pineconeIndexes.primary.reduce((sum, idx) => sum + idx.vectors, 0);
+  nodes.push({
+    ...syntheticNodeBase("openclaw:beings:pinecone-primary"),
+    id: pineconePrimaryId,
+    name: "Pinecone Indexes (Primary)",
+    kind: "context",
+    parentId: "root",
+    team: null,
+    sourcePath: join(rootPath, "beings-registry.json"),
+    config: null,
+    promptBody: `total_indexes: ${registry.pineconeIndexes.primary.length}\ntotal_vectors: ${totalPrimaryVectors}`,
+    tags: ["openclaw", "beings", "pinecone", "entity-type:pinecone-primary"],
+  });
+
+  for (const idx of registry.pineconeIndexes.primary) {
+    const lines = [
+      `index_id: ${idx.id}`,
+      `vectors: ${idx.vectors}`,
+      `description: ${idx.description}`,
+    ];
+    if (idx.dimensions) lines.push(`dimensions: ${idx.dimensions}`);
+    if (idx.metric) lines.push(`metric: ${idx.metric}`);
+    if (idx.model) lines.push(`model: ${idx.model}`);
+    if (idx.namespaces) lines.push(`namespaces: ${idx.namespaces.join(", ")}`);
+
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:beings:pinecone:${idx.id}`),
+      id: generateNodeId(`openclaw:beings:pinecone:${idx.id}`),
+      name: idx.name,
+      kind: "context",
+      parentId: pineconePrimaryId,
+      team: null,
+      sourcePath: join(rootPath, "beings-registry.json"),
+      config: null,
+      promptBody: lines.join("\n"),
+      tags: ["openclaw", "beings", "pinecone", "primary", `index:${idx.id}`],
+    });
+  }
+
+  // Pinecone Strata parent
+  const pineconeStrataId = generateNodeId("openclaw:beings:pinecone-strata");
+  const totalStrataVectors = registry.pineconeIndexes.strata.reduce((sum, idx) => sum + idx.vectors, 0);
+  nodes.push({
+    ...syntheticNodeBase("openclaw:beings:pinecone-strata"),
+    id: pineconeStrataId,
+    name: "Pinecone Indexes (Strata)",
+    kind: "context",
+    parentId: "root",
+    team: null,
+    sourcePath: join(rootPath, "beings-registry.json"),
+    config: null,
+    promptBody: `total_indexes: ${registry.pineconeIndexes.strata.length}\ntotal_vectors: ${totalStrataVectors}`,
+    tags: ["openclaw", "beings", "pinecone", "entity-type:pinecone-strata"],
+  });
+
+  for (const idx of registry.pineconeIndexes.strata) {
+    const lines = [
+      `index_id: ${idx.id}`,
+      `vectors: ${idx.vectors}`,
+      `description: ${idx.description}`,
+    ];
+    if (idx.namespaces) lines.push(`namespaces: ${idx.namespaces.join(", ")}`);
+
+    nodes.push({
+      ...syntheticNodeBase(`openclaw:beings:pinecone-strata:${idx.id}`),
+      id: generateNodeId(`openclaw:beings:pinecone-strata:${idx.id}`),
+      name: idx.name,
+      kind: "context",
+      parentId: pineconeStrataId,
+      team: null,
+      sourcePath: join(rootPath, "beings-registry.json"),
+      config: null,
+      promptBody: lines.join("\n"),
+      tags: ["openclaw", "beings", "pinecone", "strata", `index:${idx.id}`],
+    });
+  }
+
+  // Shared Voice Agent
+  if (registry.sharedVoiceAgent) {
+    nodes.push({
+      ...syntheticNodeBase("openclaw:beings:shared-voice-agent"),
+      id: generateNodeId("openclaw:beings:shared-voice-agent"),
+      name: "Shared Voice Agent",
+      kind: "context",
+      parentId: elevenLabsRootId,
+      team: null,
+      sourcePath: join(rootPath, "beings-registry.json"),
+      config: null,
+      promptBody: [
+        `agent_id: ${registry.sharedVoiceAgent.agentId}`,
+        `purpose: ${registry.sharedVoiceAgent.purpose}`,
+        `sisters: ${registry.sharedVoiceAgent.sisters.join(", ")}`,
+      ].join("\n"),
+      tags: ["openclaw", "beings", "elevenlabs", "shared-agent"],
+    });
+  }
+
+  return nodes;
+}
+
 async function safeExists(path: string): Promise<boolean> {
   try {
     return await exists(path);

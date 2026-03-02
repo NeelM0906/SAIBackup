@@ -1,5 +1,6 @@
 import { useTreeStore } from "@/store/tree-store";
 import { useUiStore } from "@/store/ui-store";
+import { useGatewayStatus } from "@/hooks/useGatewayStatus";
 import { LayoutsDropdown } from "./LayoutsDropdown";
 
 const buttonStyle: React.CSSProperties = {
@@ -46,6 +47,7 @@ export function Toolbar() {
   const toggleContextHub = useUiStore((s) => s.toggleContextHub);
   const toggleSettings = useUiStore((s) => s.toggleSettings);
   const toggleSchedule = useUiStore((s) => s.toggleSchedule);
+  const gatewayStatus = useGatewayStatus("http://127.0.0.1:5050");
 
   return (
     <header
@@ -108,6 +110,32 @@ export function Toolbar() {
         >
           {nodeCount} nodes
         </span>
+        {/* Gateway Status */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginLeft: "auto",
+            padding: "0 12px",
+            fontSize: 11,
+            color: "var(--text-secondary)",
+            userSelect: "none",
+          }}
+          title={gatewayStatus.error ? `Error: ${gatewayStatus.error}` : `Last checked: ${new Date(gatewayStatus.lastChecked).toLocaleTimeString()}`}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: gatewayStatus.available ? "#3fb950" : "#f85149",
+              boxShadow: gatewayStatus.available ? "0 0 6px rgba(63,185,80,0.5)" : "0 0 6px rgba(248,81,73,0.3)",
+              transition: "background 0.3s, box-shadow 0.3s",
+            }}
+          />
+          <span>{gatewayStatus.available ? "Gateway" : "Gateway Offline"}</span>
+        </div>
       </div>
     </header>
   );
