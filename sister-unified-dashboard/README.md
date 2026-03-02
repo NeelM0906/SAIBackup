@@ -29,6 +29,28 @@ Open: `http://127.0.0.1:5077`
 Optional env vars:
 - `COLOSSEUM_API_BASE` (default: `http://127.0.0.1:5050/api`) used for domain URL links
 
+## Workboard Helper (CLI)
+Use this helper to track implementation tasks on the board in real time.
+
+```bash
+# Start a task (creates assignment + moves it to in_progress)
+npm run task:start -- --title "Implement X" --owner main --priority high
+
+# Update status
+npm run task:set -- --id <assignment_id> --status blocked --note "waiting for response from recovery"
+
+# Complete task (handles intermediate transition if needed)
+npm run task:complete -- --id <assignment_id>
+
+# List tasks
+npm run task:list -- --owner main --status in_progress --days 7 --limit 300
+```
+
+Optional helper env vars:
+- `WORKBOARD_API_BASE` (default: `http://127.0.0.1:5077`)
+- `WORKBOARD_OWNER` (default for `start`: `main`)
+- `WORKBOARD_ACTOR` (default: `codex`)
+
 ## API
 - `GET /api/health`
 - `GET /api/overview?days=7`

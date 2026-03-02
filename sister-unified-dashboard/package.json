@@ -4,7 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "task": "node scripts/workboard-helper.mjs",
+    "task:start": "node scripts/workboard-helper.mjs start",
+    "task:set": "node scripts/workboard-helper.mjs set",
+    "task:complete": "node scripts/workboard-helper.mjs complete",
+    "task:list": "node scripts/workboard-helper.mjs list"
   },
   "engines": {
     "node": ">=22"
