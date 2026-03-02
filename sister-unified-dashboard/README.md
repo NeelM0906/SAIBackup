@@ -14,6 +14,7 @@ Standalone Node.js dashboard for SAI Prime + all sister beings.
 - Dedicated subagents monitor with filterable run list and per-run activity modal
 - Dedicated Mission Chat workspace (click-to-open, Discord-style) with `@sister_id` mentions, monitor-only dispatch tracking, and isolated group sessions
 - Dedicated Task Workboard workspace (click-to-open) with full task registry, status/assignee tracking, and `Load 200 More` coverage expansion
+- Mission Control shell layout with persistent left navigation, routed center modules, right context panel, and mission health header (state/polling/queue/alerts)
 - Clickable `Domains Online` metric with online-domain URL list
 - `Domains Online` click-through now uses curated production links (dashboards/apps)
 - Static frontend (HTML/CSS/JS) with polling every few seconds
