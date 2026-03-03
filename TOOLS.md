@@ -110,3 +110,26 @@ SAI Memory monitors Discord and will call out:
 **The mantra:** *"What do I already know about this? Let me check first."*
 
 **NEVER start from scratch.** Always compound on what exists.
+
+## 🧠 Memory Offload Tools
+
+**Upload daily notes to Pinecone:**
+```bash
+cd tools && .venv/bin/python3 upload_daily.py
+```
+
+**Upload MEMORY.md to Pinecone:**
+```bash
+cd tools && .venv/bin/python3 upload_memory.py
+```
+
+**Query memories:**
+```bash
+cd tools && .venv/bin/python3 memory_query.py "your question here"
+```
+
+**When to offload:**
+- Before context hits 70% (check with `session_status`)
+- After significant discoveries or decisions
+- End of major work sessions
+
