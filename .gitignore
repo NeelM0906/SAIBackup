@@ -1,21 +1,34 @@
-# Secrets — never commit these
+# Virtual environments
+tools/.venv/
+*.pyc
+__pycache__/
+
+# Large database files
+*.db
+*.db-shm
+*.db-wal
+
+# Media files
+media/
+
+# Node modules
+node_modules/
+
+# Vercel
+.vercel/
+
+# Colosseum dashboard (already has its own repo)
+colosseum-dashboard/
+
+# Environment files (SECURITY)
 .env
 *.env
-*.key
-*.pem
-*.secret
 
-# OpenClaw sensitive files
-credentials/
+# Large binary assets (backed up separately)
+*.png
+*.jpg
+*.mp3
+*.pdf
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Temp files
-*.tmp
-*.log
-tools/voice-server/node_modules/
-tools/pinecone_query/__pycache__/
-node_modules/
-screenshot*.png
+# Sisters workspaces (they push their own)
+sisters/
