@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Callagy Recovery — Outreach Pipeline</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2333;
+      --border: #30363d;
+      --accent2: #1f6feb;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --green: #3fb950;
+      --yellow: #d29922;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px 24px;
+    }
+    .header-inner { max-width: 1200px; margin: 0 auto; }
+    .header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 6px; }
+    .header-emoji { font-size: 2.4rem; line-height: 1; }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .header-sub { color: var(--text-muted); font-size: 0.875rem; margin-left: 56px; }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(63,185,80,0.1);
+      border: 1px solid rgba(63,185,80,0.3);
+      color: var(--green);
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 20px; margin-left: auto;
+    }
+    .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 40px; }
+    .hero-stat {
+      background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 40px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-stat::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent2), transparent); }
+    .hero-num { font-size: 4.5rem; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -2px; }
+    .hero-num span { color: var(--accent2); }
+    .hero-label { font-size: 1rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; }
+    .hero-divider { width: 1px; height: 80px; background: var(--border); flex-shrink: 0; }
+    .hero-top-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow); margin-bottom: 8px; }
+    .hero-state-name { font-size: 2.4rem; font-weight: 800; color: var(--yellow); line-height: 1; }
+    .hero-state-count { font-size: 1rem; color: var(--text-muted); margin-top: 4px; }
+    .section-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+    .cards-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; position: relative; overflow: hidden; }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .card.green::before { background: var(--green); }
+    .card.blue::before { background: var(--accent2); }
+    .card.yellow::before { background: var(--yellow); }
+    .card-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    .card-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+    .card.green .card-value { color: var(--green); }
+    .card.blue .card-value { color: var(--accent2); }
+    .card.yellow .card-value { color: var(--yellow); }
+    .card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .tag.green { background: rgba(63,185,80,0.12); color: var(--green); border: 1px solid rgba(63,185,80,0.25); }
+    .tag.blue { background: rgba(31,111,235,0.12); color: var(--accent2); border: 1px solid rgba(31,111,235,0.25); }
+    .tag.yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border: 1px solid rgba(210,153,34,0.25); }
+    .chart-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; margin-bottom: 32px; }
+    .chart-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px; }
+    .chart-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .chart-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+    .bar-row { display: grid; grid-template-columns: 52px 1fr 80px; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .bar-label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-align: right; }
+    .bar-track { height: 28px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+    .bar-fill.top { background: linear-gradient(90deg, #1f6feb, #388bfd); box-shadow: 0 0 12px rgba(31,111,235,0.4); }
+    .bar-fill.normal { background: linear-gradient(90deg, #21262d, #30363d); border: 1px solid var(--border); }
+    .bar-count { font-size: 0.82rem; font-weight: 600; color: var(--text); text-align: right; font-variant-numeric: tabular-nums; }
+    .bar-count.top { color: var(--accent2); }
+    .market-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; margin-bottom: 32px; }
+    .market-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .market-table th { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding-bottom: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+    .market-table td { padding: 10px 0; border-bottom: 1px solid rgba(48,54,61,0.5); color: var(--text); }
+    .market-table td:nth-child(3) { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+    .status-pilot { background: rgba(63,185,80,0.1); color: var(--green); border: 1px solid rgba(63,185,80,0.25); }
+    .status-next { background: rgba(210,153,34,0.1); color: var(--yellow); border: 1px solid rgba(210,153,34,0.25); }
+    .status-future { background: rgba(139,148,158,0.08); color: var(--text-muted); border: 1px solid rgba(139,148,158,0.15); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot.green { background: var(--green); }
+    .dot.yellow { background: var(--yellow); }
+    .dot.gray { background: var(--text-muted); }
+    footer { border-top: 1px solid var(--border); padding: 18px 40px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); }
+    .footer-brand { font-weight: 600; color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="header-emoji">🏥</div>
+      <h1>Callagy Recovery — Outreach Pipeline</h1>
+      <div class="live-badge"><div class="live-dot"></div>Live</div>
+    </div>
+    <div class="header-sub">Medical Revenue Recovery · Attorney Contact Database · Day 8 Operations</div>
+  </div>
+</header>
+
+<main>
+
+  <div class="hero-stat">
+    <div>
+      <div class="hero-num"><span id="counter">0</span></div>
+      <div class="hero-label">Total Verified Contacts Loaded</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div>
+      <div class="hero-top-tag">🏆 #1 Market</div>
+      <div class="hero-state-name">New Jersey</div>
+      <div class="hero-state-count">16,991 attorney contacts</div>
+    </div>
+  </div>
+
+  <div class="section-title">Pipeline Status</div>
+  <div class="cards-row">
+    <div class="card green">
+      <div class="card-title">Contacts Loaded</div>
+      <div class="card-value">118,683</div>
+      <div class="card-desc">Deduplicated attorney database across all states</div>
+    </div>
+    <div class="card blue">
+      <div class="card-title">Pilot Markets 🚀</div>
+      <div class="card-value">2</div>
+      <div class="card-desc">Active outreach underway</div>
+      <div class="tag-list">
+        <span class="tag blue">Austin TX</span>
+        <span class="tag blue">Dallas TX</span>
+      </div>
+    </div>
+    <div class="card yellow">
+      <div class="card-title">Next Markets ⏭</div>
+      <div class="card-value">3</div>
+      <div class="card-desc">Queued for rollout</div>
+      <div class="tag-list">
+        <span class="tag yellow">NJ</span>
+        <span class="tag yellow">FL</span>
+        <span class="tag yellow">PA</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-panel">
+    <div class="chart-header">
+      <div class="chart-title">Top 10 States by Contact Volume</div>
+      <div class="chart-subtitle">Source: Seamless AI · Deduplicated</div>
+    </div>
+    <div id="chart"></div>
+  </div>
+
+  <div class="market-panel">
+    <div class="section-title" style="margin-bottom:20px">Market Priority Queue</div>
+    <table class="market-table">
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>State</th>
+          <th>Contacts</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Austin, TX</td><td style="color:var(--text-muted);font-size:0.8rem">Texas</td><td>846</td><td><span class="status-pill status-pilot"><span class="dot green"></span>Pilot</span></td></tr>
+        <tr><td>Dallas, TX</td><td style="color:var(--text-muted);font-size:0.8rem">Texas</td><td>846</td><td><span class="status-pill status-pilot"><span class="dot green"></span>Pilot</span></td></tr>
+        <tr><td>New Jersey</td><td style="color:var(--text-muted);font-size:0.8rem">NJ</td><td>16,991</td><td><span class="status-pill status-next"><span class="dot yellow"></span>Next</span></td></tr>
+        <tr><td>Florida</td><td style="color:var(--text-muted);font-size:0.8rem">FL</td><td>1,606</td><td><span class="status-pill status-next"><span class="dot yellow"></span>Next</span></td></tr>
+        <tr><td>Pennsylvania</td><td style="color:var(--text-muted);font-size:0.8rem">PA</td><td>1,318</td><td><span class="status-pill status-next"><span class="dot yellow"></span>Next</span></td></tr>
+        <tr><td>California</td><td style="color:var(--text-muted);font-size:0.8rem">CA</td><td>1,005</td><td><span class="status-pill status-future"><span class="dot gray"></span>Queued</span></td></tr>
+        <tr><td>Ohio</td><td style="color:var(--text-muted);font-size:0.8rem">OH</td><td>415</td><td><span class="status-pill status-future"><span class="dot gray"></span>Queued</span></td></tr>
+        <tr><td>Georgia</td><td style="color:var(--text-muted);font-size:0.8rem">GA</td><td>402</td><td><span class="status-pill status-future"><span class="dot gray"></span>Queued</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div><span class="footer-brand">🏥 SAI Recovery</span> · Built by SAI Recovery — Day 8</div>
+    <div id="ts"></div>
+  </div>
+</footer>
+
+<script>
+  var states = [
+    { code: 'NJ', count: 16991 },
+    { code: 'FL', count: 1606  },
+    { code: 'PA', count: 1318  },
+    { code: 'CA', count: 1005  },
+    { code: 'TX', count: 846   },
+    { code: 'OH', count: 415   },
+    { code: 'GA', count: 402   },
+    { code: 'MA', count: 316   },
+    { code: 'IL', count: 289   },
+    { code: 'NY', count: 283   }
+  ];
+  var TOTAL = 118683;
+  var maxCount = states[0].count;
+
+  // Counter animation
+  var el = document.getElementById('counter');
+  var start = null;
+  var duration = 1600;
+  function step(ts) {
+    if (!start) start = ts;
+    var progress = Math.min((ts - start) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 4);
+    el.textContent = Math.floor(ease * TOTAL).toLocaleString();
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+
+  // Bar chart
+  var chart = document.getElementById('chart');
+  states.forEach(function(s, i) {
+    var pct = (s.count / maxCount) * 100;
+    var isTop = i === 0;
+    var row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML =
+      '<div class="bar-label">' + s.code + '</div>' +
+      '<div class="bar-track"><div class="bar-fill ' + (isTop ? 'top' : 'normal') + '" style="width:0" data-pct="' + pct.toFixed(1) + '"></div></div>' +
+      '<div class="bar-count ' + (isTop ? 'top' : '') + '">' + s.count.toLocaleString() + '</div>';
+    chart.appendChild(row);
+  });
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      document.querySelectorAll('.bar-fill').forEach(function(el) {
+        el.style.width = el.getAttribute('data-pct') + '%';
+      });
+    });
+  });
+
+  // Timestamp
+  document.getElementById('ts').textContent = new Date().toLocaleString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
+  });
+</script>
+</body>
+</html>

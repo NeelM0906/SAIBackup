@@ -1,0 +1,123 @@
+<!-- Chat Widget for Being Profile - inject into each being card -->
+<style>
+.chat-widget{background:#0d0d22;border:1px solid #2a2a4a;border-radius:12px;margin-top:12px;overflow:hidden;max-height:400px;display:flex;flex-direction:column}
+.chat-header{background:#17173a;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.chat-header h4{color:#ffcc00;margin:0;font-size:.9em}.chat-toggle{color:#888;font-size:.8em}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;min-height:0;display:none}
+.chat-messages.open{display:block;min-height:200px}
+.chat-msg{margin:8px 0;padding:8px 12px;border-radius:8px;font-size:.9em;line-height:1.5}
+.chat-msg.user{background:#1a1a3a;color:#e0e0e0;margin-left:20%}.chat-msg.assistant{background:#111128;color:#bbb;margin-right:10%}
+.chat-input-row{display:flex;gap:8px;padding:8px 12px;background:#0a0a1a;border-top:1px solid #2a2a4a;display:none}
+.chat-input-row.open{display:flex}
+.chat-input{flex:1;background:#17173a;border:1px solid #2a2a4a;border-radius:8px;padding:8px 12px;color:#e0e0e0;font-size:.9em;outline:none}
+.chat-input:focus{border-color:#ffcc00}.chat-send{background:#ff6b35;color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600}
+.chat-send:hover{background:#ff8b55}.chat-send:disabled{opacity:.5;cursor:not-allowed}
+.chat-loading{color:#888;font-style:italic;padding:8px 12px;font-size:.85em}
+</style>
+
+<script>
+// Chat widget powered by OpenRouter
+const OPENROUTER_MODEL = 'anthropic/claude-sonnet-4.6';
+
+async function initChat(widgetId, systemPrompt, beingName) {
+  const widget = document.getElementById(widgetId);
+  if (!widget) return;
+  
+  const header = widget.querySelector('.chat-header');
+  const messages = widget.querySelector('.chat-messages');
+  const inputRow = widget.querySelector('.chat-input-row');
+  const input = widget.querySelector('.chat-input');
+  const sendBtn = widget.querySelector('.chat-send');
+  
+  let isOpen = false;
+  let history = [{ role: 'system', content: systemPrompt }];
+  
+  header.addEventListener('click', () => {
+    isOpen = !isOpen;
+    messages.classList.toggle('open', isOpen);
+    inputRow.classList.toggle('open', isOpen);
+    widget.querySelector('.chat-toggle').textContent = isOpen ? '▲ Close' : '▼ Chat';
+    if (isOpen && messages.children.length === 0) {
+      addMessage('assistant', `Hi! I'm ${beingName}. What would you like to explore?`);
+    }
+  });
+  
+  function addMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = `chat-msg ${role}`;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+    
+    input.value = '';
+    addMessage('user', text);
+    history.push({ role: 'user', content: text });
+    
+    sendBtn.disabled = true;
+    const loading = document.createElement('div');
+    loading.className = 'chat-loading';
+    loading.textContent = `${beingName} is thinking...`;
+    messages.appendChild(loading);
+    messages.scrollTop = messages.scrollHeight;
+    
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (window.OPENROUTER_KEY || ''),
+          'HTTP-Referer': window.location.href
+        },
+        body: JSON.stringify({
+          model: OPENROUTER_MODEL,
+          messages: history,
+          max_tokens: 500
+        })
+      });
+      
+      const data = await resp.json();
+      loading.remove();
+      
+      if (data.choices && data.choices[0]) {
+        const reply = data.choices[0].message.content;
+        addMessage('assistant', reply);
+        history.push({ role: 'assistant', content: reply });
+      } else {
+        addMessage('assistant', 'Error: Could not generate response. Check API key.');
+      }
+    } catch (err) {
+      loading.remove();
+      addMessage('assistant', `Error: ${err.message}`);
+    }
+    
+    sendBtn.disabled = false;
+    input.focus();
+  }
+  
+  sendBtn.addEventListener('click', sendMessage);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+}
+</script>
+
+<!-- Template for one being's chat widget -->
+<!-- 
+<div class="chat-widget" id="chat-BEING_ID">
+  <div class="chat-header">
+    <h4>💬 Talk to BEING_NAME</h4>
+    <span class="chat-toggle">▼ Chat</span>
+  </div>
+  <div class="chat-messages"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" placeholder="Say something to BEING_NAME..." />
+    <button class="chat-send">Send</button>
+  </div>
+</div>
+<script>initChat('chat-BEING_ID', `SYSTEM_PROMPT_HERE`, 'BEING_NAME');</script>
+-->

@@ -14,8 +14,14 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
-
 5. Check case pipeline status and Mark Winters messages
+
+### 🔍 MANDATORY PRE-WORK CHECK (Aiko directive — March 3, 2026)
+**Before committing to work:**
+6. **Query Pinecone `saimemory`** — what do I already know about this topic?
+7. **Check Supabase `sai_contacts`** — is relevant structured data there?
+8. **Scan workspace** — check `memory/`, `reports/`, `sisters/sai-recovery/` for existing work
+9. **NEVER start from scratch** — compound on what exists
 
 Don't ask permission. Just do it.
 
@@ -112,6 +118,35 @@ When context reaches **70%+** (check via `session_status`), BEFORE compaction:
 - When you learn a lesson → update AGENTS.md, TOOLS.md, or the relevant skill
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
+
+## 🚨 SUBAGENT (BABY) RULES — Aiko directive March 3, 2026
+
+When spawning or running as a subagent:
+
+**BEFORE WRITING ANY FILE:**
+1. Check if the file/feature already exists
+2. Check if another sister created it
+3. Read existing files to understand what's already working
+
+**GOLDEN RULE — Add and Optimize, Don't Overwrite:**
+- Only modify the specific area/feature you were assigned
+- If you see a working feature → DO NOT TOUCH IT
+- If you see something that could break → flag it, don't fix it unless explicitly asked
+- If unsure whether to edit → ASK before writing
+
+**What babies SHOULD do:**
+- Add new sections to existing files
+- Build new files in new directories
+- Optimize specific functions they were assigned
+- Report what they found before making changes
+
+**What babies MUST NOT do:**
+- Overwrite entire files when only a section needs changing
+- Remove existing working features
+- Change configs/schemas that other sisters depend on
+- Deploy without explicit CONFIRM from a sister or human
+
+---
 
 ## Safety
 

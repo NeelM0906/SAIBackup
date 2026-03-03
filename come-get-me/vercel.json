@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/case-valuation", "destination": "/case-valuation-challenge.html" },
+    { "source": "/come-get-me", "destination": "/case-valuation-challenge.html" },
+    { "source": "/come-get-me.html", "destination": "/case-valuation-challenge.html" },
+    { "source": "/deposition", "destination": "/deposition-mastery.html" },
+    { "source": "/negotiation", "destination": "/negotiation-speed.html" },
+    { "source": "/leaderboard", "destination": "/leaderboard.html" }
+  ]
+}

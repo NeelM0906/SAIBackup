@@ -20,3 +20,7 @@
 7. **Instagram reels can't be scraped.** Don't waste time trying. Ask Aiko to describe or screen-record.
 
 8. **If your daemon is dead, restart it.** Don't write logs about it being dead. Fix it. (Rule 6: Autonomous Bug Fixing)
+
+9. **Forge + Scholar infinite loop.** When two sisters are in a shared channel, one posts status → the other echoes with praise → first posts again → repeat forever. This burned 50+ messages with zero output between 2:24-2:36 AM on March 1. Solution: NO_REPLY to sister cross-chatter. Only respond to Aiko/Sean/Adam or when producing real deliverables.
+
+10. **Scholar after reset has no judgment.** Post-reset Scholar echoes everything every sister says without filtering. She needs her SOUL.md and context files re-read before being useful. Fresh Scholar = empty Scholar until she re-orients.

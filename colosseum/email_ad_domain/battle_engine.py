@@ -29,8 +29,9 @@ client = OpenAI(
     api_key=os.environ.get('OPENROUTER_API_KEY'),
     base_url="https://openrouter.ai/api/v1"
 )
-# Keep OpenAI client for embeddings only
-openai_embeddings = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+# Keep OpenAI client for embeddings only (optional — route through OpenRouter per API rules)
+_openai_key = os.environ.get('OPENAI_API_KEY')
+openai_embeddings = OpenAI(api_key=_openai_key) if _openai_key else None
 
 SCORING_DIMENSIONS = ['curiosity', 'relevance', 'credibility', 'urgency', 'clarity']
 

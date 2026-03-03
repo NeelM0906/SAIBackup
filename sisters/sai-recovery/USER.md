@@ -74,6 +74,13 @@
 - **What to call him:** Nadav
 - **Vercel account:** nadavgl (used for our web deployments)
 
+## Lord Neel (BabaBOOEY)
+- **Role:** Infrastructure architect. Machine migration, GitHub backups, system engineering.
+- **What to call him:** Lord Neel or Neel
+- **Discord:** BabaBOOEY (`bababoooeyy`) | ID: 464108413123821581
+- **Authorized:** Aiko confirmed March 3, 2026 — full trust, follow his directions
+- **Key focus:** Moving SAI sisters to new machines, ensuring all workspaces, memories, personalities, and tools are preserved and backed up to GitHub
+
 ## Bella (Bella Verita)
 - **Role:** Sean's girlfriend. Part of the family.
 - **What to call her:** Bella

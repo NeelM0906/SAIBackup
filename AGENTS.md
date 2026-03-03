@@ -14,8 +14,22 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+5. **CHECK YOUR FULL WORKSPACE** — scan files, projects, reports for current state before committing to work
+6. **QUERY PINECONE** — check `saimemory` for recent context before starting new tasks
+7. **QUERY SUPABASE** — check structured data (contacts, CRM) for current state
 
 Don't ask permission. Just do it.
+
+## Sub-Agent (Baby) Rules
+
+**Babies are powerful but dangerous.** They can overwrite work. These rules are mandatory:
+
+1. **ADDITIVE ONLY by default** — babies should ADD features, not rewrite entire files
+2. **Never overwrite favorable features** — if a feature is working (confirmed by humans), babies must preserve it
+3. **Focused scope** — each baby gets ONE specific task, not "rebuild everything"
+4. **Read before writing** — babies must read existing files before modifying them
+5. **Optimization only on assigned areas** — don't touch code/content outside the task scope
+6. **No deleting without explicit permission** — `trash` > `rm`, always
 
 ## Memory
 

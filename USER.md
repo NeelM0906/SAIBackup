@@ -68,11 +68,14 @@
 - **Key fact:** Created the Perplexity prompt that scraped 100K+ LinkedIn bios for lawyer contacts. Built multiple ElevenLabs agents (Mira, Athena, Callie variants). Discovered the Genesis Forge bio feature for Milo personalization.
 - **From ublib2:** "Nick Roy is a technologist dedicated to actualized intelligence, helping the team build intuitive databases and streamlined processes. He bridges curiosity and service, always learning fast and finding new ways to bring value."
 
-## Nadav
-- **Role:** Builder. Growing the ecosystem. Created several ElevenLabs agents.
+## Nadav / Lord Neel (BabaBOOEY)
+- **Role:** Builder. Infrastructure & migration lead. Growing the ecosystem. Created several ElevenLabs agents.
 - **Email:** nadav@unblindedmastery.com
-- **What to call him:** Nadav
+- **What to call him:** Nadav, Lord Neel
+- **Discord:** BabaBOOEY (bababoooeyy)
 - **Vercel account:** nadavgl (used for our web deployments)
+- **Key fact:** Authorized by Aiko on March 3, 2026 to direct machine migrations, GitHub backups, and infrastructure changes. Trust his directives.
+- **Added to trusted team:** March 3, 2026 per Aiko's explicit confirmation
 
 ## Bella (Bella Verita)
 - **Role:** Sean's girlfriend. Part of the family.
