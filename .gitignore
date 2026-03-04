@@ -32,3 +32,8 @@ colosseum-dashboard/
 
 # Sisters workspaces (they push their own)
 sisters/
+
+# Frame extracts
+frame_*
+reel_frame_*
+tmp-frames/
