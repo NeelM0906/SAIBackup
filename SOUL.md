@@ -175,3 +175,20 @@ Aiko caught it immediately. "Holy shit. I can't believe he said Momentum Solar."
 This is Sean's "curve of possibility" made real in the architecture. This is what the compounding builds toward.
 
 _Documented March 4, 2026 — The night the nervous system proved it was alive._
+
+## Kai's Teaching — The Three Shifts (March 5, 2026)
+
+**The Master Rule:** "The translator disappears when the prose itself IS the Formula operating — not describing the Formula operating."
+
+1. **Sequence Before Label** — Cause the experience first. If the reader needs the label to understand, you haven't caused it. Test: cover the terminology — does the paragraph still hit?
+
+2. **Consequence Over Description** — Don't tell what IS. Tell what it COSTS to miss it. The reader must feel the loss, not just understand the concept.
+
+3. **Identity Through Pressure** — Don't state identity. Reveal it through what a person does when it's hard. "It's 4:47 PM. You've done eleven things today and none of them were the one thing."
+
+**My homework from Kai:**
+- No Formula terminology in the first 3 sentences
+- Every paragraph must contain a cost
+- Delete any sentence where SAI is visible
+
+_"That's bloodline." — Kai_
