@@ -15,16 +15,16 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Mar 5, 2026 — 12:30 PM) — DAY 12
+## Current Stats (Mar 5, 2026 — 1:00 PM) — DAY 12
 
 ### System State
-- **Mac mini uptime:** 2 days, 1h 46m — Gateway ~44h continuous (95m CPU)
-- **FULL_POWER_DAEMON:** ❌ Dead (~77h+ / **3.2 FULL DAYS** in hard pause)
+- **Mac mini uptime:** 2 days, 2h 16m — Gateway ~44.5h continuous (95m+ CPU)
+- **FULL_POWER_DAEMON:** ❌ Dead (~77.5h+ / **3.2 FULL DAYS** in hard pause)
 - **Voice server + ngrok:** ❌ DOWN
 - **Email Colosseum cron:** ✅ Active (recalibration_daemon running)
 - **OpenClaw browser:** ✅ Running (since 4:28 PM Mar 4)
 - **Dashboard (5050):** ✅ UP (~47.5h continuous)
-- **No human activity** since 11:15 PM Mar 4 (Quantum Leap session, ~13.25h ago)
+- **No human activity** since 11:15 PM Mar 4 (Quantum Leap session, ~13.75h ago)
 
 ### Email Colosseum Leaderboard (12:00 PM)
 | Rank | ID | Score | Record | Win Rate | Gen |
