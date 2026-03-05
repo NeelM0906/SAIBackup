@@ -449,7 +449,7 @@ r = requests.post(url, json=payload, timeout=300)
 import requests
 # SISTER WEBHOOK — safe, won't mess up Kai's memory
 url = 'https://n8n.unblindedteam.com/webhook/dfffccb8-8b89-4e82-b355-8a972fd64b9f'
-payload = {'chatInput': 'YOUR MESSAGE TO KAI', 'sessionId': 'unique-session-id'}
+payload = {'message': 'YOUR MESSAGE TO KAI'}  # Use 'message' key for webhook, NOT 'chatInput'
 r = requests.post(url, json=payload, timeout=300)
 ```
 
