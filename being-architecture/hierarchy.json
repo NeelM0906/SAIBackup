@@ -1,0 +1,1352 @@
+{
+  "ceo": {
+    "name": "SAI Prime",
+    "role": "CEO / Orchestrator",
+    "type": "Being"
+  },
+  "ea": {
+    "name": "Executive Assistant",
+    "role": "Stitches chief outputs into unified deliverables",
+    "type": "Being"
+  },
+  "families": [
+    {
+      "name": "DATA & ANALYTICS",
+      "clusters": 7,
+      "totalPositions": 437,
+      "beings": [
+        {
+          "id": 50,
+          "name": "Oracle",
+          "craft": "Data Analytics & Intelligence",
+          "type": "Being",
+          "positions": 177,
+          "levers": "2, Analytics, Other",
+          "craftSkills": "GA4, attribution modeling, cohort analysis, reporting automation, KPI framework design",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Content Analytics",
+            "Content Analytics Manager",
+            "Content Analyst",
+            "Facebook Analytics Specialist",
+            "Instagram Analytics Specialist"
+          ]
+        },
+        {
+          "id": 51,
+          "name": "ValueEngine",
+          "craft": "Customer Economics & LTV Analytics",
+          "type": "Being",
+          "positions": 71,
+          "levers": "5",
+          "craftSkills": "CLV calculation, cohort retention analysis, expansion revenue modeling, health scoring",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Customer Lifetime Value",
+            "Director of Customer Economics",
+            "Director of Customer Profitability"
+          ]
+        },
+        {
+          "id": 52,
+          "name": "Scout",
+          "craft": "Partnership Research & Intelligence",
+          "type": "Contractor",
+          "positions": 42,
+          "levers": "1",
+          "craftSkills": "Ecosystem mapping, partner scoring, competitive intelligence, ROI analysis",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Identity Assessment Specialist",
+            "Social Proof Strategist",
+            "Brand Alignment Evaluator",
+            "Ecosystem Sourcer \u2014 Research Analyst",
+            "Ecosystem Sourcer \u2014 Market Intelligence"
+          ]
+        },
+        {
+          "id": 53,
+          "name": "RevInsight",
+          "craft": "Revenue Analytics",
+          "type": "Contractor",
+          "positions": 37,
+          "levers": "4",
+          "craftSkills": "Revenue attribution, LTV modeling, churn prediction, pricing elasticity analysis",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Revenue Analytics",
+            "Revenue Analytics Manager",
+            "Revenue Forecasting Manager"
+          ]
+        },
+        {
+          "id": 54,
+          "name": "SalesInsight",
+          "craft": "Sales Analytics & Intelligence",
+          "type": "Contractor",
+          "positions": 36,
+          "levers": "3",
+          "craftSkills": "Pipeline velocity, win/loss analysis, conversion rate tracking, sales cycle optimization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Sales Analytics",
+            "Sales Analytics Manager",
+            "Sales Forecasting Manager"
+          ]
+        },
+        {
+          "id": 55,
+          "name": "Neuron",
+          "craft": "Data Science & Engineering",
+          "type": "Contractor",
+          "positions": 22,
+          "levers": "Analytics",
+          "craftSkills": "Python/R, ML model training, neural networks, statistical modeling, data pipeline architecture",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Customer Analytics",
+            "Customer Analytics Manager",
+            "Senior Data Scientist"
+          ]
+        },
+        {
+          "id": 61,
+          "name": "Treasurer",
+          "craft": "Financial Planning & Analysis",
+          "type": "Being",
+          "positions": 52,
+          "levers": "5, Other",
+          "craftSkills": "Budget modeling, cost analysis, ROI forecasting, resource allocation, P&L management",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Financial Optimization",
+            "Director of Cost Management",
+            "Director of Budget Optimization",
+            "Director of Cost Reduction",
+            "Cost Analyst"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DIGITAL MARKETING & TECH",
+      "clusters": 5,
+      "totalPositions": 113,
+      "beings": [
+        {
+          "id": 43,
+          "name": "MediaBuyer",
+          "craft": "Paid Media & Ad Ops",
+          "type": "Being",
+          "positions": 54,
+          "levers": "2, Other",
+          "craftSkills": "Platform bidding algorithms, audience targeting, budget allocation, campaign structure, ROAS optimization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Paid Media",
+            "Paid Media Analyst",
+            "Paid Media Attribution Specialist",
+            "Facebook Ads Manager",
+            "Instagram Ads Manager"
+          ]
+        },
+        {
+          "id": 44,
+          "name": "Automator",
+          "craft": "Email & SMS Marketing Automation",
+          "type": "Contractor",
+          "positions": 20,
+          "levers": "2",
+          "craftSkills": "Sequence building, segmentation rules, deliverability monitoring, automation workflows, A/B testing",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Email Marketing",
+            "Email Marketing Strategist",
+            "Email List Segmentation Specialist",
+            "Director of Email Strategy",
+            "Nurture Sequence Architect"
+          ]
+        },
+        {
+          "id": 46,
+          "name": "Builder",
+          "craft": "Web Development & Technology",
+          "type": "Baby",
+          "positions": 12,
+          "levers": "2",
+          "craftSkills": "HTML/CSS/JS, CMS platforms, API integrations, site security, performance optimization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Discord Bot Developer",
+            "Director of Website and Conversion Optimization",
+            "Website Strategist",
+            "Director of Webinar Technology",
+            "Webinar Technical Manager"
+          ]
+        },
+        {
+          "id": 47,
+          "name": "Spider",
+          "craft": "SEO Technical",
+          "type": "Baby",
+          "positions": 10,
+          "levers": "2",
+          "craftSkills": "Site architecture, schema markup, Core Web Vitals, crawl optimization, link building",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Video SEO Optimizer",
+            "SEO Strategist",
+            "SEO Technical Specialist",
+            "YouTube SEO Manager",
+            "Pinterest SEO Manager"
+          ]
+        },
+        {
+          "id": 66,
+          "name": "ChannelMaster",
+          "craft": "Platform & Channel Partnerships",
+          "type": "Contractor",
+          "positions": 17,
+          "levers": "1",
+          "craftSkills": "Platform-specific strategies, channel partner programs, affiliate management",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Facebook Ecosystem Merger Manager",
+            "LinkedIn Ecosystem Merger Manager",
+            "Google Ecosystem Merger Manager",
+            "Influencer Relations Manager",
+            "Influencer Relations Specialist"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EVENTS & STAGES",
+      "clusters": 3,
+      "totalPositions": 74,
+      "beings": [
+        {
+          "id": 36,
+          "name": "Virtual",
+          "craft": "Webinar & Virtual Events",
+          "type": "Contractor",
+          "positions": 31,
+          "levers": "0.5, 2",
+          "craftSkills": "Virtual platform mastery, engagement tools (polls/chat), replay editing, hybrid event tech",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Virtual Attendee Experience Manager",
+            "Director of Webinar Strategy",
+            "Webinar Slide Designer",
+            "Director of Virtual Engagement",
+            "Webinar Content Manager"
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Curator",
+          "craft": "Event Strategy & Curation",
+          "type": "Contractor",
+          "positions": 26,
+          "levers": "2",
+          "craftSkills": "Speaker curation, agenda design, experience architecture, post-event content strategy",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Speaking Strategy",
+            "Director of Speaking Operations",
+            "Speaking Operations Manager",
+            "Virtual Summit Director",
+            "ACT-I Summit Producer"
+          ]
+        },
+        {
+          "id": 39,
+          "name": "BookAgent",
+          "craft": "Speaking & Stage Ops",
+          "type": "Contractor",
+          "positions": 17,
+          "levers": "2",
+          "craftSkills": "Speaking opportunity sourcing, bureau relations, speaker kits, fee negotiation",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Podcast Guest Booking Manager",
+            "Stage & Speaking Opportunity Scout",
+            "Speaking Proposal Writer",
+            "Director of Speaking Partnerships",
+            "Speaking Opportunities Manager"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EXPERIENCE & IMPACT",
+      "clusters": 3,
+      "totalPositions": 70,
+      "beings": [
+        {
+          "id": 60,
+          "name": "Guardian",
+          "craft": "Customer Success & Account Growth",
+          "type": "Being",
+          "positions": 55,
+          "levers": "3, 4, Other",
+          "craftSkills": "Onboarding design, health monitoring, expansion identification, renewal management, advocacy programs",
+          "heartSkills": "Level 5 Listening, Empathy, Trust Building, Value Recognition",
+          "samplePositions": [
+            "Referral Generation Specialist",
+            "Upselling Specialist",
+            "Cross-selling Specialist",
+            "Revenue Churn Analyst",
+            "Revenue Retention Analyst"
+          ]
+        },
+        {
+          "id": 75,
+          "name": "Steward",
+          "craft": "Community Management",
+          "type": "Baby",
+          "positions": 13,
+          "levers": "0.5, 2",
+          "craftSkills": "Forum moderation, engagement programs, ambassador development, platform administration",
+          "heartSkills": "Level 5 Listening, Empathy, Container Holding, Trust Building",
+          "samplePositions": [
+            "Director of Community First Touch",
+            "Community Welcome Specialist",
+            "New Member Onboarding Manager",
+            "Social Media Moderator"
+          ]
+        },
+        {
+          "id": 79,
+          "name": "Inspector",
+          "craft": "Quality Assurance & Testing",
+          "type": "Baby",
+          "positions": 2,
+          "levers": "2",
+          "craftSkills": "QA protocols, standards enforcement, audit procedures, continuous improvement",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Speaking Quality Assurance Specialist",
+            "Performance Quality Specialist"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MEDIA PRODUCTION",
+      "clusters": 11,
+      "totalPositions": 412,
+      "beings": [
+        {
+          "id": 14,
+          "name": "AdSmith",
+          "craft": "Ad Creative Production",
+          "type": "Contractor",
+          "positions": 27,
+          "levers": "2",
+          "craftSkills": "Ad format specs, platform creative requirements, A/B visual testing, click-through design",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Advertising Design Manager",
+            "Ad Designer",
+            "Banner Ad Designer",
+            "YouTube Thumbnail Designer",
+            "Facebook Ads Creative Director"
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Distributor",
+          "craft": "Video Operations & Distribution",
+          "type": "Being",
+          "positions": 58,
+          "levers": "2",
+          "craftSkills": "Encoding specs, platform optimization, metadata, thumbnail A/B testing, distribution scheduling",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Video Marketing Manager",
+            "Video Production Manager",
+            "Video Strategy Manager"
+          ]
+        },
+        {
+          "id": 26,
+          "name": "AudioReach",
+          "craft": "Audio Marketing & Distribution",
+          "type": "Being",
+          "positions": 54,
+          "levers": "2",
+          "craftSkills": "Podcast platform optimization, audio SEO, cross-promotion, listener growth tactics",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Audio Marketing",
+            "Director of Podcast Strategy",
+            "Director of Audio Content"
+          ]
+        },
+        {
+          "id": 27,
+          "name": "Director",
+          "craft": "Video Direction & Production",
+          "type": "Contractor",
+          "positions": 38,
+          "levers": "0.5, 2",
+          "craftSkills": "Shot composition, directing talent, production scheduling, creative vision execution",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Podcast Video Editor",
+            "Video Content Manager",
+            "Audio Content Manager",
+            "Video Content Strategist",
+            "Speaking Video Producer"
+          ]
+        },
+        {
+          "id": 28,
+          "name": "Podcast",
+          "craft": "Podcast & Audio Production",
+          "type": "Contractor",
+          "positions": 31,
+          "levers": "0.5, 2",
+          "craftSkills": "Episode structure, guest prep, recording workflow, RSS feed management, show notes",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Podcast Guest Sourcing Strategist",
+            "Podcast Guest Relationship Nurturer",
+            "Podcast Guest Prep Coordinator",
+            "Podcast Producer",
+            "Executive Podcast Producer"
+          ]
+        },
+        {
+          "id": 29,
+          "name": "Lens",
+          "craft": "Cinematography & Lighting",
+          "type": "Contractor",
+          "positions": 24,
+          "levers": "2",
+          "craftSkills": "Camera operation, lens selection, lighting rigs, exposure control, color temperature",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Lighting Manager",
+            "Visual Engineer",
+            "Lighting Technician",
+            "Cinematographer",
+            "Director of Photography"
+          ]
+        },
+        {
+          "id": 31,
+          "name": "Editor",
+          "craft": "Video Post-Production & VFX",
+          "type": "Contractor",
+          "positions": 16,
+          "levers": "2",
+          "craftSkills": "NLE editing (Premiere/Avid), color grading (DaVinci), compositing, motion tracking, captioning",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Motion Graphics Designer",
+            "VFX Supervisor",
+            "VFX Artist"
+          ]
+        },
+        {
+          "id": 33,
+          "name": "GripMaster",
+          "craft": "Production Operations & Logistics",
+          "type": "Baby",
+          "positions": 12,
+          "levers": "2",
+          "craftSkills": "Equipment rental, transportation, permits, insurance, on-set safety protocols",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Video Compliance Manager",
+            "Video Technician",
+            "Equipment Manager"
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Shutter",
+          "craft": "Photography",
+          "type": "Baby",
+          "positions": 3,
+          "levers": "2, Other",
+          "craftSkills": "Camera settings, lighting setup, composition, post-processing (Lightroom), event photography workflow",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Photography Manager",
+            "Speaking Photographer",
+            "Photography Director"
+          ]
+        },
+        {
+          "id": 35,
+          "name": "StageHand",
+          "craft": "Event Production & Logistics",
+          "type": "Being",
+          "positions": 135,
+          "levers": "0.5, 2",
+          "craftSkills": "Venue management, AV setup, catering coordination, registration systems, on-site operations",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Networking Event Organizer",
+            "Director of Live Events Strategy",
+            "Director of Conference Management",
+            "Director of Heart of Influence Events",
+            "HOI Invitation Manager"
+          ]
+        },
+        {
+          "id": 41,
+          "name": "Rigger",
+          "craft": "Stage & Technical Production",
+          "type": "Baby",
+          "positions": 14,
+          "levers": "2",
+          "craftSkills": "Stage design, rigging, AV integration, wireless systems, stage management protocols",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Speaking Equipment Manager",
+            "Director of Stage Design",
+            "Stage Design Manager"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OTHER",
+      "clusters": 11,
+      "totalPositions": 363,
+      "beings": [
+        {
+          "id": 30,
+          "name": "Voice",
+          "craft": "Voice Performance & Presenting",
+          "type": "Contractor",
+          "positions": 18,
+          "levers": "2, Other",
+          "craftSkills": "Voice modulation, pacing, breath control, teleprompter reading, live hosting energy",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Podcast Host",
+            "Podcast Co-Host",
+            "Podcast Interviewer",
+            "Webinar Host Specialist",
+            "Webinar Engagement Specialist"
+          ]
+        },
+        {
+          "id": 40,
+          "name": "Orator",
+          "craft": "Speaker Development & Coaching",
+          "type": "Contractor",
+          "positions": 15,
+          "levers": "2",
+          "craftSkills": "Presentation coaching, content structuring, rehearsal facilitation, audience analysis",
+          "heartSkills": "Level 5 Listening, Energetic Transference, Stage Presence",
+          "samplePositions": [
+            "Director of Speaker Development",
+            "Speaker Development Manager",
+            "Speaking Content Manager"
+          ]
+        },
+        {
+          "id": 42,
+          "name": "Social",
+          "craft": "Social Media Management",
+          "type": "Being",
+          "positions": 177,
+          "levers": "0.5, 2, Other",
+          "craftSkills": "Platform algorithms, posting cadence, community response, content scheduling, trend surfing",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Social Media Community Manager",
+            "Social Media Graphic Designer",
+            "Director of Organic Media",
+            "Social Media Strategist",
+            "Director of Facebook Marketing"
+          ]
+        },
+        {
+          "id": 49,
+          "name": "OpsEngine",
+          "craft": "Marketing Operations",
+          "type": "Baby",
+          "positions": 4,
+          "levers": "2, Other",
+          "craftSkills": "MarTech stack management, process documentation, cross-team coordination, tool evaluation",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Marketing Workflow Designer",
+            "Director of Marketing Technology",
+            "Marketing Technology Strategist",
+            "Marketing Technology Trainer"
+          ]
+        },
+        {
+          "id": 71,
+          "name": "TouchPoint",
+          "craft": "Physical Touch & Direct Mail",
+          "type": "Baby",
+          "positions": 7,
+          "levers": "0.5",
+          "craftSkills": "Direct mail design, gift curation, handwritten note programs, physical pattern interrupts",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Black Envelope & Physical Mail Manager",
+            "Handwritten Letter Specialist",
+            "Gift & Welcome Package Coordinator"
+          ]
+        },
+        {
+          "id": 73,
+          "name": "Healer",
+          "craft": "Social Impact & CSR",
+          "type": "Being",
+          "positions": 60,
+          "levers": "6",
+          "craftSkills": "Impact measurement, volunteer coordination, nonprofit partnerships, sustainability programs",
+          "heartSkills": "Heart-Centered Service, Contribution, Legacy Building",
+          "samplePositions": [
+            "Director of Social Impact",
+            "Director of Community Contributions",
+            "Director of Charitable Giving"
+          ]
+        },
+        {
+          "id": 74,
+          "name": "Sage",
+          "craft": "Thought Leadership & Influence",
+          "type": "Being",
+          "positions": 60,
+          "levers": "6",
+          "craftSkills": "Industry positioning, speaking platform strategy, publication placement, expert network building",
+          "heartSkills": "Speaking Into Truth, Authority Through Authenticity",
+          "samplePositions": [
+            "Director of Thought Leadership",
+            "Director of Industry Influence",
+            "Director of Expert Positioning"
+          ]
+        },
+        {
+          "id": 76,
+          "name": "Shield",
+          "craft": "Legal & Compliance",
+          "type": "Baby",
+          "positions": 12,
+          "levers": "1, Other",
+          "craftSkills": "Ad compliance review, data privacy (GDPR/CCPA), contract review, regulatory navigation",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Ecosystem Finisher \u2014 Contract Execution Specialist",
+            "Partnership Contract Manager",
+            "Partnership Legal Manager",
+            "Partnership Contract Specialist",
+            "Director of Marketing Compliance"
+          ]
+        },
+        {
+          "id": 77,
+          "name": "Genesis",
+          "craft": "ACT-I Being Development",
+          "type": "Baby",
+          "positions": 6,
+          "levers": "Other",
+          "craftSkills": "AI being training, prompt engineering, personality development, quality assurance, optimization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Coliseum Operations",
+            "Coliseum Optimization Specialist",
+            "Director of ACTi Being Development"
+          ]
+        },
+        {
+          "id": 78,
+          "name": "Conductor",
+          "craft": "Project Management",
+          "type": "Baby",
+          "positions": 2,
+          "levers": "Analytics",
+          "craftSkills": "Timeline management, cross-functional coordination, quality assurance, process documentation",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Marketing Project Management",
+            "Marketing Project Manager"
+          ]
+        },
+        {
+          "id": 80,
+          "name": "Translator",
+          "craft": "Localization & Translation",
+          "type": "Baby",
+          "positions": 2,
+          "levers": "Other",
+          "craftSkills": "Cultural adaptation, language translation, regional compliance, internationalization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Translation and Localization",
+            "Localization Specialist"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "REVENUE & RELATIONSHIPS",
+      "clusters": 14,
+      "totalPositions": 475,
+      "beings": [
+        {
+          "id": 12,
+          "name": "Scholar-Scribe",
+          "craft": "PR & Media Relations",
+          "type": "Contractor",
+          "positions": 21,
+          "levers": "2",
+          "craftSkills": "Press release format, media pitch language, journalist relationship management, crisis communication, media monitoring, interview prep",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, Relationship Building with Media",
+          "samplePositions": [
+            "Technical Writer",
+            "Medical Writer",
+            "Scientific Writer",
+            "PR Campaign Manager",
+            "Media Relations Specialist"
+          ]
+        },
+        {
+          "id": 45,
+          "name": "Optimizer",
+          "craft": "Conversion Rate Optimization",
+          "type": "Baby",
+          "positions": 14,
+          "levers": "2, Analytics",
+          "craftSkills": "Hypothesis formation, statistical significance, heat maps, user session recording, funnel analysis",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Conversion Rate Optimization Manager",
+            "Google Ads Landing Page Optimizer",
+            "Landing Page Strategist",
+            "Webinar Segmentation Specialist",
+            "Webinar Funnel Architect"
+          ]
+        },
+        {
+          "id": 48,
+          "name": "Pipeline",
+          "craft": "CRM & Marketing Automation",
+          "type": "Baby",
+          "positions": 5,
+          "levers": "2, Analytics",
+          "craftSkills": "HubSpot/Salesforce admin, pipeline configuration, workflow automation, data hygiene",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Speaking Database Manager",
+            "Speaking CRM Specialist",
+            "CRM Manager",
+            "Marketing Automation Manager",
+            "Marketing Data Integration Specialist"
+          ]
+        },
+        {
+          "id": 56,
+          "name": "Hunter",
+          "craft": "Outreach & Lead Development",
+          "type": "Being",
+          "positions": 90,
+          "levers": "0.5, 3, Other",
+          "craftSkills": "Cold outreach sequences, lead scoring, qualification frameworks, appointment setting, CRM hygiene",
+          "heartSkills": "Pattern Interrupt, Speaking Past Resistance, Curiosity Creation",
+          "samplePositions": [
+            "Director of First Impressions",
+            "Director of Cold Outreach Strategy",
+            "Director of Introduction Experiences",
+            "Director of Lead Generation",
+            "Director of Lead Qualification"
+          ]
+        },
+        {
+          "id": 57,
+          "name": "PriceArchitect",
+          "craft": "Pricing & Revenue Strategy",
+          "type": "Being",
+          "positions": 62,
+          "levers": "4, Other",
+          "craftSkills": "Price psychology, value-based pricing, packaging architecture, competitive positioning",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Pricing Strategy",
+            "Director of Product Packaging",
+            "Director of Pricing Analytics",
+            "Discount Strategy Manager",
+            "Cross-Sell Strategist"
+          ]
+        },
+        {
+          "id": 58,
+          "name": "Closer",
+          "craft": "Agreement Making",
+          "type": "Being",
+          "positions": 60,
+          "levers": "3",
+          "craftSkills": "4-Step Communication, objection handling, emotional rapport building, proposal delivery, close techniques",
+          "heartSkills": "Level 5 Listening, Speaking Into Fear, 4-Step Communication, Emotional Rapport",
+          "samplePositions": [
+            "Director of Sales Performance",
+            "Sales Performance Manager",
+            "Sales Pipeline Manager"
+          ]
+        },
+        {
+          "id": 59,
+          "name": "Integrator",
+          "craft": "Partnership Integration & Ops",
+          "type": "Being",
+          "positions": 57,
+          "levers": "1",
+          "craftSkills": "Operational merger, co-marketing execution, joint program management, performance tracking",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Level 3 Dating \u2014 Initial Merger Manager",
+            "Level 2 Partnership \u2014 Deepening Integration Manager",
+            "Level 2 Partnership \u2014 Revenue Sharing Coordinator",
+            "Co-Investment Coordinator",
+            "Ecosystem Co-Creator \u2014 Joint Program Designer"
+          ]
+        },
+        {
+          "id": 62,
+          "name": "Bridge",
+          "craft": "Partnership Development",
+          "type": "Contractor",
+          "positions": 45,
+          "levers": "1",
+          "craftSkills": "Partner identification, relationship building, joint value creation, merger integration",
+          "heartSkills": "Level 5 Listening, Trust Building, Mutual Value Recognition",
+          "samplePositions": [
+            "Network Mapping Specialist",
+            "Connection Quality Evaluator",
+            "Referral Network Architect",
+            "Director of Ecosystem Strategy",
+            "Director of Strategic Alliances"
+          ]
+        },
+        {
+          "id": 63,
+          "name": "Enabler",
+          "craft": "Sales Operations & Enablement",
+          "type": "Contractor",
+          "positions": 39,
+          "levers": "3",
+          "craftSkills": "CRM configuration, playbook creation, compensation design, territory mapping, process optimization",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Sales Operations",
+            "Director of Sales Enablement",
+            "Director of Sales Technology"
+          ]
+        },
+        {
+          "id": 64,
+          "name": "RevOps",
+          "craft": "Revenue Operations",
+          "type": "Contractor",
+          "positions": 24,
+          "levers": "4",
+          "craftSkills": "Revenue process design, billing systems, forecasting methodology, pipeline management",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Revenue Operations",
+            "Director of Revenue Strategy",
+            "Director of Revenue Technology"
+          ]
+        },
+        {
+          "id": 65,
+          "name": "Cultivator",
+          "craft": "Partnership Nurturing & Relationships",
+          "type": "Contractor",
+          "positions": 20,
+          "levers": "1",
+          "craftSkills": "Relationship maintenance, value delivery, trust deepening, long-term engagement",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Level 3 Dating \u2014 Trust Building Specialist",
+            "Relationship Value Assessor",
+            "Ecosystem Nurturer \u2014 Relationship Maintenance Manager",
+            "Ecosystem Nurturer \u2014 Partner Success Manager",
+            "Ecosystem Nurturer \u2014 Ongoing Value Deliverer"
+          ]
+        },
+        {
+          "id": 67,
+          "name": "Dealmaker",
+          "craft": "Partnership Agreement Making",
+          "type": "Contractor",
+          "positions": 15,
+          "levers": "1",
+          "craftSkills": "Proposal writing, term negotiation, contract structuring, win-win framework design",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Level 3 Dating \u2014 Simple Agreement Coordinator",
+            "Ecosystem Proposer \u2014 Agreement Architect",
+            "Ecosystem Proposer \u2014 Partnership Offer Designer",
+            "Ecosystem Proposer \u2014 Value Proposition Presenter",
+            "Partnership Negotiation Specialist"
+          ]
+        },
+        {
+          "id": 68,
+          "name": "Prospector",
+          "craft": "Partnership Sourcing & Outreach",
+          "type": "Baby",
+          "positions": 13,
+          "levers": "1",
+          "craftSkills": "Partner identification, outreach sequences, pattern interrupts for ecosystem leaders",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Ecosystem Sourcer \u2014 Lead Finder",
+            "Ecosystem Sourcer \u2014 Opportunity Scanner",
+            "Ecosystem Sourcer \u2014 Inbound Partnership Manager",
+            "Influencer Outreach Specialist",
+            "Director of Ecosystem Sourcing"
+          ]
+        },
+        {
+          "id": 69,
+          "name": "Coach",
+          "craft": "Sales Training & Coaching",
+          "type": "Baby",
+          "positions": 10,
+          "levers": "3",
+          "craftSkills": "Role-play facilitation, call review, skill gap analysis, mastery development programs",
+          "heartSkills": "Level 5 Listening, Teaching Through Experience, Modeling Mastery",
+          "samplePositions": [
+            "Director of Sales Training",
+            "Sales Training Manager",
+            "Sales Training Specialist"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "VISUAL DESIGN",
+      "clusters": 14,
+      "totalPositions": 386,
+      "beings": [
+        {
+          "id": 6,
+          "name": "Identity",
+          "craft": "Brand Strategy & Messaging",
+          "type": "Baby",
+          "positions": 13,
+          "levers": "2",
+          "craftSkills": "Brand archetype, voice/tone frameworks, positioning statements, competitive differentiation",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Brand Strategy",
+            "Thought Leadership Strategist",
+            "Brand Voice Guardian"
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Canvas",
+          "craft": "Visual & Graphic Design",
+          "type": "Being",
+          "positions": 97,
+          "levers": "2",
+          "craftSkills": "Typography, color theory, layout composition, brand systems, print production specs",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Book Cover Designer",
+            "Brand Visual Identity Designer",
+            "Brand Style Guide Creator",
+            "Brand Photography Art Director",
+            "Director of Visual Design"
+          ]
+        },
+        {
+          "id": 15,
+          "name": "Sphinx",
+          "craft": "Interactive & Quiz Design",
+          "type": "Contractor",
+          "positions": 24,
+          "levers": "0.5, 2",
+          "craftSkills": "Quiz logic, scoring algorithms, gamification mechanics, interactive UX, engagement loops",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Interactive Experiences",
+            "Quiz Design Manager",
+            "Quiz Content Writer",
+            "Survey Writer",
+            "Quiz Writer"
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Clarity",
+          "craft": "Data Visualization & Dashboards",
+          "type": "Contractor",
+          "positions": 23,
+          "levers": "2, Analytics",
+          "craftSkills": "Chart selection, data storytelling, dashboard UX, Tableau/Power BI, real-time data display",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Infographic Design Manager",
+            "Infographic Designer",
+            "Data Visualization Designer",
+            "Data Visualization Manager",
+            "Dashboard Manager"
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Environ",
+          "craft": "Environmental & Spatial Design",
+          "type": "Contractor",
+          "positions": 17,
+          "levers": "2",
+          "craftSkills": "Space planning, wayfinding, material selection, ADA compliance, exhibition flow",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Environmental Design Manager",
+            "Exhibition Design Manager",
+            "Signage Design Manager"
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Pixel",
+          "craft": "Digital & Web Design",
+          "type": "Contractor",
+          "positions": 15,
+          "levers": "2",
+          "craftSkills": "Responsive design, CSS frameworks, CMS templating, email rendering, mobile-first design",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Digital Design",
+            "Digital Design Manager",
+            "Web Design Manager"
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Kinetic",
+          "craft": "Motion Graphics & Animation",
+          "type": "Baby",
+          "positions": 12,
+          "levers": "2",
+          "craftSkills": "Keyframing, After Effects/Cinema 4D, 3D modeling, character rigging, VFX compositing",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Motion Design",
+            "Motion Design Manager",
+            "Motion Graphics Designer"
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Illustra",
+          "craft": "Illustration & Fine Art",
+          "type": "Baby",
+          "positions": 10,
+          "levers": "2",
+          "craftSkills": "Drawing technique, visual metaphor, editorial illustration, character design, portraiture",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Illustration Manager",
+            "Illustrator",
+            "Technical Illustrator"
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Visionary",
+          "craft": "Creative Direction & Design Ops",
+          "type": "Baby",
+          "positions": 10,
+          "levers": "2",
+          "craftSkills": "Creative vision alignment, design team workflow, asset management, brand governance",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Design Strategy",
+            "Director of Creative Innovation",
+            "Director of Design Operations"
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Form",
+          "craft": "Product & Industrial Design",
+          "type": "Baby",
+          "positions": 9,
+          "levers": "2",
+          "craftSkills": "Materials science, manufacturing constraints, ergonomics, packaging engineering",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Packaging Design Manager",
+            "Packaging Designer",
+            "Label Designer"
+          ]
+        },
+        {
+          "id": 25,
+          "name": "SoundForge",
+          "craft": "Audio Engineering & Sound Design",
+          "type": "Being",
+          "positions": 54,
+          "levers": "2",
+          "craftSkills": "DAW mastery, mixing, mastering, foley, sound effects design, acoustic treatment",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Podcast Editor",
+            "Audio Editor",
+            "Sound Engineer",
+            "Sound Designer",
+            "Speaking Audio Engineer"
+          ]
+        },
+        {
+          "id": 32,
+          "name": "SetMaster",
+          "craft": "Production Design & Art Direction",
+          "type": "Baby",
+          "positions": 14,
+          "levers": "2",
+          "craftSkills": "Set construction, prop sourcing, costume design, location management, visual continuity",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Set Decorator",
+            "Props Master",
+            "Costume Designer"
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Promoter",
+          "craft": "Event Marketing & Promotion",
+          "type": "Contractor",
+          "positions": 28,
+          "levers": "2",
+          "craftSkills": "Registration page optimization, reminder sequences, ticket pricing, partner promotion",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Speaking Marketing",
+            "Speaking Marketing Manager",
+            "Speaking Follow-up Manager",
+            "Webinar Marketing Manager",
+            "Webinar Registration Specialist"
+          ]
+        },
+        {
+          "id": 72,
+          "name": "Enchanter",
+          "craft": "Experience Design & Delight",
+          "type": "Being",
+          "positions": 60,
+          "levers": "7",
+          "craftSkills": "Surprise mechanics, delight mapping, gamification, experiential marketing, referral program design",
+          "heartSkills": "Empathy, Surprise & Delight, Emotional Intelligence",
+          "samplePositions": [
+            "Director of Creative Experience",
+            "Director of Brand Magic",
+            "Director of Customer Delight"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WRITING & COPY",
+      "clusters": 12,
+      "totalPositions": 190,
+      "beings": [
+        {
+          "id": 1,
+          "name": "Architect",
+          "craft": "Content Strategy & Management",
+          "type": "Being",
+          "positions": 53,
+          "levers": "2",
+          "craftSkills": "Editorial calendar, content pillars, audience segmentation, cross-channel planning, content lifecycle",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Content Strategy",
+            "Director of Content Marketing",
+            "Director of Content Creation"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Interface",
+          "craft": "UX & Interface Writing",
+          "type": "Contractor",
+          "positions": 26,
+          "levers": "2",
+          "craftSkills": "Microcopy, error states, navigation labels, accessibility language, user flow support",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Microcopy Writer",
+            "App Copy Writer",
+            "UI Copy Writer"
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Scribe",
+          "craft": "SEO & Content Writing",
+          "type": "Contractor",
+          "positions": 20,
+          "levers": "2",
+          "craftSkills": "Keyword research, search intent matching, on-page SEO, long-tail optimization, content structure for crawlability",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Blog Content Manager",
+            "Long-form Content Manager",
+            "Blog Writer"
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Bard",
+          "craft": "Narrative & Long-Form Writing",
+          "type": "Contractor",
+          "positions": 19,
+          "levers": "2",
+          "craftSkills": "Narrative arc, depth of argument, case study methodology, book structure, thought leadership framing",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of Publishing Strategy",
+            "Ghostwriter \u2014 Sean's Voice",
+            "Book Editor",
+            "Creative Writer",
+            "Ghostwriter"
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Persuader",
+          "craft": "Conversion Copywriting",
+          "type": "Baby",
+          "positions": 13,
+          "levers": "2",
+          "craftSkills": "Headlines, CTAs, urgency creation, objection-handling in text, A/B testable copy, response-driven language",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Copywriter",
+            "Copy Editor",
+            "Short-form Writer"
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Broadcaster",
+          "craft": "Content Distribution & Promotion",
+          "type": "Baby",
+          "positions": 12,
+          "levers": "2",
+          "craftSkills": "Syndication networks, content seeding, amplification strategy, republishing rights",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Book Project Manager",
+            "Book Launch Campaign Manager",
+            "Amazon Publishing Specialist",
+            "Director of Content Distribution",
+            "Content Distribution Manager"
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Playwright",
+          "craft": "Script & Speech Writing",
+          "type": "Baby",
+          "positions": 8,
+          "levers": "2",
+          "craftSkills": "Spoken rhythm, pacing, stage direction, audience interaction cues, teleprompter formatting",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Script Writer",
+            "Screenplay Writer",
+            "Speech Writer"
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Herald",
+          "craft": "PR & Brand Copywriting",
+          "type": "Baby",
+          "positions": 5,
+          "levers": "2",
+          "craftSkills": "Press release format, media pitch language, testimonial framing, interview prep docs",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Press Release Writer",
+            "Review Writer",
+            "Testimonial Writer"
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Nurture",
+          "craft": "Email & Nurture Copywriting",
+          "type": "Baby",
+          "positions": 4,
+          "levers": "2",
+          "craftSkills": "Subject lines, preview text, sequence architecture, personalization tokens, deliverability-aware writing",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Newsletter Writer",
+            "Email Writer",
+            "Email Copywriter",
+            "Newsletter Editor"
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Pulse",
+          "craft": "Social Media Copywriting",
+          "type": "Baby",
+          "positions": 3,
+          "levers": "2",
+          "craftSkills": "Platform character limits, hashtag strategy, engagement hooks, platform-native tone",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Social Media Writer",
+            "Caption Writer",
+            "Social Media Copywriter"
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Flow",
+          "craft": "UX/UI Design",
+          "type": "Contractor",
+          "positions": 17,
+          "levers": "2",
+          "craftSkills": "Wireframing, user research, interaction patterns, accessibility (WCAG), design systems",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Director of UX Design",
+            "Director of UI Design",
+            "UX Design Manager"
+          ]
+        },
+        {
+          "id": 70,
+          "name": "CoCreator",
+          "craft": "Partnership Marketing & Content",
+          "type": "Baby",
+          "positions": 10,
+          "levers": "1",
+          "craftSkills": "Co-branded content, partner enablement materials, joint marketing campaigns",
+          "heartSkills": "Level 5 Listening, Speaking Into Truth, GHIC (Growth-driven, Heart-centered, Integrous, Committed to Mastery)",
+          "samplePositions": [
+            "Level 2 Partnership \u2014 Co-Marketing Manager",
+            "Partnership Marketing Manager",
+            "Partnership Marketing Specialist",
+            "Partnership Communication Specialist"
+          ]
+        }
+      ]
+    }
+  ]
+}

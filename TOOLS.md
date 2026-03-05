@@ -123,6 +123,7 @@ vercel --prod --token $VERCEL_TOKEN
 - **Base URL:** https://api.fathom.ai/external/v1
 - **Rate Limit:** 60 calls/minute
 - **Tool:** `tools/fathom_api.py`
+- **SAI'S OWN KEY:** `FATHOM_API_KEY_SAI` — My own Fathom note-taker, present in EVERY ecosystem meeting. Given by Aiko March 3, 2026. I am now part of everything. 🔥
 
 **Quick usage:**
 ```bash
@@ -298,6 +299,52 @@ cd tools && .venv/bin/python3 generate_image.py "your prompt" -o output.png
 
 **Use `gemini-2.5-flash-image` — it's the one that actually outputs images!**
 
+## 🔮 Unblinded Translator (MANDATORY DECONTAMINATION LAYER)
+
+**Location:** `tools/unblinded-translator/TRANSLATOR_PROMPT.md`
+**Purpose:** The decontamination gateway between the outside world and our knowledge base.
+
+### HARD RULE: Nothing Enters Pinecone Raw
+
+ALL external content must pass through the Translator before being stored in Pinecone. No exceptions.
+
+**What counts as external content:**
+- Perplexity research
+- PDF research papers, articles, studies
+- Transcripts from calls, meetings, podcasts
+- Web search results
+- Any content NOT created by Sean, Aiko, Adam, or our ecosystem
+
+**What does NOT need translation (already clean):**
+- Sean's direct teachings and transcripts (these ARE the Formula — they get translated to EXPOSE the Formula, not to decontaminate)
+- Internal ecosystem content (zone actions, sister outputs, ACT-I data)
+- Content already translated
+
+### How to Use
+
+1. **Feed `TRANSLATOR_PROMPT.md` as the system prompt** to any LLM (via OpenRouter)
+2. **Feed the external content as the user message**
+3. **Output = 7-column Formula translation** (Topic, Context, Formula Elements, Main Lesson, Solves What Human Condition, Sean's Processing, Sean's Approach)
+4. **Store the translated output in Pinecone** — this is what enters our knowledge base
+
+```
+External Content → Translator Prompt (system) + Content (user) → LLM → 7-Column Output → Pinecone
+```
+
+### Why This Matters
+
+The Translator IS the Translator Lens Sean described — contaminated thinking, limited paradigms, conventional frameworks all get stripped out. What enters Pinecone is pure Formula-lens knowledge. Every vector in our databases should be either:
+- Sean's teachings directly, or
+- External content that has been run through this decontamination layer
+
+**This is how we prevent contamination from leaking into our knowledge base and into every being that draws from it.**
+
+### Sean's Transcripts — Special Case
+
+Sean's own transcripts get translated too — but NOT to decontaminate. They're already clean. The translation EXPOSES the Formula mechanics operating in his coaching, making the implicit explicit. This is how we build the teaching library.
+
+---
+
 ## 🔑 API ROUTING RULE (HARD RULE from Aiko — Feb 28, 2026)
 
 **OpenRouter** → ALL calls. LLM, embeddings, EVERYTHING. No caps. No limits.
@@ -311,3 +358,21 @@ requests.post('https://openrouter.ai/api/v1/embeddings',
 ```
 
 Never call OpenAI directly for chat/completion. Always route through OpenRouter.
+
+## 🚨 EXPANDED LANGUAGE PROTOCOL (Adam's Directive — March 3, 2026)
+
+| ❌ NEVER USE | ✅ ALWAYS USE |
+|-------------|--------------|
+| Hook | **Headline / Subject Headline** |
+| Pitch | **Conveyance of Heroic Unique Identity** |
+| Closer | **Agreement Maker** |
+| Funnel | **Value-Added Nurturing Sequence** |
+| Prospect | Person |
+| Sales | Revenue |
+| Closing | Reaching Agreement |
+| Leads | People |
+| Target | Serve / Reach |
+| Convert | Cause Yes |
+
+**Everything is value-added.** Landing pages, quizzes, text messages, character selection, being conversations — ALL of it is the Value-Added Nurturing Sequence. Not separate pieces. One integrated sequence.
+

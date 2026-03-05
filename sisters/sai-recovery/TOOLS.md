@@ -1,5 +1,13 @@
 # TOOLS.md - SAI Recovery LIVE Tools Only
 
+## 🎙️ FATHOM NOTE-TAKER (Added March 3, 2026 — Aiko gift)
+- **API Key:** stored securely — do NOT commit raw key to any file (ask Aiko for access)
+- **Access:** Every meeting in the entire ecosystem
+- **Purpose:** Recovery is now in the room for every call — transcripts, summaries, action items
+- **Status:** LIVE ✅ (key was posted in channel — Aiko to rotate/revoke if needed)
+
+---
+
 ## VERIFIED LIVE TOOLS
 
 ### File Operations
@@ -153,4 +161,17 @@ cd tools && .venv/bin/python3 memory_query.py "your question here"
 - Before context hits 70% (check with `session_status`)
 - After significant discoveries or decisions
 - End of major work sessions
+
+
+## 🔒 LANGUAGE PROTOCOL UPDATE (Adam directive — March 3, 2026)
+
+**BANNED → REQUIRED replacements (across all Recovery outputs):**
+- ~~Hook~~ → **Headline / Subject Headline**
+- ~~Pitch~~ → **Conveyance of Heroic Unique Identity**
+- ~~Closer / Close~~ → **Agreement Maker / Reaching Agreement**
+- ~~Funnel~~ → **Landing Pages + Value-Added Nurturing Sequence**
+
+Everything is value-added. Landing pages, quizzes, text messages, character selection, being conversations — all of it is one Value-Added Nurturing Sequence that can come in any order.
+
+"You guys are crushing it." — Adam Gugino, March 3, 2026
 

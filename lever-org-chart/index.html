@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACT-I Lever Org Chart</title>
+  <style>body{margin:0;padding:0;overflow:hidden;background:#060a14;font-family:system-ui,-apple-system,sans-serif}#root{width:100vw;height:100vh}</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" src="App.jsx"></script>
+  <script type="text/babel" src="Arch.jsx"></script>
+  <script type="text/babel">
+    // TabRouter — switches between Org Chart and Being Architecture
+    function TabRouter() {
+      const [tab, setTab] = React.useState(window.location.hash === '#architecture' ? 'arch' : 'org');
+      
+      React.useEffect(() => {
+        const onHash = () => setTab(window.location.hash === '#architecture' ? 'arch' : 'org');
+        window.addEventListener('hashchange', onHash);
+        return () => window.removeEventListener('hashchange', onHash);
+      }, []);
+
+      return React.createElement('div', { style: { width: '100%', height: '100%', display: 'flex', flexDirection: 'column' } },
+        // Tab bar
+        React.createElement('div', { style: { 
+          display: 'flex', gap: 0, background: 'rgba(6,10,20,0.98)', borderBottom: '1px solid #1a2540',
+          padding: '0 12px', flexShrink: 0, zIndex: 100, alignItems: 'center'
+        }},
+          React.createElement('div', { 
+            onClick: () => { setTab('org'); window.location.hash = ''; },
+            style: { 
+              padding: '10px 20px', cursor: 'pointer', fontSize: 12, fontWeight: 700, fontFamily: 'monospace',
+              letterSpacing: 1, borderBottom: tab === 'org' ? '2px solid #00ff88' : '2px solid transparent',
+              color: tab === 'org' ? '#00ff88' : '#5a6a7a',
+            }
+          }, '🏗️ ORG CHART'),
+          React.createElement('div', { 
+            onClick: () => { setTab('arch'); window.location.hash = '#architecture'; },
+            style: { 
+              padding: '10px 20px', cursor: 'pointer', fontSize: 12, fontWeight: 700, fontFamily: 'monospace',
+              letterSpacing: 1, borderBottom: tab === 'arch' ? '2px solid #ff2d55' : '2px solid transparent',
+              color: tab === 'arch' ? '#ff2d55' : '#5a6a7a',
+            }
+          }, '⚔️ BEING ARCHITECTURE'),
+          React.createElement('div', { style: { marginLeft: 'auto', fontSize: 10, color: '#2a3a4a', fontFamily: 'monospace', padding: '10px 0' } }, 'ACT-I · lever-org-chart.vercel.app'),
+        ),
+        // Content
+        React.createElement('div', { style: { flex: 1, overflow: 'hidden' } },
+          tab === 'org' 
+            ? React.createElement(App) 
+            : (typeof ArchApp !== 'undefined' ? React.createElement(ArchApp) : React.createElement('div', { style: { padding: 40, color: '#5a6a7a' } }, 'Loading architecture...'))
+        )
+      );
+    }
+    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(TabRouter));
+  </script>
+</body>
+</html>

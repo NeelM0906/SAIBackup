@@ -220,6 +220,22 @@
     "airtable": {
       "version": "1.0.6",
       "installedAt": 1772330557648
+    },
+    "proactive-agent-skill": {
+      "version": "1.0.0",
+      "installedAt": 1772655375844
+    },
+    "proactive-agent-lite": {
+      "version": "1.0.0",
+      "installedAt": 1772655377113
+    },
+    "seo-content-engine": {
+      "version": "1.0.0",
+      "installedAt": 1772657701410
+    },
+    "tavily-tool": {
+      "version": "0.1.1",
+      "installedAt": 1772657923626
     }
   }
 }
