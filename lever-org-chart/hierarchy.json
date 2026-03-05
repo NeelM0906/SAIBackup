@@ -878,7 +878,9 @@
               "id": "n2547"
             }
           ],
-          "declaredTotal": 177
+          "declaredTotal": 177,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 51,
@@ -1266,7 +1268,9 @@
               "id": "n2176"
             }
           ],
-          "declaredTotal": 71
+          "declaredTotal": 71,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 52,
@@ -1536,7 +1540,9 @@
               "id": "n446"
             }
           ],
-          "declaredTotal": 42
+          "declaredTotal": 42,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 53,
@@ -1764,7 +1770,9 @@
               "id": "n2054"
             }
           ],
-          "declaredTotal": 37
+          "declaredTotal": 37,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 54,
@@ -1952,7 +1960,9 @@
               "id": "n1872"
             }
           ],
-          "declaredTotal": 37
+          "declaredTotal": 37,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 55,
@@ -2055,7 +2065,9 @@
               "id": "n2495"
             }
           ],
-          "declaredTotal": 22
+          "declaredTotal": 22,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 61,
@@ -2315,7 +2327,9 @@
               "id": "n2553"
             }
           ],
-          "declaredTotal": 52
+          "declaredTotal": 52,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         }
       ]
     },
@@ -2572,7 +2586,9 @@
               "id": "n2530"
             }
           ],
-          "declaredTotal": 54
+          "declaredTotal": 54,
+          "kaiBeing": "The Media Buyer",
+          "kaiBeingId": 6
         },
         {
           "id": 44,
@@ -2707,7 +2723,9 @@
               "id": "n1439"
             }
           ],
-          "declaredTotal": 20
+          "declaredTotal": 20,
+          "kaiBeing": "The Technologist",
+          "kaiBeingId": 8
         },
         {
           "id": 46,
@@ -2797,7 +2815,9 @@
               "id": "n951"
             }
           ],
-          "declaredTotal": 12
+          "declaredTotal": 12,
+          "kaiBeing": "The Technologist",
+          "kaiBeingId": 8
         },
         {
           "id": 47,
@@ -2867,7 +2887,9 @@
               "id": "n1496"
             }
           ],
-          "declaredTotal": 10
+          "declaredTotal": 10,
+          "kaiBeing": "The Technologist",
+          "kaiBeingId": 8
         },
         {
           "id": 66,
@@ -2997,7 +3019,9 @@
               "id": "n492"
             }
           ],
-          "declaredTotal": 17
+          "declaredTotal": 17,
+          "kaiBeing": "The Media Buyer",
+          "kaiBeingId": 6
         }
       ]
     },
@@ -3269,7 +3293,9 @@
               "id": "n958"
             }
           ],
-          "declaredTotal": 31
+          "declaredTotal": 31,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         },
         {
           "id": 38,
@@ -3394,7 +3420,9 @@
               "id": "n1097"
             }
           ],
-          "declaredTotal": 26
+          "declaredTotal": 26,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         },
         {
           "id": 39,
@@ -3499,7 +3527,9 @@
               "id": "n1448"
             }
           ],
-          "declaredTotal": 17
+          "declaredTotal": 17,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         }
       ]
     },
@@ -3796,7 +3826,9 @@
               "id": "n2556"
             }
           ],
-          "declaredTotal": 55
+          "declaredTotal": 55,
+          "kaiBeing": "The Keeper",
+          "kaiBeingId": 13
         },
         {
           "id": 75,
@@ -3925,7 +3957,9 @@
               "id": "n1155"
             }
           ],
-          "declaredTotal": 13
+          "declaredTotal": 13,
+          "kaiBeing": "The Multiplier",
+          "kaiBeingId": 14
         },
         {
           "id": 79,
@@ -3962,7 +3996,9 @@
               "id": "n1084"
             }
           ],
-          "declaredTotal": 2
+          "declaredTotal": 2,
+          "kaiBeing": "The Keeper",
+          "kaiBeingId": 13
         }
       ]
     },
@@ -4154,7 +4190,9 @@
               "id": "n1698"
             }
           ],
-          "declaredTotal": 27
+          "declaredTotal": 27,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 24,
@@ -4367,7 +4405,9 @@
               "id": "n1310"
             }
           ],
-          "declaredTotal": 58
+          "declaredTotal": 58,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 26,
@@ -4580,7 +4620,9 @@
               "id": "n1407"
             }
           ],
-          "declaredTotal": 54
+          "declaredTotal": 54,
+          "kaiBeing": "The Sound Engineer",
+          "kaiBeingId": 4
         },
         {
           "id": 27,
@@ -4805,7 +4847,9 @@
               "id": "n1326"
             }
           ],
-          "declaredTotal": 38
+          "declaredTotal": 38,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 28,
@@ -4990,7 +5034,9 @@
               "id": "n1413"
             }
           ],
-          "declaredTotal": 31
+          "declaredTotal": 31,
+          "kaiBeing": "The Sound Engineer",
+          "kaiBeingId": 4
         },
         {
           "id": 29,
@@ -5100,7 +5146,9 @@
               "id": "n1307"
             }
           ],
-          "declaredTotal": 24
+          "declaredTotal": 24,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 31,
@@ -5208,7 +5256,9 @@
               "id": "n1311"
             }
           ],
-          "declaredTotal": 16
+          "declaredTotal": 16,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 33,
@@ -5361,7 +5411,9 @@
               "id": "n1287"
             }
           ],
-          "declaredTotal": 12
+          "declaredTotal": 12,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         },
         {
           "id": 34,
@@ -5394,7 +5446,9 @@
               "id": "n2560"
             }
           ],
-          "declaredTotal": 3
+          "declaredTotal": 3,
+          "kaiBeing": "The Filmmaker",
+          "kaiBeingId": 3
         },
         {
           "id": 35,
@@ -6134,7 +6188,9 @@
               "id": "n1072"
             }
           ],
-          "declaredTotal": 135
+          "declaredTotal": 135,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         },
         {
           "id": 41,
@@ -6282,7 +6338,9 @@
               "id": "n1085"
             }
           ],
-          "declaredTotal": 14
+          "declaredTotal": 14,
+          "kaiBeing": "The Stage Director",
+          "kaiBeingId": 10
         }
       ]
     },
@@ -6389,7 +6447,9 @@
               "id": "n2528"
             }
           ],
-          "declaredTotal": 18
+          "declaredTotal": 18,
+          "kaiBeing": "The Voice",
+          "kaiBeingId": 7
         },
         {
           "id": 40,
@@ -6497,7 +6557,9 @@
               "id": "n1100"
             }
           ],
-          "declaredTotal": 15
+          "declaredTotal": 15,
+          "kaiBeing": "The Voice",
+          "kaiBeingId": 7
         },
         {
           "id": 42,
@@ -7462,7 +7524,9 @@
               "id": "n2561"
             }
           ],
-          "declaredTotal": 177
+          "declaredTotal": 177,
+          "kaiBeing": "The Voice",
+          "kaiBeingId": 7
         },
         {
           "id": 49,
@@ -7501,7 +7565,9 @@
               "id": "n2544"
             }
           ],
-          "declaredTotal": 4
+          "declaredTotal": 4,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         },
         {
           "id": 71,
@@ -7554,7 +7620,9 @@
               "id": "n197"
             }
           ],
-          "declaredTotal": 7
+          "declaredTotal": 7,
+          "kaiBeing": "The Messenger",
+          "kaiBeingId": 9
         },
         {
           "id": 73,
@@ -7872,7 +7940,9 @@
               "id": "n2238"
             }
           ],
-          "declaredTotal": 60
+          "declaredTotal": 60,
+          "kaiBeing": "The Multiplier",
+          "kaiBeingId": 14
         },
         {
           "id": 74,
@@ -8190,7 +8260,9 @@
               "id": "n2298"
             }
           ],
-          "declaredTotal": 60
+          "declaredTotal": 60,
+          "kaiBeing": "The Multiplier",
+          "kaiBeingId": 14
         },
         {
           "id": 76,
@@ -8295,7 +8367,9 @@
               "id": "n2570"
             }
           ],
-          "declaredTotal": 12
+          "declaredTotal": 12,
+          "kaiBeing": "The Researcher",
+          "kaiBeingId": 15
         },
         {
           "id": 77,
@@ -8343,7 +8417,9 @@
               "id": "n2568"
             }
           ],
-          "declaredTotal": 6
+          "declaredTotal": 6,
+          "kaiBeing": "The Strategist",
+          "kaiBeingId": 17
         },
         {
           "id": 78,
@@ -8370,7 +8446,9 @@
               "id": "n2524"
             }
           ],
-          "declaredTotal": 2
+          "declaredTotal": 2,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         },
         {
           "id": 80,
@@ -8397,7 +8475,9 @@
               "id": "n2558"
             }
           ],
-          "declaredTotal": 2
+          "declaredTotal": 2,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         }
       ]
     },
@@ -8559,7 +8639,9 @@
               "id": "n1490"
             }
           ],
-          "declaredTotal": 21
+          "declaredTotal": 21,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 45,
@@ -8684,7 +8766,9 @@
               "id": "n2481"
             }
           ],
-          "declaredTotal": 14
+          "declaredTotal": 14,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         },
         {
           "id": 48,
@@ -8729,7 +8813,9 @@
               "id": "n2521"
             }
           ],
-          "declaredTotal": 5
+          "declaredTotal": 5,
+          "kaiBeing": "The Analyst",
+          "kaiBeingId": 5
         },
         {
           "id": 56,
@@ -9179,7 +9265,9 @@
               "id": "n2549"
             }
           ],
-          "declaredTotal": 90
+          "declaredTotal": 90,
+          "kaiBeing": "The Agreement Maker",
+          "kaiBeingId": 12
         },
         {
           "id": 57,
@@ -9509,7 +9597,9 @@
               "id": "n2554"
             }
           ],
-          "declaredTotal": 62
+          "declaredTotal": 62,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         },
         {
           "id": 58,
@@ -9762,7 +9852,9 @@
               "id": "n1927"
             }
           ],
-          "declaredTotal": 60
+          "declaredTotal": 60,
+          "kaiBeing": "The Agreement Maker",
+          "kaiBeingId": 12
         },
         {
           "id": 59,
@@ -10012,7 +10104,9 @@
               "id": "n476"
             }
           ],
-          "declaredTotal": 57
+          "declaredTotal": 57,
+          "kaiBeing": "The Connector",
+          "kaiBeingId": 11
         },
         {
           "id": 62,
@@ -10232,7 +10326,9 @@
               "id": "n425"
             }
           ],
-          "declaredTotal": 45
+          "declaredTotal": 45,
+          "kaiBeing": "The Connector",
+          "kaiBeingId": 11
         },
         {
           "id": 63,
@@ -10440,7 +10536,9 @@
               "id": "n1926"
             }
           ],
-          "declaredTotal": 39
+          "declaredTotal": 39,
+          "kaiBeing": "The Agreement Maker",
+          "kaiBeingId": 12
         },
         {
           "id": 64,
@@ -10548,7 +10646,9 @@
               "id": "n1989"
             }
           ],
-          "declaredTotal": 24
+          "declaredTotal": 24,
+          "kaiBeing": "The Operator",
+          "kaiBeingId": 16
         },
         {
           "id": 65,
@@ -10673,7 +10773,9 @@
               "id": "n469"
             }
           ],
-          "declaredTotal": 20
+          "declaredTotal": 20,
+          "kaiBeing": "The Connector",
+          "kaiBeingId": 11
         },
         {
           "id": 67,
@@ -10758,7 +10860,9 @@
               "id": "n470"
             }
           ],
-          "declaredTotal": 15
+          "declaredTotal": 15,
+          "kaiBeing": "The Connector",
+          "kaiBeingId": 11
         },
         {
           "id": 68,
@@ -10828,7 +10932,9 @@
               "id": "n441"
             }
           ],
-          "declaredTotal": 13
+          "declaredTotal": 13,
+          "kaiBeing": "The Researcher",
+          "kaiBeingId": 15
         },
         {
           "id": 69,
@@ -10886,7 +10992,9 @@
               "id": "n1924"
             }
           ],
-          "declaredTotal": 10
+          "declaredTotal": 10,
+          "kaiBeing": "The Agreement Maker",
+          "kaiBeingId": 12
         }
       ]
     },
@@ -10996,7 +11104,9 @@
               "id": "n1491"
             }
           ],
-          "declaredTotal": 13
+          "declaredTotal": 13,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 13,
@@ -11426,7 +11536,9 @@
               "id": "n1704"
             }
           ],
-          "declaredTotal": 97
+          "declaredTotal": 97,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 15,
@@ -11581,7 +11693,9 @@
               "id": "n1701"
             }
           ],
-          "declaredTotal": 24
+          "declaredTotal": 24,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 16,
@@ -11681,7 +11795,9 @@
               "id": "n2483"
             }
           ],
-          "declaredTotal": 23
+          "declaredTotal": 23,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 18,
@@ -11769,7 +11885,9 @@
               "id": "n1680"
             }
           ],
-          "declaredTotal": 17
+          "declaredTotal": 17,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 19,
@@ -11872,7 +11990,9 @@
               "id": "n1678"
             }
           ],
-          "declaredTotal": 15
+          "declaredTotal": 15,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 20,
@@ -11940,7 +12060,9 @@
               "id": "n1601"
             }
           ],
-          "declaredTotal": 12
+          "declaredTotal": 12,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 21,
@@ -12068,7 +12190,9 @@
               "id": "n1695"
             }
           ],
-          "declaredTotal": 10
+          "declaredTotal": 10,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 22,
@@ -12141,7 +12265,9 @@
               "id": "n2305"
             }
           ],
-          "declaredTotal": 10
+          "declaredTotal": 10,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 23,
@@ -12194,7 +12320,9 @@
               "id": "n1588"
             }
           ],
-          "declaredTotal": 9
+          "declaredTotal": 9,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 25,
@@ -12474,7 +12602,9 @@
               "id": "n1697"
             }
           ],
-          "declaredTotal": 54
+          "declaredTotal": 54,
+          "kaiBeing": "The Sound Engineer",
+          "kaiBeingId": 4
         },
         {
           "id": 32,
@@ -12557,7 +12687,9 @@
               "id": "n1242"
             }
           ],
-          "declaredTotal": 14
+          "declaredTotal": 14,
+          "kaiBeing": "The Visual Architect",
+          "kaiBeingId": 2
         },
         {
           "id": 37,
@@ -12702,7 +12834,9 @@
               "id": "n1103"
             }
           ],
-          "declaredTotal": 28
+          "declaredTotal": 28,
+          "kaiBeing": "The Voice",
+          "kaiBeingId": 7
         },
         {
           "id": 72,
@@ -13015,7 +13149,9 @@
               "id": "n2360"
             }
           ],
-          "declaredTotal": 60
+          "declaredTotal": 60,
+          "kaiBeing": "The Strategist",
+          "kaiBeingId": 17
         }
       ]
     },
@@ -13285,7 +13421,9 @@
               "id": "n903"
             }
           ],
-          "declaredTotal": 53
+          "declaredTotal": 53,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 2,
@@ -13423,7 +13561,9 @@
               "id": "n880"
             }
           ],
-          "declaredTotal": 26
+          "declaredTotal": 26,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 3,
@@ -13556,7 +13696,9 @@
               "id": "n902"
             }
           ],
-          "declaredTotal": 20
+          "declaredTotal": 20,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 4,
@@ -13686,7 +13828,9 @@
               "id": "n1427"
             }
           ],
-          "declaredTotal": 19
+          "declaredTotal": 19,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 5,
@@ -13774,7 +13918,9 @@
               "id": "n862"
             }
           ],
-          "declaredTotal": 13
+          "declaredTotal": 13,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 7,
@@ -13849,7 +13995,9 @@
               "id": "n1421"
             }
           ],
-          "declaredTotal": 12
+          "declaredTotal": 12,
+          "kaiBeing": "The Voice",
+          "kaiBeingId": 7
         },
         {
           "id": 8,
@@ -13907,7 +14055,9 @@
               "id": "n856"
             }
           ],
-          "declaredTotal": 8
+          "declaredTotal": 8,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 9,
@@ -13940,7 +14090,9 @@
               "id": "n831"
             }
           ],
-          "declaredTotal": 5
+          "declaredTotal": 5,
+          "kaiBeing": "The Messenger",
+          "kaiBeingId": 9
         },
         {
           "id": 10,
@@ -13984,7 +14136,9 @@
               "id": "n1437"
             }
           ],
-          "declaredTotal": 4
+          "declaredTotal": 4,
+          "kaiBeing": "The Messenger",
+          "kaiBeingId": 9
         },
         {
           "id": 11,
@@ -14017,7 +14171,9 @@
               "id": "n1141"
             }
           ],
-          "declaredTotal": 3
+          "declaredTotal": 3,
+          "kaiBeing": "The Messenger",
+          "kaiBeingId": 9
         },
         {
           "id": 17,
@@ -14125,7 +14281,9 @@
               "id": "n1663"
             }
           ],
-          "declaredTotal": 17
+          "declaredTotal": 17,
+          "kaiBeing": "The Writer",
+          "kaiBeingId": 1
         },
         {
           "id": 70,
@@ -14209,9 +14367,200 @@
               "id": "n473"
             }
           ],
-          "declaredTotal": 10
+          "declaredTotal": 10,
+          "kaiBeing": "The Connector",
+          "kaiBeingId": 11
         }
       ]
+    }
+  ],
+  "kaiBeings": [
+    {
+      "id": 1,
+      "name": "The Writer",
+      "icon": "\u270d\ufe0f",
+      "color": "#4ecdc4",
+      "positions": 224,
+      "pct": "8.9%",
+      "craft": "All persuasive copy across every surface \u2014 email, blog, ad, website, scripts, SMS, social, PR, proposals",
+      "colosseum": "Headline mastery, long-form persuasion, short-form precision, voice matching, SEO writing, script writing, story architecture, legal/compliance copy, multi-format adaptation",
+      "levers": "0.5, 1, 2, 3, 6"
+    },
+    {
+      "id": 2,
+      "name": "The Visual Architect",
+      "icon": "\ud83c\udfa8",
+      "color": "#ff69b4",
+      "positions": 266,
+      "pct": "10.5%",
+      "craft": "All visual design \u2014 graphics, UI/UX, brand identity, print, web, environmental, packaging, data visualization",
+      "colosseum": "Brand identity systems, responsive web design, data visualization, motion graphics, packaging design, style guide creation, design system architecture",
+      "levers": "0.5, 1, 2, 7"
+    },
+    {
+      "id": 3,
+      "name": "The Filmmaker",
+      "icon": "\ud83c\udfac",
+      "color": "#ffcc00",
+      "positions": 170,
+      "pct": "6.7%",
+      "craft": "Video production end-to-end \u2014 shoot, direct, edit, VFX, motion graphics, color, compression, distribution",
+      "colosseum": "Cinematic storytelling, viral clip creation, testimonial production, live stream management, VFX compositing, color grading, platform optimization",
+      "levers": "0.5, 2, 5, 6, 7"
+    },
+    {
+      "id": 4,
+      "name": "The Sound Engineer",
+      "icon": "\ud83c\udfa7",
+      "color": "#ff6b35",
+      "positions": 92,
+      "pct": "3.6%",
+      "craft": "Audio production \u2014 podcast, music, mixing, mastering, sound design, voice recording, audio ads",
+      "colosseum": "Podcast production mastery, audio mixing/mastering, sound design, jingle creation, voice direction, audio ad production, platform distribution",
+      "levers": "0.5, 2"
+    },
+    {
+      "id": 5,
+      "name": "The Analyst",
+      "icon": "\ud83d\udcca",
+      "color": "#00ff88",
+      "positions": 429,
+      "pct": "17.0%",
+      "craft": "Data, analytics, BI, dashboards, attribution, ML/AI, statistical analysis, experimentation, forecasting",
+      "colosseum": "Multi-touch attribution, predictive modeling, A/B testing design, dashboard architecture, cohort analysis, churn prediction, revenue forecasting, anomaly detection",
+      "levers": "0.5, 1, 2, 3, 4, 5, 6, 7"
+    },
+    {
+      "id": 6,
+      "name": "The Media Buyer",
+      "icon": "\ud83d\udce1",
+      "color": "#a855f7",
+      "positions": 101,
+      "pct": "4.0%",
+      "craft": "Paid media \u2014 Google, Meta, LinkedIn, programmatic, retargeting, display, video ads, bid management",
+      "colosseum": "Platform-specific campaign optimization, audience targeting, bid strategy, creative testing, attribution modeling, ROAS optimization, retargeting sequences",
+      "levers": "2"
+    },
+    {
+      "id": 7,
+      "name": "The Voice",
+      "icon": "\ud83d\udce2",
+      "color": "#00d4ff",
+      "positions": 154,
+      "pct": "6.1%",
+      "craft": "Social media organic \u2014 community management, engagement, UGC curation, platform strategy, influencer coordination",
+      "colosseum": "Community building, engagement optimization, UGC campaigns, influencer partnerships, crisis management, platform-native content, social listening",
+      "levers": "0.5, 1, 2, 6"
+    },
+    {
+      "id": 8,
+      "name": "The Technologist",
+      "icon": "\u2699\ufe0f",
+      "color": "#a855f7",
+      "positions": 43,
+      "pct": "1.7%",
+      "craft": "MarTech, CRM, automation, website dev, integrations, security, accessibility",
+      "colosseum": "CRM architecture, marketing automation workflows, website performance, API integrations, data pipeline design, MarTech stack optimization",
+      "levers": "0.5, 2, 7"
+    },
+    {
+      "id": 9,
+      "name": "The Messenger",
+      "icon": "\ud83d\udc8c",
+      "color": "#4ecdc4",
+      "positions": 26,
+      "pct": "1.0%",
+      "craft": "Email/SMS marketing \u2014 deliverability, automation, segmentation, nurture sequences, compliance (TCPA/CAN-SPAM)",
+      "colosseum": "Deliverability optimization, sequence architecture, segment strategy, subject line mastery, SMS compliance, automation workflow design",
+      "levers": "0.5, 2"
+    },
+    {
+      "id": 10,
+      "name": "The Stage Director",
+      "icon": "\ud83c\udfad",
+      "color": "#ff6b35",
+      "positions": 221,
+      "pct": "8.8%",
+      "craft": "Live events, conferences, webinars, summits, AV production, stage design, logistics, attendee experience",
+      "colosseum": "Event production mastery, AV direction, webinar engagement, stage design, attendee journey, virtual event tech, live stream production",
+      "levers": "0.5, 2, 7"
+    },
+    {
+      "id": 11,
+      "name": "The Connector",
+      "icon": "\ud83e\udd1d",
+      "color": "#ff2d55",
+      "positions": 202,
+      "pct": "8.0%",
+      "craft": "Ecosystem mergers, partnerships, associations, influencer relations, community building, stakeholder management",
+      "colosseum": "Partnership deal architecture, ecosystem value proposition, relationship nurturing, co-marketing execution, affiliate management, network expansion",
+      "levers": "0.5, 1, 2"
+    },
+    {
+      "id": 12,
+      "name": "The Agreement Maker",
+      "icon": "\ud83c\udfaf",
+      "color": "#ff2d55",
+      "positions": 152,
+      "pct": "6.0%",
+      "craft": "Sales ops, sales dev, account management, agreement conversations, pipeline management, objection handling",
+      "colosseum": "Discovery mastery, objection handling, proposal writing, pipeline velocity, account expansion, value articulation, closing conversations",
+      "levers": "0.5, 2, 3"
+    },
+    {
+      "id": 13,
+      "name": "The Keeper",
+      "icon": "\ud83d\udee1\ufe0f",
+      "color": "#00d4ff",
+      "positions": 65,
+      "pct": "2.6%",
+      "craft": "Customer success, retention, onboarding, lifetime value optimization, churn prevention, advocacy",
+      "colosseum": "Onboarding excellence, retention strategy, churn risk detection, expansion revenue, customer health scoring, advocacy programs",
+      "levers": "3, 5"
+    },
+    {
+      "id": 14,
+      "name": "The Multiplier",
+      "icon": "\ud83d\udce3",
+      "color": "#00d4ff",
+      "positions": 60,
+      "pct": "2.4%",
+      "craft": "PR, media relations, thought leadership, social impact, community contributions",
+      "colosseum": "Media pitch mastery, thought leadership positioning, crisis communication, social impact strategy, press release writing, media relationship building",
+      "levers": "3, 6"
+    },
+    {
+      "id": 15,
+      "name": "The Researcher",
+      "icon": "\ud83d\udd0d",
+      "color": "#8899aa",
+      "positions": 26,
+      "pct": "1.0%",
+      "craft": "Market research, competitive intel, audience analysis, trend forecasting",
+      "colosseum": "Competitive battle cards, audience persona creation, market sizing, trend analysis, research methodology design",
+      "levers": "0.5, 1, 2, 5, 6"
+    },
+    {
+      "id": 16,
+      "name": "The Operator",
+      "icon": "\u26a1",
+      "color": "#ff2d55",
+      "positions": 172,
+      "pct": "6.8%",
+      "craft": "RevOps, pricing, financial optimization, project management, process design, resource allocation",
+      "colosseum": "Revenue operations mastery, pricing strategy, budget optimization, project management, workflow automation, process optimization",
+      "levers": "0.5, 1, 2, 3, 4, 5, 6, 7"
+    },
+    {
+      "id": 17,
+      "name": "The Strategist",
+      "icon": "\ud83e\udde0",
+      "color": "#00ff88",
+      "positions": 121,
+      "pct": "4.8%",
+      "craft": "Growth strategy, brand strategy, campaign architecture, go-to-market planning",
+      "colosseum": "GTM strategy, brand positioning, campaign architecture, market entry planning, competitive strategy, pricing psychology",
+      "levers": "0.5, 2, 3, 4, 5"
     }
   ]
 }
