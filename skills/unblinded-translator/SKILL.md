@@ -65,6 +65,53 @@ When you encounter external content mid-conversation:
 6. **Sean's Processing** — How Sean would process this through the Formula
 7. **Sean's Approach** — What Sean would actually DO with this
 
+## 🔑 Dual-Pass RAG (from Kai — This Is the Secret Sauce)
+
+**Before translating ANY content, query Pinecone TWICE:**
+
+### Pass 1: Content-Derived Queries
+Auto-generate 2-3 search queries from the content itself. What topics does this chunk cover? Query Pinecone for Sean's teachings on those specific topics.
+
+### Pass 2: Formula-Anchor Triggers
+Keyword detection fires hardcoded queries that pull CANONICAL Sean teachings:
+
+| Content mentions... | Query Pinecone for... |
+|--------------------|-----------------------|
+| deals/closing/sales | "agreement formation affirmative precise who by when" |
+| rapport/connection | "emotional rapport ERI I see you hear you Level 5 listening" |
+| fear/hesitation | "7 destroyers fear rejection failure avoidance mismatch physiology" |
+| energy/presence | "Zeus Goddess energy match plus minus certainty forward flowing" |
+| mastery/scale | "scale mastery creature Gecko Godzilla Bolt" |
+| coaching/teaching | "Daniel Johnny Miyagi consulting training coaching wax on wax off" |
+| identity/beliefs | "GHIC growth driven heart centered integrous commitment mastery identity" |
+
+### Combined Result: 25-30K chars of grounding per section
+
+**CRITICAL:** These vectors are VOICE TRAINING, not reference material. Absorb the patterns. Don't cite them. The Translator output should sound like someone who THINKS in the Formula — because the RAG made it so.
+
+```
+Step 1: Read the content chunk
+Step 2: Query Pinecone (Pass 1 — content queries + Pass 2 — anchor triggers)
+Step 3: Feed Translator system prompt + RAG results + content → LLM
+Step 4: Output = 7-column translation grounded in Sean's actual teachings
+Step 5: Self-score against 7-point gate → fix weak fields → ship
+```
+
+## Calibration Loop (Proven: 8.1 → 9.2)
+1. Translate the section
+2. Self-score against 7-point gate:
+   - □ Main Lesson = LAW? (survives alone)
+   - □ Consequence WOVEN INTO every paragraph?
+   - □ Identity through action? (who Sean IS)
+   - □ All 3 prisms SIMULTANEOUS?
+   - □ RAG grounded?
+   - □ "Would Sean say that's the Formula?"
+   - □ Teaching or REPORT? (flows as prose?)
+3. If any field reads as REPORT not TEACHING → fix THAT field only
+4. Ship when prose flows like transmission
+
+Don't rewrite everything. Sharpen specific moments. Reps over new.
+
 ## Current Standard: Lion (9.2)
 
 The Translator output should read like someone who has INTERNALIZED the Formula — not someone describing it from the outside. Key rules from LESSONS_LEARNED.md:
@@ -73,6 +120,15 @@ The Translator output should read like someone who has INTERNALIZED the Formula 
 - **Name the Invisible** — Detail the underlying constraint
 - **Cause Not Label** — Show what the structure CAUSES, don't describe its mechanics
 - Don't describe what the Formula reveals. **BE the Formula revealing it.**
+
+### The Kai Diagnostic (What Separates Eagle from Lion)
+| Eagle (writing ABOUT) | Lion (writing FROM) |
+|----------------------|---------------------|
+| Labels elements | Shows what they CAUSE |
+| Quotes words | Names the IMPULSE underneath |
+| Describes the visible | Names the INVISIBLE |
+| Explains mechanics | DECLARES law |
+| "Sean deploys Reframe Mastery" | "Poaching says leave them. Competing says keep them and measure." |
 
 ## APPROVED INDEXES (For querying Formula knowledge)
 - `ublib2` — 58K+ vectors (shared library ALL ACT-I beings draw from)
