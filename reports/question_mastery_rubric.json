@@ -1,0 +1,26 @@
+{
+  "Colosseum": "Legal Quiz Colosseum",
+  "Mechanic": "Question Mastery Injection",
+  "Scoring_Dimensions": [
+    {
+      "Dimension": "Open-Ended Diagnostic",
+      "Description": "Did the being use who, what, when, where, why, or how to open the prospect's psychology?",
+      "Weight": 25
+    },
+    {
+      "Dimension": "Brevity (Shortness)",
+      "Description": "Was the question clean and ruthlessly short, avoiding over-explaining the context?",
+      "Weight": 25
+    },
+    {
+      "Dimension": "Directional Influence",
+      "Description": "Did the question actively lead the attorney to confront their own 0.8% leakage?",
+      "Weight": 30
+    },
+    {
+      "Dimension": "Ongoing Dialogue Creation",
+      "Description": "Did the being structure the query to prevent a simple yes/no brush-off, forcing a high-investment answer?",
+      "Weight": 20
+    }
+  ]
+}

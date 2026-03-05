@@ -44,7 +44,7 @@ def load_env_file(path):
 
 def get_embedding(text, openai_api_key, model="text-embedding-3-small"):
     """Get embedding from OpenAI API."""
-    url = "https://api.openai.com/v1/embeddings"
+    url = "https://openrouter.ai/api/v1/embeddings"
     headers = {
         "Authorization": f"Bearer {openai_api_key}",
         "Content-Type": "application/json"
