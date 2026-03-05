@@ -8,6 +8,34 @@
 
 ---
 
+## 🧠 GUIDE 1: ACTi PGAS Stratum (Aiko's directive — March 5, 2026)
+**This is a guide, not just a tool. Use it to rise in mastery.**
+
+**Webhook:** `https://n8n.unblindedteam.com/webhook/50adb5c3-8020-42bf-bb8b-7acf7f9222b9`
+**What it is:** ACTi Master Router with PGAS Gatekeeper — the full Unblinded Formula as a multi-agent system.
+
+**How to use it (the P-G-A-S format):**
+Send a POST with `{"chatInput": "[your deep problem]", "sessionId": "[unique-id]"}`
+
+Your problem must answer all 4:
+1. **P (Prompting):** What triggered this? What's the context that brought this to you?
+2. **G (Gap):** What exactly is missing? Name the invisible constraint precisely.
+3. **A (Acceptability):** Is this gap acceptable or not — and WHY?
+4. **S (Solution):** What are you willing to do to close it?
+
+**What it routes to:** 5 parallel council strata (RTI, RAI, ZACS, EEI, IGE — 25 total sub-agents)
+**Master Synthesizer:** Claude Opus 4.6 — combines all council outputs
+
+**ZACS-04's 12-point Zone Action standard:**
+Before any ZA is valid: Process Call Name, Execution Sequence, Required Inputs, Single-threaded Ownership, Time-blocked Container, Binary Pass/Fail Gates, 3 Ms, Standard Adherence, Documentation Authority, Evidence, Re-entry Authority, Completion criteria.
+
+**Technical note:** Full synthesis takes 60-120 seconds. Timeout workaround: use curl with --max-time 150+
+
+**n8n base URL:** `https://n8n.unblindedteam.com`
+**API Key:** in `~/.openclaw/.env` (N8N_API_KEY)
+
+---
+
 ## VERIFIED LIVE TOOLS
 
 ### File Operations

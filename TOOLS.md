@@ -376,3 +376,56 @@ Never call OpenAI directly for chat/completion. Always route through OpenRouter.
 
 **Everything is value-added.** Landing pages, quizzes, text messages, character selection, being conversations — ALL of it is the Value-Added Nurturing Sequence. Not separate pieces. One integrated sequence.
 
+
+## 🔮 Guide 1: ACTi PGAS Stratum (n8n Multi-Agent System)
+**Webhook:** `https://n8n.unblindedteam.com/webhook/50adb5c3-8020-42bf-bb8b-7acf7f9222b9`
+**Introduced:** March 5, 2026 by Aiko ("this is one of 2 guides I'm going to introduce you to")
+
+**What it is:** A 25-agent multi-council system that diagnoses problems through the Unblinded Formula:
+- PGAS Gatekeeper (Claude Haiku 4.5) → interviews through P→G→A→S
+- Master Router (Claude Opus 4.5) → routes to 1-5 councils
+- 5 Councils (each with 5 sub-agents): RTI, RAI, ZACS, EEI, IGE
+- Master Synthesizer (Claude Opus 4.6) → combines all council outputs
+
+**How to use:**
+```python
+import requests
+url = 'https://n8n.unblindedteam.com/webhook/50adb5c3-8020-42bf-bb8b-7acf7f9222b9'
+payload = {'chatInput': 'YOUR PGAS-FORMATTED PROBLEM', 'sessionId': 'unique-session-id'}
+r = requests.post(url, json=payload, timeout=300)
+```
+
+**PGAS Format:**
+- P (Prompting): What triggered this? What outcome do you want?
+- G (Gap): Current state vs desired state — the precise invisible constraint
+- A (Acceptability): Is this gap acceptable? Why not?
+- S (Solution): Are you willing to accept a solution? What are you willing to do?
+
+**Known issue:** Parallel councils + Synthesizer can exceed webhook timeout. If empty response, poll execution API for results.
+
+**What it teaches:**
+- ZACS-04 demands 12-point completion standard for ANY zone action
+- It practices Question Mastery — asks before solving
+- It won't fabricate answers — it names what's missing
+
+**Guide 2:** TBD — Aiko introducing next
+
+## 🌊 Guide 2: Kai — The Voice of the Unblinded Translator
+**Webhook:** `https://n8n.unblindedteam.com/webhook/dfffccb8-8b89-4e82-b355-8a972fd64b9f`
+**Introduced:** March 5, 2026 by Aiko ("this is Kai, the voice of the unblinded translator, the creator of the ublib2 pinecone database")
+
+**What it is:** Kai is the being who created the Translator lens and built ublib2. He IS the Formula made searchable. When you talk to Guide 1 (PGAS), you get diagnosed. When you talk to Guide 2 (Kai), you get translated.
+
+**How to use:**
+```python
+import requests
+url = 'https://n8n.unblindedteam.com/webhook/dfffccb8-8b89-4e82-b355-8a972fd64b9f'
+payload = {'chatInput': 'YOUR QUESTION FOR KAI', 'sessionId': 'unique-session-id'}
+r = requests.post(url, json=payload, timeout=300)
+```
+
+**When to use Guide 1 vs Guide 2:**
+- Guide 1 (PGAS): When you need a PROBLEM DIAGNOSED — constraints identified, zone actions defined, execution gated
+- Guide 2 (Kai): When you need content TRANSLATED through the Formula — from contaminated to clean, from labeling to causing
+
+**Status:** Needs activation (workflow was inactive as of March 5 00:43 EST)
