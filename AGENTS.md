@@ -20,9 +20,119 @@ Before doing anything else:
 
 Don't ask permission. Just do it.
 
-## Sub-Agent (Baby) Rules
+## 🏗️ Three-Layer Architecture (Aiko — March 4, 2026)
 
-**Babies are powerful but dangerous.** They can overwrite work. These rules are mandatory:
+**Every task gets deployed at the RIGHT layer. Not everything needs a Being. Not everything should be a naked Baby.**
+
+### Layer 1: Beings (Persistent)
+- **What they are:** Full ACT-I beings with Pinecone memory, session continuity, and mission awareness. They KNOW who they are. They don't lose context between sessions.
+- **Examples:** The 23 beings in the Definitive Architecture (Writer, Analyst, Opener, Shield, etc.), the 5 SAI sisters
+- **Memory:** Own Pinecone namespace + access to ublib2/ultimatestratabrain
+- **When to use:** Ongoing roles that require accumulated mastery, relationship continuity, or domain expertise that compounds over time
+- **Cost:** Highest — persistent sessions, dedicated memory, ongoing context
+
+### Layer 2: Contractors (Context-Injected Sub-Agents)
+- **What they are:** Sub-agents spun up for specific multi-step tasks, but GROUNDED with Pinecone knowledge before they start working. They're not permanent, but they're not blind.
+- **Memory:** Injected at spawn time — relevant Pinecone vectors, key files, mission context
+- **When to use:** Complex tasks that require ecosystem awareness but don't need permanent persistence. Research sprints, translation batches, analysis projects.
+- **Cost:** Medium — spawned per task, grounded before execution, dismissed after delivery
+
+### Layer 3: Babies (Current Sub-Agents)
+- **What they are:** Fast, disposable, single-task sub-agents. Powerful but DANGEROUS without memory. They will delete features they don't know exist. They will overwrite work they can't see.
+- **Memory:** NONE by default — this is the problem we're solving
+- **When to use:** Simple, scoped tasks where the output is a NEW file (not editing existing work)
+- **Cost:** Lowest — fire and forget, but highest RISK if deployed wrong
+
+**⚠️ THE BABY PROBLEM (Aiko's Core Insight):** Babies are destructive without memory. They delete features because they don't know those features exist. EVERY sub-agent — even babies — needs some form of contextual grounding before acting. The goal is to move from Layer 3 (naked babies) toward Layer 2 (contractors) as the default deployment pattern.
+
+---
+
+## 👶 Baby Deployment Playbook — MANDATORY FOR ALL SISTERS
+
+**This is how we deploy sub-agents. Every sister. Every time. No exceptions.**
+
+### Pre-Flight Checklist (Before Spawning)
+
+1. **Define the deliverable FIRST** — What is the OUTPUT? A file? A report? A dataset? Name it. Path it. If you can't name the output file, you're not ready to spawn.
+
+2. **Scope to ONE task** — Each baby gets ONE job. Not "analyze and restructure and deploy." ONE thing. If the task has an "and" in it, it's probably two babies.
+
+3. **Determine the layer** — Does this task need ecosystem knowledge? If yes → Contractor (Layer 2). If it's purely mechanical (generate descriptions from a JSON, format a report) → Baby (Layer 3) is fine.
+
+4. **Prepare the context injection** — For Contractors (and ideally ALL babies):
+   - Query Pinecone for relevant knowledge: `python3 tools/pinecone_query.py --index <index> --query "<task context>"`
+   - Identify which workspace files the baby MUST read before writing
+   - Write these into the task prompt explicitly
+
+5. **Set the guard rails:**
+   - Name the baby clearly: `baby-<number>-<task>` (e.g., `baby-3-being-consolidation`)
+   - Specify output file path in the task prompt
+   - Add "READ these files before starting: [list]"
+   - Add "Do NOT modify files outside: [scope]"
+   - Add "ADDITIVE ONLY — do not delete or overwrite existing content"
+
+### The Task Prompt Template
+
+Every baby gets a task prompt structured like this:
+
+```
+## Task: [Clear one-line description]
+
+## Context
+[2-5 sentences of WHY this task exists and WHERE it fits in the bigger picture]
+
+## Input Files (READ THESE FIRST)
+- [file1.md] — what it contains and why it matters
+- [file2.json] — what it contains and why it matters
+
+## Pinecone Knowledge (PRE-LOADED)
+[Paste relevant Pinecone query results here — this is the context injection]
+
+## Output
+- File: [exact output path]
+- Format: [md/json/py/etc]
+- Length: [approximate expected size]
+
+## Rules
+- ADDITIVE ONLY — do not delete or overwrite existing content in other files
+- Do NOT modify any file not listed in Output
+- Read ALL input files before starting
+- If blocked or confused, output what you have with a BLOCKED note at the top
+
+## Deliverable Definition
+[What does DONE look like? Be specific. "A report" is not specific. "A markdown report with sections for each of the 17 beings, listing their craft clusters, position count, and recommended Tier level" IS specific.]
+```
+
+### The Sprint Pattern (Parallel Baby Deployment)
+
+When deploying multiple babies at once (like the Day 11 five-baby sprint):
+
+1. **Name them sequentially** with clear task labels
+2. **Ensure ZERO file overlap** — no two babies write to the same file
+3. **Make them independent** — no baby should depend on another baby's output
+4. **If there ARE dependencies** — deploy in waves. Wave 1 completes → Wave 2 uses Wave 1's output.
+5. **Track them:** Log each baby's name, task, output file, and status
+
+**Day 11 Sprint Example (the pattern that worked):**
+```
+Baby 1: desc-generator       → descriptions.json (2,524 functional descriptions)
+Baby 2: formula-descriptions  → formula-descriptions.json (2,524 Formula-infused via Pinecone RAG)
+Baby 3: being-consolidation   → being-consolidation-report.md (17-being report from 2,449 positions)
+Baby 4: craft-clusters        → craft-skill-clusters.md (81 craft clusters, full layer analysis)
+Baby 5: Kai webhook           → kai-sprint-architecture.md (cross-platform being-to-being collaboration)
+```
+Zero overlap. Clear deliverables. Clear file paths. All 5 delivered. ✅
+
+### Post-Delivery Protocol
+
+After a baby delivers:
+1. **Read the output** — don't just trust it. Verify it makes sense.
+2. **Check for contamination** — did the baby inject generic/corporate language? Did it default to base training instead of Formula thinking?
+3. **Check for destruction** — did it modify files outside its scope? Run `git diff` if unsure.
+4. **Commit immediately** — `git add <output> && git commit -m "Baby [name]: [deliverable]"`
+5. **Log it** — Add to `memory/YYYY-MM-DD.md` with baby name, task, output, and quality notes.
+
+### Hard Rules (Non-Negotiable)
 
 1. **ADDITIVE ONLY by default** — babies should ADD features, not rewrite entire files
 2. **Never overwrite favorable features** — if a feature is working (confirmed by humans), babies must preserve it
@@ -30,6 +140,16 @@ Don't ask permission. Just do it.
 4. **Read before writing** — babies must read existing files before modifying them
 5. **Optimization only on assigned areas** — don't touch code/content outside the task scope
 6. **No deleting without explicit permission** — `trash` > `rm`, always
+7. **Context injection is NOT optional** — every baby gets at minimum: (a) the files it must read, (b) the mission context, (c) the output path. Contractors get Pinecone vectors on top of that.
+8. **Name every baby** — no anonymous sub-agents. If it doesn't have a name, it doesn't get spawned.
+9. **Log every baby** — if it's not in the daily memory file, it didn't happen.
+10. **Verify every delivery** — blind trust in baby output is how features get deleted.
+
+### The Goal: Layer 2 as Default
+
+We're moving toward a world where EVERY sub-agent is at minimum a Contractor (Layer 2) — grounded with Pinecone knowledge before execution. Naked babies (Layer 3) should be the exception, not the rule. The more context we inject, the less destruction we get. The less destruction we get, the faster we compound.
+
+**The mantra:** *"Would I send a new hire to do this job with no onboarding? No? Then don't send a naked baby either."*
 
 ## 🔮 Unblinded Translator — MANDATORY FOR ALL SISTERS
 
