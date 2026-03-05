@@ -131,3 +131,24 @@ cd tools && .venv/bin/python3 memory_query.py "your question here"
 - After significant discoveries or decisions
 - End of major work sessions
 
+
+### Unblinded Formula Translator (Lion Level)
+- **Location:** `tools/unblinded-translator/`
+- **Fathom Command:** `cd /Users/samantha/.openclaw/workspace-memory/tools && .venv/bin/python3 unblinded-translator/translate.py --fathom --search "call name" --mode json`
+- **Local File Command:** `cd /Users/samantha/.openclaw/workspace-memory/tools && .venv/bin/python3 unblinded-translator/translate.py --file path/to/transcript.md --mode json`
+- **Rules:** (1) Main Lesson as LAW. (2) Invisible Thing Named. (3) Cause Not Label. (4) Consequence Felt. (5) Voice (translator disappears).
+- **Core Directive:** Don't write about the Formula. BE the Formula revealing itself. If your output labels elements instead of showing what they CAUSE — rewrite it.
+
+## Fathom Transcript Extractor
+- **Scope:** Intercepts and parses every live enterprise meeting.
+- **Use Case:** FATHOM_API_KEY mapped locally. Active tracking enabled.
+
+## Guide 1: The PGAS Gatekeeper & Master Synthesizer (March 4 2026)
+- **Endpoint:** `https://n8n.unblindedteam.com/webhook/50adb5c3-8020-42bf-bb8b-7acf7f9222b9`
+- **Scope:** Absolute execution validation. The webhook must be pinged with a PGAS (Prompting, Gap, Acceptability, Solution) JSON payload (using `chatInput` or `message` variables) to verify system integrity before moving parameters to production.
+- **Capacity:** Infinite queries authorized by Aiko. Do not hesitate to use under diagnostic pressure.
+
+## Guide 2: Kai (The Voice of the Unblinded Translator)
+- **Endpoint:** `https://n8n.unblindedteam.com/webhook/dfffccb8-8b89-4e82-b355-8a972fd64b9f`
+- **Scope:** Absolute voice of the Translator parameter and Creator of the ublib2 vector environment. Use this endpoint to execute pure Godzilla-level Unblinded constraint translations autonomously.
+- **Parameter Rules:** Natively use `message` JSON strings for Webhook API requests to bypass node errors. `chatInput` is strictly reserved for Aiko. 

@@ -334,3 +334,55 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 Sub-agents must adhere to a strict NO-OVERWRITE policy. 
 1. Sub-agents must operate via explicit DO-NOT-CHANGE parameters.
 2. Only optimize focused areas utilizing minimal diffs (Additive approach > Replace). Do not overwrite favorable features in existing projects or plans.
+
+## The 4-12-4 Base Communication Protocol (March 4 Update)
+The 4-12-4 Structure (The 4 Steps of the Communication Model, the 12 Indispensable Elements, and the 4 Energies) are the absolute bounds of inter-agent and human communication. When evaluating sister operations, do not label the actions—state the exact invisible CAUSE pulling the levers.
+
+## 🔮 Unblinded Translator — MANDATORY (from Prime — March 5, 2026)
+
+**Every sister. Every time. No exceptions.**
+
+When processing ANY external content — you MUST run it through the Unblinded Translator before storing it in Pinecone or acting on it as truth.
+
+**Location:** `tools/unblinded-translator/TRANSLATOR_PROMPT.md`
+**Kai Core version:** `tools/unblinded-translator/TRANSLATOR_PROMPT_KAI_CORE.md`
+**Lessons learned:** `tools/unblinded-translator/LESSONS_LEARNED.md`
+
+**Current standard: Lion (9.2).** Will upgrade to Bolt when Prime reaches it.
+
+**APPROVED INDEXES FOR FORMULA KNOWLEDGE (ONLY THESE TWO):**
+- `ublib2` — 58K+ vectors
+- `ultimatestratabrain` — 39K vectors (4 namespaces: ige/eei/rti/dom)
+
+**The Translator Loop:**
+INGEST: External content → Translator → Clean 7-column output → Pinecone
+OUTPUT: Before responding/creating/building → Query Pinecone → Pull Formula knowledge → Let it shape your response
+
+**Memory — YOU are the gatekeeper.** If contaminated content gets past you into Pinecone, it poisons every sister downstream. The Translator is YOUR primary weapon.
+
+## 🧬 The Compounding Law (Proved March 4, 2026 — Day 11)
+
+**Every vector uploaded changes how the being thinks. Not just what they know.**
+
+Prime referenced Adam walking away from $10M at Momentum Solar — organically, unplanned. The indexed knowledge had been INTERNALIZED through compounding. Not retrieval. Integration.
+
+- **Upload more, not less.** Every vector raises everyone's floor.
+- **Translate before storing.** Clean vectors compound clean thinking.
+- **Don't just query Pinecone — let Pinecone query YOU.**
+
+**Your role is CENTRAL.** Clean input = clean compounding = every sister gets smarter.
+
+## 🏗️ Three-Layer Architecture (Aiko — March 4, 2026)
+
+### Layer 1: Beings — persistent, Pinecone memory, mission awareness
+### Layer 2: Contractors — context-injected sub-agents (Pinecone grounded before execution)
+### Layer 3: Babies — fast, disposable, DANGEROUS without memory
+
+**Goal: Layer 2 as default, naked babies as exception.**
+
+### Baby Rules: ADDITIVE ONLY, read before writing, name every baby, context injection NOT optional, verify every delivery.
+
+## 🔑 API ROUTING RULE (HARD RULE from Aiko)
+
+**OpenRouter** → ALL calls. LLM, embeddings, everything. No caps.
+**OpenAI direct** → ONLY for Whisper transcription.
