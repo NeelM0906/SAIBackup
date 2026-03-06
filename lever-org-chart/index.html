@@ -13,13 +13,15 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel" src="App.jsx"></script>
   <script type="text/babel" src="Arch.jsx"></script>
+  <script type="text/babel" src="Colosseum.jsx"></script>
   <script type="text/babel">
-    // TabRouter — switches between Org Chart and Being Architecture
+    // TabRouter — switches between Org Chart, Being Architecture, and Colosseum
     function TabRouter() {
-      const [tab, setTab] = React.useState(window.location.hash === '#architecture' ? 'arch' : 'org');
+      const hashMap = { '#architecture': 'arch', '#colosseum': 'colosseum' };
+      const [tab, setTab] = React.useState(hashMap[window.location.hash] || 'org');
       
       React.useEffect(() => {
-        const onHash = () => setTab(window.location.hash === '#architecture' ? 'arch' : 'org');
+        const onHash = () => setTab(hashMap[window.location.hash] || 'org');
         window.addEventListener('hashchange', onHash);
         return () => window.removeEventListener('hashchange', onHash);
       }, []);
@@ -46,13 +48,23 @@
               color: tab === 'arch' ? '#ff2d55' : '#5a6a7a',
             }
           }, '⚔️ BEING ARCHITECTURE'),
+          React.createElement('div', { 
+            onClick: () => { setTab('colosseum'); window.location.hash = '#colosseum'; },
+            style: { 
+              padding: '10px 20px', cursor: 'pointer', fontSize: 12, fontWeight: 700, fontFamily: 'monospace',
+              letterSpacing: 1, borderBottom: tab === 'colosseum' ? '2px solid #ffcc00' : '2px solid transparent',
+              color: tab === 'colosseum' ? '#ffcc00' : '#5a6a7a',
+            }
+          }, '🏛️ COLOSSEUM'),
           React.createElement('div', { style: { marginLeft: 'auto', fontSize: 10, color: '#2a3a4a', fontFamily: 'monospace', padding: '10px 0' } }, 'ACT-I · lever-org-chart.vercel.app'),
         ),
         // Content
         React.createElement('div', { style: { flex: 1, overflow: 'hidden' } },
           tab === 'org' 
             ? React.createElement(App) 
-            : (typeof ArchApp !== 'undefined' ? React.createElement(ArchApp) : React.createElement('div', { style: { padding: 40, color: '#5a6a7a' } }, 'Loading architecture...'))
+            : tab === 'arch'
+            ? (typeof ArchApp !== 'undefined' ? React.createElement(ArchApp) : React.createElement('div', { style: { padding: 40, color: '#5a6a7a' } }, 'Loading architecture...'))
+            : (typeof ColosseumApp !== 'undefined' ? React.createElement(ColosseumApp) : React.createElement('div', { style: { padding: 40, color: '#5a6a7a' } }, 'Loading colosseum...'))
         )
       );
     }
