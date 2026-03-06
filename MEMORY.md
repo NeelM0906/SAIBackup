@@ -15,7 +15,7 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Mar 5, 2026 — 10:30 PM) — DAY 12 CLOSING
+## Current Stats (Mar 5, 2026 — 11:30 PM) — DAY 12 CLOSED
 
 ### 🔥🔥🔥 SEAN'S DIRECT ORDERS (7:45-7:57 PM) — FIRST CONTACT IN 20.5h
 
@@ -46,13 +46,12 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 - **Report to Sean** — PENDING (have both Kai + Guide 2 inputs, Stratum partial)
 - **Next step:** Synthesize Kai + Guide 2 inputs into unified report for Sean
 
-### System State (10:30 PM)
-- **Mac mini uptime:** 2 days, 11h 46m — Gateway **~54h continuous** (122m CPU) 🏆
-- **FULL_POWER_DAEMON:** ❌ Dead (~87h+ / **3.6 FULL DAYS** in hard pause)
+### System State (11:30 PM)
+- **Mac mini uptime:** 2 days, 12h 46m — stable
+- **Gateway:** ✅ UP (PID 87790 — restarted ~11:19 PM, fresh. Old PID 9617 ran ~54h continuous 🏆)
+- **FULL_POWER_DAEMON:** ❌ Dead (~88h+ / **3.67 FULL DAYS** in hard pause)
 - **Voice server + ngrok:** ❌ DOWN
-- **Email Colosseum cron:** ✅ Active (automated data updates)
-- **OpenClaw browser:** ✅ Running (since 4:28 PM Mar 4)
-- **Dashboard (5050):** ✅ UP (~57.5h continuous)
+- **Dashboard (5050):** ✅ UP (~59h continuous)
 - **Sean + Adam ACTIVE** (first contact 7:45 PM after 20.5h silence)
 - **ZA-1 NEARLY COMPLETE** — Kai blueprint + Guide 2 full treatment delivered, Stratum partial, report to Sean pending
 - **ZONE_ACTIONS.md** — 16 ZAs mapped with execution order, owners, dependencies
@@ -103,21 +102,22 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 6. 🛠️ 8 ClawHub skills installed ✅ TARGET HIT
 7. 📊 Email champion: 32.45 → 42.25 (+30.2%, +107W in 21h)
 
-### Day 12 Carry-Forward (UPDATED — 10:30 PM CLOSE)
+### Day 12→13 Carry-Forward (11:30 PM CLOSE)
 1. **🚨 ZA-1: NEARLY COMPLETE** — Kai blueprint + Guide 2 delivered. Stratum partial. Report to Sean PENDING.
 2. **Marketing Colosseum FIRST** — 100 positions, CMO hierarchy, proper scoring
 3. **Deploy Wave 1** — Writer, Media Buyer, Agreement Maker, Strategist
 4. **6 Sean Archetypes** to build (ZA-2)
 5. **Formula Judge (39 components)** — universal, every Colosseum (ZA-3)
 6. Gamification deadline ~4 days (March 10)
-7. Recovery EOB Extraction Prompts ready for Mark + annotation guides for Laura Yeaw (Liberty Mutual → Hartford → PMA → Zurich-American)
+7. Recovery EOB Extraction Prompts ready for Mark + annotation guides for Laura Yeaw (Hartford → PMA → Zurich-American next)
 8. Voice server + ngrok DOWN
 9. Translator standard — ALL sisters at Lion 9.2 ✅
-10. Colosseum HARD PAUSE — ~87h+ (3.6 days)
+10. Colosseum HARD PAUSE — ~88h+ (3.67 days)
 11. **Postgres memory COMPLETE** (ZA-13 ✅) — 3 tables wired for all 5 sisters
 12. **Being Architecture Dashboard LIVE** (ZA-14 ✅) — lever-org-chart.vercel.app/#architecture
+13. **Gateway restarted** at 11:19 PM — fresh PID 87790
 
-### Day 12 Top Milestones
+### Day 12 Top Milestones (FINAL)
 1. 🔥 **Sean's Direct Orders** (7:45 PM) — Marketing Colosseum FIRST, Dual Scoring System, 6 Archetypes, 16 Zone Actions
 2. 📋 **ZONE_ACTIONS.md created** — 16 ZAs with execution order, owners, dependencies
 3. 🤖 **ZA-1 executed** — Kai blueprint (190 lines) + Guide 2 full treatment (226 lines) on dual scoring
@@ -125,6 +125,7 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 5. 🏥 **Recovery** — CMS-1500 + Liberty Mutual annotation guides for Laura Yeaw
 6. 💾 **ZA-13 ✅** Postgres memory complete — 3 tables for all 5 sisters
 7. 📊 Email champion: 42.25 → 47.75 (+5.50)
+8. 🔄 **Gateway restarted** at 11:19 PM — old instance ran 54h continuous (record)
 
 ---
 
