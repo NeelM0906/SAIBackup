@@ -876,6 +876,38 @@
               "title": "Marketing Forecasting Analyst",
               "description": "Sees the invisible patterns in human behavior before they become visible in the numbers.",
               "id": "n2547"
+            },
+            {
+              "title": "Advanced Analytics Architect",
+              "description": "Designs multi-layered analytical frameworks that reveal hidden patterns in how people move through their journey"
+            },
+            {
+              "title": "Predictive Modeling Specialist",
+              "description": "Builds forward-looking models that anticipate where people need support before they ask for it"
+            },
+            {
+              "title": "AI Analytics Engineer",
+              "description": "Integrates machine learning into analytics pipelines to surface value-adding opportunities at scale"
+            },
+            {
+              "title": "Data Quality Steward",
+              "description": "Ensures every data point accurately represents a real person's experience and journey state"
+            },
+            {
+              "title": "Behavioral Analytics Lead",
+              "description": "Interprets behavioral signals to understand what each person truly needs at each stage of their journey"
+            },
+            {
+              "title": "Real-Time Insights Analyst",
+              "description": "Monitors live data streams to identify moments where immediate value can be delivered to people"
+            },
+            {
+              "title": "Attribution Modeling Specialist",
+              "description": "Maps the complete journey touchpoints that contribute to a person reaching agreement naturally"
+            },
+            {
+              "title": "Analytics Automation Developer",
+              "description": "Builds automated reporting systems that surface actionable insights for every person-serving team"
             }
           ],
           "declaredTotal": 177,
@@ -1768,9 +1800,21 @@
               "title": "Churn Analyst",
               "description": "Discovers why people disconnect so the relationship container can be strengthened for everyone.",
               "id": "n2054"
+            },
+            {
+              "title": "Revenue Forecasting Analyst",
+              "description": "Projects future agreement patterns by studying the journey signals that indicate genuine readiness"
+            },
+            {
+              "title": "Journey-to-Revenue Mapper",
+              "description": "Connects each stage of the person's journey to the revenue outcomes that follow authentic value delivery"
+            },
+            {
+              "title": "Revenue Anomaly Detective",
+              "description": "Identifies unexpected shifts in agreement patterns and traces them back to root causes in the serving process"
             }
           ],
-          "declaredTotal": 37,
+          "declaredTotal": 45,
           "kaiBeing": "The Analyst",
           "kaiBeingId": 5
         },
@@ -1958,6 +2002,18 @@
               "title": "Account Researcher",
               "description": "Investigates the invisible dynamics that make certain relationships exponentially valuable.",
               "id": "n1872"
+            },
+            {
+              "title": "Revenue Forecasting Analyst",
+              "description": "Projects future agreement patterns by studying the journey signals that indicate genuine readiness"
+            },
+            {
+              "title": "Journey-to-Revenue Mapper",
+              "description": "Connects each stage of the person's journey to the revenue outcomes that follow authentic value delivery"
+            },
+            {
+              "title": "Revenue Anomaly Detective",
+              "description": "Identifies unexpected shifts in agreement patterns and traces them back to root causes in the serving process"
             }
           ],
           "declaredTotal": 37,
@@ -2063,6 +2119,26 @@
               "title": "Neural Network Specialist",
               "description": "Architects digital minds that think like growth-driven beings discovering breakthroughs.",
               "id": "n2495"
+            },
+            {
+              "title": "Natural Language Processing Engineer",
+              "description": "Builds language models that understand what people mean to serve them with precision"
+            },
+            {
+              "title": "ML Pipeline Architect",
+              "description": "Designs end-to-end machine learning systems that continuously improve how we serve each person"
+            },
+            {
+              "title": "Computer Vision Specialist",
+              "description": "Develops visual recognition systems that enhance how we identify and respond to people's needs"
+            },
+            {
+              "title": "Reinforcement Learning Engineer",
+              "description": "Creates adaptive systems that learn from every interaction to deliver increasingly relevant value"
+            },
+            {
+              "title": "AI Ethics & Integrity Lead",
+              "description": "Ensures every AI system operates with full integrity, serving people transparently"
             }
           ],
           "declaredTotal": 22,
@@ -2325,6 +2401,22 @@
               "title": "Vendor Negotiator",
               "description": "Transforms vendor relationships into ecosystem partnerships that multiply rather than extract value.",
               "id": "n2553"
+            },
+            {
+              "title": "Financial Modeling Analyst",
+              "description": "Builds dynamic financial models connecting value-adding activities to sustainable revenue growth"
+            },
+            {
+              "title": "Cost-Per-Agreement Optimizer",
+              "description": "Analyzes the true investment required to serve each person through their journey to agreement"
+            },
+            {
+              "title": "Revenue Leakage Analyst",
+              "description": "Identifies where earned value is being lost in the agreement-to-collection process"
+            },
+            {
+              "title": "Financial Scenario Planner",
+              "description": "Models multiple growth scenarios to ensure every person-serving initiative is financially sustainable"
             }
           ],
           "declaredTotal": 52,
@@ -2584,6 +2676,38 @@
               "title": "LinkedIn Ads Manager",
               "description": "Connects with professionals ready to transform their career trajectory.",
               "id": "n2530"
+            },
+            {
+              "title": "Programmatic Media Strategist",
+              "description": "Orchestrates automated media placement to reach the right people with value-adding messages"
+            },
+            {
+              "title": "Paid Social Specialist",
+              "description": "Manages social platform investment to connect with people who genuinely need what we offer"
+            },
+            {
+              "title": "Search Media Buyer",
+              "description": "Places search-based media to serve people actively seeking solutions in their journey"
+            },
+            {
+              "title": "Display & Native Ads Manager",
+              "description": "Crafts non-intrusive display campaigns that add value while introducing relevant solutions"
+            },
+            {
+              "title": "Video Media Buyer",
+              "description": "Invests in video placements to share authentic stories that resonate with people on their journey"
+            },
+            {
+              "title": "Retargeting Journey Specialist",
+              "description": "Re-engages people who showed interest with continued value \u2014 not pressure"
+            },
+            {
+              "title": "Media Mix Modeler",
+              "description": "Analyzes cross-channel performance to allocate investment where it serves the most people"
+            },
+            {
+              "title": "Connected TV & Audio Buyer",
+              "description": "Extends reach into streaming environments to meet people where they naturally consume content"
             }
           ],
           "declaredTotal": 54,
@@ -3418,6 +3542,26 @@
               "title": "Director of Speaking Delivery Support",
               "description": "Ensures flawless execution so nothing interferes with the sacred speaker-audience connection happening.",
               "id": "n1097"
+            },
+            {
+              "title": "Event Content Strategist",
+              "description": "Designs the content arc for events so every attendee walks away with genuine value"
+            },
+            {
+              "title": "Speaker & Session Coordinator",
+              "description": "Sources and prepares speakers who deliver transformative experiences"
+            },
+            {
+              "title": "Workshop Content Designer",
+              "description": "Creates interactive workshop materials that move people from understanding to application"
+            },
+            {
+              "title": "Event Content Repurposing Lead",
+              "description": "Transforms live event moments into evergreen content that continues serving people"
+            },
+            {
+              "title": "Audience Journey Mapper for Events",
+              "description": "Designs the attendee experience from registration through post-event follow-through"
             }
           ],
           "declaredTotal": 26,
@@ -3824,6 +3968,10 @@
               "title": "Win-Back Specialist",
               "description": "Reconnects with beings who drifted away by speaking to who they've become since.",
               "id": "n2556"
+            },
+            {
+              "title": "Customer Journey Recovery Specialist",
+              "description": "Identifies people at risk of disengagement and re-establishes the value connection"
             }
           ],
           "declaredTotal": 55,
@@ -4403,6 +4551,82 @@
               "title": "Video Thumbnail Designer",
               "description": "Designs pattern interrupts that stop scroll and create irresistible curiosity for transformation.",
               "id": "n1310"
+            },
+            {
+              "title": "Social Distribution Strategist",
+              "description": "Designs cross-platform distribution plans ensuring value-adding content reaches everyone who needs it"
+            },
+            {
+              "title": "Content Syndication Manager",
+              "description": "Places original content across partner networks to extend reach to new audiences"
+            },
+            {
+              "title": "Platform Publishing Coordinator",
+              "description": "Manages publishing content across all owned and earned platforms"
+            },
+            {
+              "title": "LinkedIn Distribution Specialist",
+              "description": "Optimizes LinkedIn content placement to serve professionals on their growth journey"
+            },
+            {
+              "title": "YouTube Distribution Manager",
+              "description": "Manages video distribution on YouTube to reach people searching for genuine solutions"
+            },
+            {
+              "title": "TikTok & Short-Form Distributor",
+              "description": "Adapts and distributes short-form content on emerging platforms"
+            },
+            {
+              "title": "X/Twitter Distribution Specialist",
+              "description": "Manages real-time content distribution and conversation engagement on X"
+            },
+            {
+              "title": "Instagram Distribution Coordinator",
+              "description": "Coordinates visual and story-based content distribution on Instagram"
+            },
+            {
+              "title": "Facebook & Community Distributor",
+              "description": "Distributes content through Facebook pages and community spaces"
+            },
+            {
+              "title": "Reddit & Forum Distribution Specialist",
+              "description": "Places valuable content in community forums where people actively seek answers"
+            },
+            {
+              "title": "Newsletter Distribution Manager",
+              "description": "Ensures email content reaches the right people at the right frequency"
+            },
+            {
+              "title": "Podcast Distribution Coordinator",
+              "description": "Manages audio content distribution across all major podcast platforms"
+            },
+            {
+              "title": "Content Scheduling Automation Lead",
+              "description": "Builds automated scheduling systems keeping content flowing consistently"
+            },
+            {
+              "title": "Cross-Platform Repurposing Specialist",
+              "description": "Transforms content into platform-native formats for every audience"
+            },
+            {
+              "title": "Influencer & Creator Distribution Partner",
+              "description": "Collaborates with aligned creators to co-distribute content authentically"
+            },
+            {
+              "title": "Owned Media Channel Manager",
+              "description": "Maintains and optimizes all owned distribution channels for maximum reach"
+            },
+            {
+              "title": "Earned Media Distribution Analyst",
+              "description": "Tracks and amplifies organic content pickups across media outlets"
+            },
+            {
+              "title": "Distribution Analytics & Reporting Lead",
+              "description": "Measures distribution performance to identify where people are being best served"
+            },
+            {
+              "title": "Emerging Platform Scout",
+              "description": "Monitors and tests new distribution platforms to reach people wherever they show up"
             }
           ],
           "declaredTotal": 58,
@@ -4618,6 +4842,66 @@
               "title": "Podcast Partnership Manager",
               "description": "Creates strategic alliances that multiply reach while maintaining the integrity of intimate connection.",
               "id": "n1407"
+            },
+            {
+              "title": "Podcast Marketing Strategist",
+              "description": "Designs podcast growth plans attracting listeners seeking transformation and value"
+            },
+            {
+              "title": "Audio Ad Creative Director",
+              "description": "Crafts audio ads that speak to people authentically \u2014 informing and inspiring"
+            },
+            {
+              "title": "Podcast Guest Booking Coordinator",
+              "description": "Sources and schedules guest appearances on aligned podcasts to share value"
+            },
+            {
+              "title": "Voice Platform Specialist",
+              "description": "Develops presence on Alexa, Google Assistant, and voice platforms"
+            },
+            {
+              "title": "Audio Content Producer",
+              "description": "Produces polished audio content delivering consistent value to listeners"
+            },
+            {
+              "title": "Podcast SEO & Discovery Specialist",
+              "description": "Optimizes podcast metadata so people who need the content can find it"
+            },
+            {
+              "title": "Audio Ad Placement Buyer",
+              "description": "Places audio ads on podcasts and streaming platforms reaching people most likely to benefit"
+            },
+            {
+              "title": "Podcast Network Partnership Manager",
+              "description": "Builds relationships with podcast networks to serve broader audiences"
+            },
+            {
+              "title": "Audio Audiogram & Clip Creator",
+              "description": "Transforms long-form audio into shareable visual clips spreading value across social"
+            },
+            {
+              "title": "Streaming Platform Manager",
+              "description": "Manages presence on Spotify, Apple Podcasts for seamless listener experience"
+            },
+            {
+              "title": "Audio Analytics Specialist",
+              "description": "Analyzes listener behavior to understand what content genuinely serves people best"
+            },
+            {
+              "title": "Voice Search Optimization Lead",
+              "description": "Optimizes content for voice search so people find answers through spoken questions"
+            },
+            {
+              "title": "Audio Brand Identity Designer",
+              "description": "Designs sonic branding elements that create instant trust and recognition"
+            },
+            {
+              "title": "Live Audio & Spaces Host",
+              "description": "Hosts live audio sessions to serve people in real-time dialogue"
+            },
+            {
+              "title": "Audio Transcription & Repurposing Lead",
+              "description": "Converts audio into written formats to serve people who prefer reading"
             }
           ],
           "declaredTotal": 54,
@@ -5144,6 +5428,30 @@
               "title": "Video Camera Operator",
               "description": "Captures authentic moments with technical mastery that preserves the energy of transformation.",
               "id": "n1307"
+            },
+            {
+              "title": "Product Photography Specialist",
+              "description": "Captures products with clarity and intention so people can see exactly what they're investing in"
+            },
+            {
+              "title": "Event Photography Lead",
+              "description": "Documents live events and shared experiences with images that preserve the energy of the moment"
+            },
+            {
+              "title": "Portrait & Headshot Photographer",
+              "description": "Creates professional portraits that capture the authentic identity of team members and partners"
+            },
+            {
+              "title": "Photo Retouching Specialist",
+              "description": "Refines images to their highest visual quality while maintaining authenticity"
+            },
+            {
+              "title": "Stock & Asset Photography Curator",
+              "description": "Builds and maintains a library of original photography assets for all marketing surfaces"
+            },
+            {
+              "title": "Photography Equipment & Studio Manager",
+              "description": "Manages camera equipment, lighting rigs, and studio spaces for consistent production quality"
             }
           ],
           "declaredTotal": 24,
@@ -6445,6 +6753,14 @@
               "title": "Voiceover Talent",
               "description": "Becomes the trusted voice that carries transformation through audio connection.",
               "id": "n2528"
+            },
+            {
+              "title": "Social Listening Analyst",
+              "description": "Monitors conversations across platforms to understand what people truly care about and need"
+            },
+            {
+              "title": "Community Crisis Response Specialist",
+              "description": "Handles sensitive community situations with empathy, integrity, and swift resolution"
             }
           ],
           "declaredTotal": 18,
@@ -9263,6 +9579,22 @@
               "title": "Outbound LinkedIn Outreach Specialist",
               "description": "Creates digital first touch moments that interrupt patterns and spark genuine curiosity.",
               "id": "n2549"
+            },
+            {
+              "title": "Warm Outreach Coordinator",
+              "description": "Reaches people through warm introductions and genuine relationship bridges"
+            },
+            {
+              "title": "Inbound Qualification Specialist",
+              "description": "Evaluates inbound interest to understand each person's readiness and match them with the right next step"
+            },
+            {
+              "title": "Multi-Channel Outreach Sequencer",
+              "description": "Designs cross-channel outreach sequences that add value at every touchpoint"
+            },
+            {
+              "title": "Person Intelligence Researcher",
+              "description": "Researches each person's background and needs to ensure outreach is relevant and respectful"
             }
           ],
           "declaredTotal": 90,
@@ -9850,6 +10182,58 @@
               "title": "Expansion Sales Rep",
               "description": "Deepens existing relationships until they become exponentially more valuable.",
               "id": "n1927"
+            },
+            {
+              "title": "Agreement Conversation Facilitator",
+              "description": "Guides the conversation toward natural agreement through genuine value demonstration"
+            },
+            {
+              "title": "Pipeline Health Analyst",
+              "description": "Monitors the agreement pipeline to identify where people need additional support"
+            },
+            {
+              "title": "Agreement Velocity Optimizer",
+              "description": "Identifies and removes friction in the journey from interest to agreement"
+            },
+            {
+              "title": "Account Relationship Manager",
+              "description": "Maintains ongoing relationships with people post-agreement to ensure continued value"
+            },
+            {
+              "title": "Value Demonstration Specialist",
+              "description": "Creates compelling demonstrations that let people experience the value before committing"
+            },
+            {
+              "title": "Agreement Process Designer",
+              "description": "Designs the step-by-step journey from initial conversation to signed agreement"
+            },
+            {
+              "title": "Objection Understanding Specialist",
+              "description": "Listens deeply to concerns to understand the real need behind every hesitation"
+            },
+            {
+              "title": "Deposit & First Payment Coordinator",
+              "description": "Facilitates a seamless first payment experience that feels natural, not pressured"
+            },
+            {
+              "title": "Agreement Analytics Lead",
+              "description": "Tracks patterns in agreement conversations to understand what creates authentic readiness"
+            },
+            {
+              "title": "CRM & Pipeline Administrator",
+              "description": "Maintains clean, accurate records of every person's journey through the agreement process"
+            },
+            {
+              "title": "Post-Agreement Onboarding Bridge",
+              "description": "Ensures the transition from agreement to delivery is seamless and trust-preserving"
+            },
+            {
+              "title": "Strategic Account Planner",
+              "description": "Develops relationship plans for high-value accounts focused on long-term mutual value"
+            },
+            {
+              "title": "Agreement Quality Reviewer",
+              "description": "Reviews completed agreements to ensure both parties received genuine value"
             }
           ],
           "declaredTotal": 60,
@@ -10102,6 +10486,50 @@
               "title": "Level 1 Marriage \u2014 Joint Entity Operations Lead",
               "description": "Operates the unified organism that emerges when two ecosystems achieve complete integration.",
               "id": "n476"
+            },
+            {
+              "title": "Partnership Onboarding Specialist",
+              "description": "Welcomes new ecosystem partners and ensures they feel supported from day one"
+            },
+            {
+              "title": "Co-Marketing Campaign Manager",
+              "description": "Designs and executes joint campaigns with partners that serve both audiences authentically"
+            },
+            {
+              "title": "Partnership Performance Analyst",
+              "description": "Measures the mutual value created by each partnership arrangement"
+            },
+            {
+              "title": "Ecosystem Communication Coordinator",
+              "description": "Maintains clear, consistent communication across all partnership relationships"
+            },
+            {
+              "title": "Partner Success Manager",
+              "description": "Ensures every partner achieves the outcomes they envisioned from the relationship"
+            },
+            {
+              "title": "Integration Technical Specialist",
+              "description": "Handles technical setup and data connections between partner systems"
+            },
+            {
+              "title": "Partner Content Collaborator",
+              "description": "Creates co-branded content that authentically represents both partners' value"
+            },
+            {
+              "title": "Ecosystem Event Coordinator",
+              "description": "Organizes joint events and shared experiences across partner communities"
+            },
+            {
+              "title": "Partnership Renewal Strategist",
+              "description": "Evaluates and deepens existing partnerships based on demonstrated mutual value"
+            },
+            {
+              "title": "Partner Feedback Collector",
+              "description": "Gathers and synthesizes partner input to continuously improve the relationship experience"
+            },
+            {
+              "title": "Ecosystem Growth Planner",
+              "description": "Identifies new partnership opportunities that align with the mission and serve new audiences"
             }
           ],
           "declaredTotal": 57,
@@ -10324,6 +10752,26 @@
               "title": "Referral Network Architect",
               "description": "Designs the referral physics where satisfied ecosystem partners multiply relationships exponentially.",
               "id": "n425"
+            },
+            {
+              "title": "Partnership Proposal Writer",
+              "description": "Crafts partnership proposals that articulate genuine mutual value \u2014 not transactional terms"
+            },
+            {
+              "title": "Partner Discovery Researcher",
+              "description": "Identifies potential ecosystem partners aligned with our mission and values"
+            },
+            {
+              "title": "Relationship Warm-Up Specialist",
+              "description": "Builds authentic rapport with potential partners before any formal proposal"
+            },
+            {
+              "title": "Partnership Terms Architect",
+              "description": "Designs partnership structures that ensure both parties create and receive genuine value"
+            },
+            {
+              "title": "Ecosystem Value Proposition Designer",
+              "description": "Articulates what each partner uniquely gains from joining the ecosystem"
             }
           ],
           "declaredTotal": 45,
@@ -10534,6 +10982,10 @@
               "title": "Sales CRM Manager",
               "description": "Tracks the relationship journey so no opportunity for connection disappears.",
               "id": "n1926"
+            },
+            {
+              "title": "Agreement Team Training Coordinator",
+              "description": "Develops and delivers training programs that help the team serve people with greater mastery"
             }
           ],
           "declaredTotal": 39,
@@ -10644,6 +11096,30 @@
               "title": "Revenue Innovation Specialist",
               "description": "Architects new pathways for value exchange that competitors can't see yet.",
               "id": "n1989"
+            },
+            {
+              "title": "Revenue Process Automation Engineer",
+              "description": "Automates repetitive revenue operations so the team can focus on genuinely serving people"
+            },
+            {
+              "title": "Agreement-to-Revenue Tracker",
+              "description": "Maps the complete path from signed agreement to collected revenue, identifying gaps"
+            },
+            {
+              "title": "RevOps Data Quality Manager",
+              "description": "Ensures revenue data accurately reflects reality so decisions serve people, not false metrics"
+            },
+            {
+              "title": "Pricing Experimentation Lead",
+              "description": "Tests pricing models to find the point where value delivered and investment required align naturally"
+            },
+            {
+              "title": "Revenue Reporting Automation Specialist",
+              "description": "Builds automated dashboards that give real-time visibility into revenue health"
+            },
+            {
+              "title": "Cross-Functional Revenue Coordinator",
+              "description": "Ensures marketing, agreement-making, and delivery teams share a unified revenue view"
             }
           ],
           "declaredTotal": 24,
@@ -10858,6 +11334,14 @@
               "title": "Level 3 Dating \u2014 Simple Agreement Coordinator",
               "description": "Facilitates the initial yes that transforms ecosystem curiosity into committed partnership exploration.",
               "id": "n470"
+            },
+            {
+              "title": "Strategic Agreement Architect",
+              "description": "Designs complex, multi-stakeholder agreement structures that create value for everyone involved"
+            },
+            {
+              "title": "High-Value Relationship Navigator",
+              "description": "Guides high-stakes conversations toward agreement through deep understanding and genuine service"
             }
           ],
           "declaredTotal": 15,
@@ -10930,6 +11414,18 @@
               "title": "Ecosystem Sourcer \u2014 Inbound Partnership Manager",
               "description": "Receives and evaluates ecosystem merger inquiries with strategic discernment and care.",
               "id": "n441"
+            },
+            {
+              "title": "Competitive Intelligence Analyst",
+              "description": "Studies the landscape to understand where we can serve people in ways no one else can"
+            },
+            {
+              "title": "Market Opportunity Researcher",
+              "description": "Identifies underserved audiences and unmet needs that align with our mission"
+            },
+            {
+              "title": "Audience Insight Synthesizer",
+              "description": "Combines multiple research inputs into clear portraits of who needs our value most"
             }
           ],
           "declaredTotal": 13,
@@ -10990,6 +11486,14 @@
               "title": "Sales Coach",
               "description": "Elevates agreement conversation skills until they become unconsciously competent.",
               "id": "n1924"
+            },
+            {
+              "title": "Role-Play Scenario Designer",
+              "description": "Creates realistic practice scenarios so team members develop mastery through safe repetition"
+            },
+            {
+              "title": "Performance Feedback Specialist",
+              "description": "Delivers constructive, heart-centered feedback that accelerates skill development in every team member"
             }
           ],
           "declaredTotal": 10,
@@ -11534,6 +12038,66 @@
               "title": "Art Director",
               "description": "Guides visual language so emotional transference happens before logical understanding begins.",
               "id": "n1704"
+            },
+            {
+              "title": "Responsive Web Designer",
+              "description": "Designs websites that serve people beautifully on every device and screen size"
+            },
+            {
+              "title": "Mobile App Designer",
+              "description": "Creates mobile experiences that feel intuitive and valuable from the first tap"
+            },
+            {
+              "title": "Brand Collateral Designer",
+              "description": "Designs printed and digital brand materials that visually communicate trust and value"
+            },
+            {
+              "title": "Social Media Template Designer",
+              "description": "Creates consistent, on-brand social templates that maintain visual excellence at scale"
+            },
+            {
+              "title": "Presentation Deck Designer",
+              "description": "Designs visually compelling presentations that help speakers deliver their message with maximum impact"
+            },
+            {
+              "title": "Ad Creative Visual Designer",
+              "description": "Creates advertising visuals that stop the scroll through authenticity, not manipulation"
+            },
+            {
+              "title": "Dashboard & Data Display Designer",
+              "description": "Designs clear, intuitive data displays that make complex information instantly understandable"
+            },
+            {
+              "title": "Print Layout Specialist",
+              "description": "Designs print materials \u2014 brochures, books, programs \u2014 with craftsmanship and clarity"
+            },
+            {
+              "title": "Icon & Symbol System Designer",
+              "description": "Creates consistent icon systems that communicate meaning at a glance across all platforms"
+            },
+            {
+              "title": "Accessibility Design Specialist",
+              "description": "Ensures every visual design is fully accessible to people of all abilities"
+            },
+            {
+              "title": "Design System Maintainer",
+              "description": "Keeps the design system updated and consistent so every output reflects the brand with integrity"
+            },
+            {
+              "title": "Email Template Visual Designer",
+              "description": "Designs email templates that feel warm, professional, and trustworthy in every inbox"
+            },
+            {
+              "title": "Event Visual Designer",
+              "description": "Creates all visual elements for live events \u2014 signage, screens, programs, badges"
+            },
+            {
+              "title": "Landing Page Visual Designer",
+              "description": "Designs landing pages that visually guide people toward their next value-adding step"
+            },
+            {
+              "title": "Video Thumbnail & Cover Designer",
+              "description": "Creates thumbnails and covers that honestly represent the content inside"
             }
           ],
           "declaredTotal": 97,
@@ -11793,6 +12357,34 @@
               "title": "Data Visualization Specialist",
               "description": "Transforms numerical complexity into visual clarity that enables instant understanding and confident action.",
               "id": "n2483"
+            },
+            {
+              "title": "Interactive Data Explorer Designer",
+              "description": "Builds interactive visualizations that let people explore data at their own pace"
+            },
+            {
+              "title": "KPI Dashboard Architect",
+              "description": "Designs executive dashboards that surface the metrics that actually matter for serving people"
+            },
+            {
+              "title": "Report Visualization Specialist",
+              "description": "Transforms dense reports into visual stories that anyone can understand and act on"
+            },
+            {
+              "title": "Geospatial Data Visualizer",
+              "description": "Maps location-based data to reveal geographic patterns in how people are being served"
+            },
+            {
+              "title": "Real-Time Data Display Designer",
+              "description": "Creates live data displays that keep teams informed and responsive in the moment"
+            },
+            {
+              "title": "Infographic Content Designer",
+              "description": "Designs infographics that distill complex information into shareable, value-adding visuals"
+            },
+            {
+              "title": "Data Storytelling Specialist",
+              "description": "Weaves data into narrative visualizations that move people from confusion to clarity"
             }
           ],
           "declaredTotal": 23,
@@ -11883,6 +12475,18 @@
               "title": "Architecture Designer",
               "description": "Maps visual information hierarchies that guide attention and accelerate understanding naturally.",
               "id": "n1680"
+            },
+            {
+              "title": "Retail & Office Space Designer",
+              "description": "Designs physical spaces that make every person who enters feel welcomed and valued"
+            },
+            {
+              "title": "Exhibition & Booth Experience Designer",
+              "description": "Creates trade show and exhibition spaces that draw people in through genuine intrigue"
+            },
+            {
+              "title": "Wayfinding & Signage System Designer",
+              "description": "Designs navigation systems that help people find their way with ease and confidence"
             }
           ],
           "declaredTotal": 17,
@@ -12058,6 +12662,14 @@
               "title": "3D Animator",
               "description": "Gives life to digital forms until virtual becomes more real than reality.",
               "id": "n1601"
+            },
+            {
+              "title": "Animated Explainer Video Creator",
+              "description": "Produces animated videos that make complex concepts simple and engaging for every viewer"
+            },
+            {
+              "title": "Motion Graphics Template Builder",
+              "description": "Creates reusable motion templates that maintain visual excellence at production speed"
             }
           ],
           "declaredTotal": 12,
@@ -12318,6 +12930,14 @@
               "title": "Surface Designer",
               "description": "Transforms blank space into emotional landscape where people feel instantly understood.",
               "id": "n1588"
+            },
+            {
+              "title": "User Research Lead",
+              "description": "Conducts research to deeply understand how people actually experience and navigate our platforms"
+            },
+            {
+              "title": "Usability Testing Coordinator",
+              "description": "Runs usability tests to ensure every digital touchpoint genuinely serves people without friction"
             }
           ],
           "declaredTotal": 9,
@@ -12600,6 +13220,14 @@
               "title": "Sound Designer",
               "description": "Crafts audio landscapes that make messages feel more real than silence.",
               "id": "n1697"
+            },
+            {
+              "title": "Foley & Sound Effects Artist",
+              "description": "Creates custom sound effects that enhance the emotional impact of every audio and video production"
+            },
+            {
+              "title": "Audio Restoration Specialist",
+              "description": "Restores and enhances audio recordings to ensure every word and moment is crystal clear"
             }
           ],
           "declaredTotal": 54,
@@ -12685,6 +13313,10 @@
               "title": "Concept Artist",
               "description": "Visualizes the invisible so abstract transformation becomes tangible and believable.",
               "id": "n1242"
+            },
+            {
+              "title": "Virtual Set & Background Designer",
+              "description": "Creates digital environments for virtual events and video that feel immersive and professional"
             }
           ],
           "declaredTotal": 14,
@@ -12832,6 +13464,18 @@
               "title": "Speaking Follow-Up Email Sequence Writer",
               "description": "Extends the transformation journey so stage insights become integrated life changes.",
               "id": "n1103"
+            },
+            {
+              "title": "Cross-Promotion Strategist",
+              "description": "Identifies and executes cross-promotional opportunities that serve both audiences authentically"
+            },
+            {
+              "title": "Organic Reach Amplification Specialist",
+              "description": "Maximizes content visibility through organic tactics \u2014 shares, engagement, community activation"
+            },
+            {
+              "title": "Referral Program Designer",
+              "description": "Creates referral experiences that feel natural and rewarding for the person sharing and receiving"
             }
           ],
           "declaredTotal": 28,
@@ -13147,6 +13791,10 @@
               "title": "Amazement Experience Creator",
               "description": "Orchestrates breakthrough moments so profound sharing becomes involuntary gratitude.",
               "id": "n2360"
+            },
+            {
+              "title": "Surprise & Delight Program Architect",
+              "description": "Designs unexpected moments of value and joy throughout the person's journey that build lasting loyalty"
             }
           ],
           "declaredTotal": 60,
@@ -13419,6 +14067,22 @@
               "title": "Copywriting Director",
               "description": "Leads the entire written communication strategy to maximize agreement conversations and value exchange.",
               "id": "n903"
+            },
+            {
+              "title": "Content Audit & Gap Analyst",
+              "description": "Evaluates existing content to identify where people's needs are being met and where gaps exist"
+            },
+            {
+              "title": "Thought Leadership Content Planner",
+              "description": "Maps the publication cadence for authority-building content that genuinely elevates the conversation"
+            },
+            {
+              "title": "Content Governance Lead",
+              "description": "Ensures all published content meets quality, integrity, and brand standards before reaching people"
+            },
+            {
+              "title": "Evergreen Content Strategist",
+              "description": "Identifies and develops content that provides lasting value \u2014 not just trending relevance"
             }
           ],
           "declaredTotal": 53,
@@ -13559,6 +14223,14 @@
               "title": "Privacy Policy Writer",
               "description": "Demonstrates respect for personal boundaries while explaining value exchange in human terms.",
               "id": "n880"
+            },
+            {
+              "title": "Microcopy & Error Message Writer",
+              "description": "Writes the tiny words that make or break a person's experience \u2014 buttons, errors, confirmations, tooltips"
+            },
+            {
+              "title": "Conversational UI Writer",
+              "description": "Designs chatbot and conversational interface language that feels human, warm, and genuinely helpful"
             }
           ],
           "declaredTotal": 26,
@@ -13993,6 +14665,10 @@
               "title": "Amazon Publishing Specialist",
               "description": "Navigates publishing platforms ensuring books find their intended audience through algorithmic optimization.",
               "id": "n1421"
+            },
+            {
+              "title": "Live Stream Technical Producer",
+              "description": "Manages the technical production of live broadcasts ensuring seamless delivery to every viewer"
             }
           ],
           "declaredTotal": 12,
@@ -14088,6 +14764,14 @@
               "title": "Testimonial Writer",
               "description": "Captures transformation in language that makes others see their own possibility reflected back.",
               "id": "n831"
+            },
+            {
+              "title": "SMS Campaign Strategist",
+              "description": "Designs text message communications that add value in 160 characters \u2014 respectful of people's attention"
+            },
+            {
+              "title": "Push Notification Content Designer",
+              "description": "Crafts app notifications that inform and serve rather than interrupt and annoy"
             }
           ],
           "declaredTotal": 5,
