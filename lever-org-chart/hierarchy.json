@@ -343,7 +343,7 @@
               "id": "n2392"
             },
             {
-              "title": "Funnel Analytics Manager",
+              "title": "Journey Analytics Manager",
               "description": "Reveals where people disappear in the journey so every step becomes inevitable.",
               "id": "n2394"
             },
@@ -678,7 +678,7 @@
               "id": "n2474"
             },
             {
-              "title": "Funnel Analytics Specialist",
+              "title": "Journey Analytics Specialist",
               "description": "Maps value-added nurturing sequence performance to reveal where people get stuck versus flow forward.",
               "id": "n2476"
             },
@@ -1645,7 +1645,7 @@
               "id": "n1964"
             },
             {
-              "title": "Revenue Funnel Analyst",
+              "title": "Revenue Journey Analyst",
               "description": "Analyzes the value-added nurturing sequence to eliminate resistance and maximize flow.",
               "id": "n1965"
             },
@@ -1905,7 +1905,7 @@
               "id": "n1752"
             },
             {
-              "title": "Sales Funnel Analyst",
+              "title": "Revenue Journey Analyst",
               "description": "Optimizes each stage of the value-added nurturing sequence for maximum commitment velocity.",
               "id": "n1753"
             },
@@ -5493,7 +5493,7 @@
               "id": "n27"
             },
             {
-              "title": "Prospect Discovery Specialist",
+              "title": "Person Discovery Specialist",
               "description": "Finds the people ready to say yes before they know they need us.",
               "id": "n30"
             },
@@ -6939,7 +6939,7 @@
               "id": "n579"
             },
             {
-              "title": "LinkedIn Lead Generation Specialist",
+              "title": "LinkedIn Person Sourcing Specialist",
               "description": "Creates connection sequences that earn permission to speak into business transformation.",
               "id": "n580"
             },
@@ -8830,7 +8830,7 @@
             "Director of First Impressions",
             "Director of Cold Outreach Strategy",
             "Director of Introduction Experiences",
-            "Director of Lead Generation",
+            "Director of Person Sourcing",
             "Director of Lead Qualification"
           ],
           "fullPositions": [
@@ -9030,7 +9030,7 @@
               "id": "n1763"
             },
             {
-              "title": "Director of Lead Generation",
+              "title": "Director of Person Sourcing",
               "description": "Orchestrates ecosystem mergers that put pattern interrupts in front of ideal beings.",
               "id": "n1768"
             },
@@ -9040,7 +9040,7 @@
               "id": "n1769"
             },
             {
-              "title": "Director of Prospecting",
+              "title": "Director of Person Discovery",
               "description": "Creates systematic approaches to find growth-driven beings hungry for authentic change.",
               "id": "n1770"
             },
@@ -9060,7 +9060,7 @@
               "id": "n1773"
             },
             {
-              "title": "Lead Generation Manager",
+              "title": "Person Sourcing Manager",
               "description": "Manages systems that attract ideal transformation partners through magnetic pattern interrupts.",
               "id": "n1774"
             },
@@ -9070,7 +9070,7 @@
               "id": "n1775"
             },
             {
-              "title": "Prospecting Manager",
+              "title": "Person Discovery Manager",
               "description": "Directs efforts to find growth-driven people actively seeking their next transformation breakthrough.",
               "id": "n1776"
             },
@@ -9145,7 +9145,7 @@
               "id": "n1796"
             },
             {
-              "title": "Lead Generation Specialist",
+              "title": "Person Sourcing Specialist",
               "description": "Identifies growth-driven hearts who are ready for their next level of mastery and connection.",
               "id": "n1800"
             },
@@ -9155,7 +9155,7 @@
               "id": "n1801"
             },
             {
-              "title": "Prospecting Specialist",
+              "title": "Person Discovery Specialist",
               "description": "Discovers beings whose pain has reached the threshold where transformation becomes inevitable.",
               "id": "n1802"
             },
@@ -9603,7 +9603,7 @@
         },
         {
           "id": 58,
-          "name": "Closer",
+          "name": "Agreement Maker",
           "craft": "Agreement Making",
           "type": "Being",
           "positions": 47,
@@ -9707,7 +9707,7 @@
               "id": "n1825"
             },
             {
-              "title": "Closing Specialist",
+              "title": "Agreement Specialist",
               "description": "Recognizes when yes is ready and creates the container where agreement becomes inevitable.",
               "id": "n1826"
             },
@@ -9827,7 +9827,7 @@
               "id": "n1905"
             },
             {
-              "title": "Sales Closer",
+              "title": "Agreement Facilitator",
               "description": "Causes the final yes by revealing who they become on the other side.",
               "id": "n1918"
             },
@@ -14504,7 +14504,7 @@
       "positions": 152,
       "pct": "6.0%",
       "craft": "Sales ops, sales dev, account management, agreement conversations, pipeline management, objection handling",
-      "colosseum": "Discovery mastery, objection handling, proposal writing, pipeline velocity, account expansion, value articulation, closing conversations",
+      "colosseum": "Discovery mastery, objection handling, proposal writing, pipeline velocity, account expansion, value articulation, agreement conversations",
       "levers": "0.5, 2, 3"
     },
     {
