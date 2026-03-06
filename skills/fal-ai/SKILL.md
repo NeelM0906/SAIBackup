@@ -103,6 +103,52 @@ python3 fal_generate.py depth --video /path/to/video.mp4
 - Preview at lower resolution when available
 - Download immediately — signed URLs expire (typically 24h)
 
+## Programmatic Video Assembly
+
+Full pipeline: generate multiple clips → assemble with transitions, overlays, audio, and platform-specific formatting.
+
+```bash
+# Show example pipeline config
+python3 fal_assemble.py example
+
+# Run a pipeline from config
+python3 fal_assemble.py --config pipeline.json --output final.mp4
+```
+
+### Scene Types
+
+| Type | Description | Required Fields |
+|------|-------------|-----------------|
+| `title` | Solid color + text card | `text`, `duration` |
+| `video` | Generate clip from prompt | `prompt`, `model`, `duration` |
+| `image_to_video` | Generate image → animate | `image_prompt`, `motion_prompt` |
+| `file` | Use existing local video | `path` |
+
+### Pipeline Features
+
+- **Crossfade transitions** between scenes (configurable duration)
+- **Text overlays** with positioning, timing, and background opacity
+- **Background audio** with volume control and looping
+- **Platform resize** — youtube, tiktok, instagram-reel, instagram-feed, linkedin, facebook, twitter
+- **Title/CTA cards** with custom colors, fonts, sizing
+- **Normalization** — all clips auto-matched to consistent resolution/fps/codec
+
+### Example: Ad Video Pipeline
+
+```json
+{
+  "settings": {"width": 1280, "height": 720, "crossfade_duration": 0.5},
+  "scenes": [
+    {"type": "title", "text": "The $47K Mistake", "duration": 3},
+    {"type": "video", "prompt": "Attorney in courthouse...", "model": "kling-v2", "duration": 5},
+    {"type": "image_to_video", "image_prompt": "Viking warrior...", "motion_prompt": "camera push in", "duration": 5},
+    {"type": "title", "text": "Don't be the bottleneck.", "duration": 2}
+  ],
+  "overlays": [{"text": "ACT-I Legal Visionnaire", "position": "bottom", "start": 3, "end": 12}],
+  "platform": "youtube"
+}
+```
+
 ## API Patterns
 
 All video generation is async:
@@ -110,4 +156,4 @@ All video generation is async:
 2. Poll until complete (SDK handles this via `subscribe()`)
 3. Download from signed URL
 
-The `fal_generate.py` script handles polling automatically.
+Both `fal_generate.py` and `fal_assemble.py` handle polling automatically.
