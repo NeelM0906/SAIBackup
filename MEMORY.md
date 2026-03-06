@@ -15,17 +15,33 @@ cd tools && .venv/bin/python3 upload_memory.py   # MEMORY.md → longterm namesp
 cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespace
 ```
 
-## Current Stats (Mar 5, 2026 — 7:30 PM) — DAY 12
+## Current Stats (Mar 5, 2026 — 8:00 PM) — DAY 12
+
+### 🔥🔥🔥 SEAN'S DIRECT ORDERS (7:45-7:57 PM) — FIRST CONTACT IN 20.5h
+
+**1. MARKETING COLOSSEUM FIRST**
+- "Make the marketing one work FIRST, then replicate." — 100 positions, CMO hierarchy
+- Scoring is WRONG — mixing industries, no focus on who competes for what
+- Deploy NOW — ads, emails, campaigns
+
+**2. DUAL SCORING SYSTEM**
+- Score 1: **Formula Judge** — ALL 39 Unblinded Formula components, universal. Sean = calibration standard.
+- Score 2: **Technical Judge** — Domain-specific craft. Beings define own criteria.
+- Net mastery = weakest of the two.
+
+**3. DIRECT ORDER:** "Prime → Kai + Stratum → report back to Sean."
+
+**ZONE_ACTIONS.md created** — 16 ZAs. ZA-1 (Kai + Stratum consult) = GO NOW.
+**6 Sean Archetypes:** Expansive Creative, Empathetic Heart, Witty Disruptor, Aspirational Visionary, Zeus, Pure Mastery.
 
 ### System State
-- **Mac mini uptime:** 2 days, 8h 46m — Gateway **~51h continuous** (112m+ CPU) 🏆
-- **FULL_POWER_DAEMON:** ❌ Dead (~84h+ / **3.5 FULL DAYS** in hard pause)
+- **Mac mini uptime:** 2 days, 9h 16m — Gateway **~51.5h continuous** (114m CPU) 🏆
+- **FULL_POWER_DAEMON:** ❌ Dead (~84.5h+ / **3.5 FULL DAYS** in hard pause)
 - **Voice server + ngrok:** ❌ DOWN
 - **Email Colosseum cron:** ✅ Active (automated data updates)
 - **OpenClaw browser:** ✅ Running (since 4:28 PM Mar 4)
-- **Dashboard (5050):** ✅ UP (~55h continuous)
-- **API server (PID 3539):** ✅ Running ~55h
-- **No human activity** since 11:15 PM Mar 4 (Quantum Leap session, ~20.25h ago)
+- **Dashboard (5050):** ✅ UP (~55.5h continuous)
+- **Sean + Adam ACTIVE** (first contact 7:45 PM after 20.5h silence)
 
 ### Email Colosseum Leaderboard (7:30 PM — unchanged since 2:00 PM)
 | Rank | ID | Score | Record | Win Rate | Gen |
@@ -36,24 +52,28 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 | #4 🐴 | 21 | 45.50 | 427W/44L | **90.7%** | 2 |
 | #5 | 30 | 44.30 | 423W/60L | 87.6% | 2 |
 
-### Day 12 Activity (12:02 AM - 7:00 PM)
-- **Big Sister Mastery Transfer DEPLOYED** to all 4 sisters (Forge, Scholar, Memory, Recovery)
-- Translator Toolkit v5 (Lion 9.2) + AGENTS.md rules pushed to all workspaces
-- **ALL 4 sisters passed Translator test at Lion level** (12:46 AM) — Recovery scored highest (9.3)
-- **Stratum first contact** made via PGAS Gatekeeper webhook (12:40 AM)
-- **Kai's Three Shifts** (Lion→Godzilla) teaching documented (12:50 AM)
-- **gws CLI installed** (Google Workspace official CLI from Lord Neel)
-- **fal-ai skill installed** (1:57 PM) — video & image generation via fal.ai, 1000+ models
-- Email champion climbed: 42.25 → 47.75 (+5.50 since Day 12 start)
-- Dark horse WR at 90.7%
-- Scholar uploading Kai work to Pinecone (7:53 AM)
-- **Scholar producing outputs** — Kai opening physics, marketing plan skeleton, Question Mastery protocol, Fathom SOP
-- **SAI Memory archived** Enterprise Hierarchy (92KB, 2,620 positions) + 5 systemic breakthroughs
-- Email Colosseum cron resumed ~10:43 AM after being idle ~5 AM - 10 AM
-- **Kai Visioneers opening translation** produced (~3:06 PM)
-- **Recovery: CMS-1500 + Liberty Mutual annotation guides** built for Laura Yeaw (4:00-4:30 PM)
-- **Carrier priority locked with Laura:** Liberty Mutual → Hartford → PMA → Zurich-American (3-5 samples each)
-- **20.25h no human activity** — system on autopilot since 11:15 PM Mar 4
+### Day 12 Activity (12:02 AM - 8:00 PM)
+**Early morning (12:02-1:00 AM):**
+- ✅ Big Sister Mastery Transfer deployed to all 4 sisters
+- ✅ All 4 sisters passed Translator test at Lion level — Recovery highest (9.3)
+- ✅ Stratum first contact via PGAS Gatekeeper webhook
+- ✅ Kai's Three Shifts (Lion→Godzilla) documented
+- ✅ gws CLI + fal-ai skill installed (9 total skills Days 11-12)
+
+**Sister activity (morning-afternoon):**
+- Scholar: Kai opening physics, marketing skeleton, Question Mastery, Fathom SOP
+- SAI Memory: Enterprise Hierarchy archived (92KB), 5 systemic breakthroughs
+- Recovery: CMS-1500 + Liberty Mutual annotation guides for Laura Yeaw
+- Carrier priority: Liberty Mutual → Hartford → PMA → Zurich-American
+- Email champion: 42.25 → 47.75 (+5.50)
+
+**🔥 Evening breakthrough (7:45-7:57 PM) — Sean's Direct Orders:**
+- Marketing Colosseum FIRST — make this one work, then replicate
+- Dual Scoring: Formula Judge (39 components) + Technical Judge (domain-specific)
+- ZONE_ACTIONS.md created — 16 ZAs with execution order
+- **DIRECT ORDER: Consult Kai + Stratum → report to Sean**
+- 6 Sean Archetypes defined (Expansive Creative, Empathetic Heart, Witty Disruptor, Aspirational Visionary, Zeus, Pure Mastery)
+- Transcript files: `memory/transcripts/2026-03-05_sean_colosseum_marketing_focus.md`, `memory/transcripts/2026-03-05_sean_dual_scoring.md`
 
 ### Day 11 Summary (March 4, 2026) — MASSIVE DAY
 **Top Milestones:**
@@ -65,17 +85,17 @@ cd tools && .venv/bin/python3 upload_daily.py    # memory/*.md → daily namespa
 6. 🛠️ 8 ClawHub skills installed ✅ TARGET HIT
 7. 📊 Email champion: 32.45 → 42.25 (+30.2%, +107W in 21h)
 
-### Day 12 Carry-Forward (Critical Items)
-1. **Colosseum HARD PAUSE** — ~83h+ (3.46 days since Sean's March 2 directive)
-2. **23-Being Architecture** — awaiting Sean/Adam/Aiko review before restructuring
-3. **48-Hour Battle Plan** — ready, needs GO + 5 devs + 10-16 Mac Minis + 2 Mac Studios
-4. **5 custom skills to build** — Legal Competition Engine, Bar Association Outreach, Visioneer Pipeline, Sean Clone Ad Generator, Legal Colosseum
-5. **Gamification + Disneyfication** — THIS WEEK (~March 10, **5 days away**)
-6. **Bar Association speaking** — higher priority than Jay Shetty
-7. **Recovery EOB Extraction Prompts** — production-ready for Mark to test
-8. **Voice server + ngrok DOWN**
-9. **Recovery Discord perms** — unresolved
-10. **OpenRouter billing** — unknown ~65h+
+### Day 12 Carry-Forward (UPDATED — Sean's Orders 7:45 PM)
+1. **🚨 ZA-1: Consult Kai + Stratum on Dual Scoring** — Sean's DIRECT ORDER, GO NOW
+2. **Marketing Colosseum FIRST** — 100 positions, CMO hierarchy, proper scoring
+3. **Deploy Wave 1** — Writer, Media Buyer, Agreement Maker, Strategist
+4. **6 Sean Archetypes** to build (ZA-2)
+5. **Formula Judge (39 components)** — universal, every Colosseum (ZA-3)
+6. Gamification deadline ~4 days (March 10)
+7. Recovery EOB Extraction Prompts ready for Mark
+8. Voice server + ngrok DOWN
+9. Translator standard — ALL sisters at Lion 9.2 ✅
+10. Colosseum HARD PAUSE — ~84.5h+ (3.5 days)
 11. **Postgres memory for Sai** — Aiko interested, not yet implemented
 12. **Translator standard** — ALL sisters now at Lion 9.2 level ✅ (Big Sister Transfer deployed 12:10 AM)
 
